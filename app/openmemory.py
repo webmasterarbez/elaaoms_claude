@@ -18,6 +18,10 @@ def extract_caller_id(webhook_data: Dict[str, Any]) -> Optional[str]:
     """
     Extract system__caller_id from webhook data's dynamic_variables.
 
+    Handles nested structure in ElevenLabs webhooks:
+    - First checks: webhook_data.conversation_initiation_client_data.dynamic_variables
+    - Falls back to: webhook_data.dynamic_variables
+
     Args:
         webhook_data: The webhook.data dictionary containing dynamic_variables
 
@@ -25,12 +29,24 @@ def extract_caller_id(webhook_data: Dict[str, Any]) -> Optional[str]:
         The phone number (system__caller_id) or None if not found
     """
     try:
+        # First try nested structure in conversation_initiation_client_data
+        conversation_init = webhook_data.get("conversation_initiation_client_data", {})
+        dynamic_variables = conversation_init.get("dynamic_variables", {})
+        caller_id = dynamic_variables.get("system__caller_id")
+
+        if caller_id:
+            logger.debug(f"Found caller_id in conversation_initiation_client_data: {caller_id}")
+            return caller_id
+
+        # Fall back to top-level dynamic_variables (for other payload formats)
         dynamic_variables = webhook_data.get("dynamic_variables", {})
         caller_id = dynamic_variables.get("system__caller_id")
+
         if caller_id:
+            logger.debug(f"Found caller_id in top-level dynamic_variables: {caller_id}")
             return caller_id
         else:
-            logger.warning("system__caller_id not found in dynamic_variables")
+            logger.warning("system__caller_id not found in dynamic_variables (checked both nested and top-level)")
             return None
     except Exception as e:
         logger.warning(f"Error extracting caller_id: {str(e)}")
