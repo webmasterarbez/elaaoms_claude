@@ -45,7 +45,7 @@ trap cleanup EXIT INT TERM
 
 # Start ngrok in background
 echo -e "${GREEN}Starting ngrok tunnel...${NC}"
-python ngrok_config.py &
+python scripts/ngrok_config.py &
 NGROK_PID=$!
 sleep 5
 
@@ -69,7 +69,7 @@ echo "  - Webhook: POST /webhook/post-call"
 echo ""
 echo "To test webhooks (in another terminal):"
 echo "  source venv/bin/activate"
-echo "  python test_webhook.py"
+echo "  python tests/test_webhook.py"
 echo ""
 echo "Press Ctrl+C to stop all services"
 echo ""
