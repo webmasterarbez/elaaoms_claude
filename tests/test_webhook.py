@@ -55,6 +55,12 @@ def test_transcription_webhook(base_url: str = "http://localhost:8000"):
         "type": "post_call_transcription",
         "data": {
             "conversation_id": conversation_id,
+            "conversation_initiation_client_data": {
+                "dynamic_variables": {
+                    "system__caller_id": "+16129782029",
+                    "system__agent_id": "agent_test_123"
+                }
+            },
             "transcript": [
                 {
                     "role": "agent",
