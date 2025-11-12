@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     ngrok_authtoken: str = ""
     elevenlabs_post_call_hmac_key: str = ""
     elevenlabs_post_call_payload_path: str = "./payloads"
+    openmemory_api_url: str = "http://localhost:8080"
+    openmemory_api_key: str = ""
 
     class Config:
         env_file = ".env"

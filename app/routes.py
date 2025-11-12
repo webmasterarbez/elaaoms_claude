@@ -15,6 +15,7 @@ from .models import (
 )
 from .auth import verify_elevenlabs_webhook
 from .storage import save_transcription_payload, save_audio_payload, save_failure_payload
+from .openmemory import send_to_openmemory
 from config.settings import get_settings
 
 router = APIRouter()
@@ -107,6 +108,9 @@ async def _handle_transcription_webhook(webhook: ElevenLabsWebhook, request_id: 
         )
 
         logger.info(f"[{request_id}] Transcription saved to {file_path}")
+
+        # Send to OpenMemory for persistence and search
+        send_to_openmemory(webhook.model_dump(), request_id)
 
         return PayloadResponse(
             status="success",
