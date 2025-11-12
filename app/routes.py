@@ -63,11 +63,11 @@ async def receive_elevenlabs_webhook(request: Request):
 
         # Route to appropriate handler based on webhook type
         if webhook.type == "post_call_transcription":
-            return await _handle_transcription_webhook(webhook.data, request_id, settings)
+            return await _handle_transcription_webhook(webhook, request_id, settings)
         elif webhook.type == "post_call_audio":
             return await _handle_audio_webhook(webhook.data, request_id, settings)
         elif webhook.type == "call_initiation_failure":
-            return await _handle_failure_webhook(webhook.data, request_id, settings)
+            return await _handle_failure_webhook(webhook, request_id, settings)
         else:
             logger.warning(f"[{request_id}] Unknown webhook type: {webhook.type}")
             raise HTTPException(
@@ -85,13 +85,13 @@ async def receive_elevenlabs_webhook(request: Request):
         )
 
 
-async def _handle_transcription_webhook(data: dict, request_id: str, settings) -> PayloadResponse:
+async def _handle_transcription_webhook(webhook: ElevenLabsWebhook, request_id: str, settings) -> PayloadResponse:
     """
     Handle post_call_transcription webhook.
     """
     try:
         # Validate data structure
-        transcription = TranscriptionData(**data)
+        transcription = TranscriptionData(**webhook.data)
         conversation_id = transcription.conversation_id
 
         logger.info(
@@ -103,7 +103,7 @@ async def _handle_transcription_webhook(data: dict, request_id: str, settings) -
         file_path = save_transcription_payload(
             settings.elevenlabs_post_call_payload_path,
             conversation_id,
-            transcription.model_dump()
+            webhook.model_dump()
         )
 
         logger.info(f"[{request_id}] Transcription saved to {file_path}")
@@ -181,13 +181,13 @@ async def _handle_audio_webhook(data: dict, request_id: str, settings) -> Payloa
         )
 
 
-async def _handle_failure_webhook(data: dict, request_id: str, settings) -> PayloadResponse:
+async def _handle_failure_webhook(webhook: ElevenLabsWebhook, request_id: str, settings) -> PayloadResponse:
     """
     Handle call_initiation_failure webhook.
     """
     try:
         # Validate data structure
-        failure = FailureData(**data)
+        failure = FailureData(**webhook.data)
         conversation_id = failure.conversation_id
 
         logger.info(
@@ -199,7 +199,7 @@ async def _handle_failure_webhook(data: dict, request_id: str, settings) -> Payl
         file_path = save_failure_payload(
             settings.elevenlabs_post_call_payload_path,
             conversation_id,
-            failure.model_dump()
+            webhook.model_dump()
         )
 
         logger.info(f"[{request_id}] Failure recorded to {file_path}")
