@@ -1,23 +1,23 @@
 # Eleven Labs Agents Universal Agentic Open Memory System (ELAUAOMS)
 
-A structured FastAPI service that receives and processes webhook payloads with built-in ngrok support for public URL testing.
+A FastAPI service that integrates ElevenLabs conversational AI agents with OpenMemory for persistent, personalized caller experiences. The system stores conversation memories and enables agents to recall past interactions across calls.
 
 ## Features
 
-- **ElevenLabs Post-Call Webhooks**: Receive and process three webhook types:
-  - `post_call_transcription`: Transcription JSON payloads
-  - `post_call_audio`: Audio files via multipart form data
-  - `call_initiation_failure`: Call failure notifications
-- **HMAC-SHA256 Authentication**: All webhooks are validated using ElevenLabs-provided HMAC signatures
-- **Automatic Payload Storage**: Payloads are automatically saved to disk in organized directory structure
+- **ElevenLabs Webhook Integration**:
+  - `client-data`: Personalized first message based on caller history
+  - `post-call`: Automatic memory extraction and storage
+  - `search-memory`: Server tool for agents to search caller history
+- **OpenMemory Integration**: Connect to your independent OpenMemory instance for memory storage
+- **Intelligent Memory Extraction**: LLM-powered extraction of facts, preferences, and important details
+- **Multi-Agent Support**: Share memories across agents or keep them isolated
+- **HMAC-SHA256 Authentication**: Secure webhook validation
+- **Automatic Payload Storage**: All payloads saved to organized directory structure
+- **Background Processing**: Non-blocking memory extraction and storage
 - **Health Check**: Simple health check endpoint for monitoring
-- **Echo Endpoint**: Test endpoint that echoes back received payloads
 - **Swagger Documentation**: Auto-generated interactive API docs at `/docs`
-- **CORS Enabled**: Accept requests from any origin
-- **Request Tracking**: Every request gets a unique UUID for tracing
-- **Structured Logging**: Comprehensive logging for debugging
 - **Environment Configuration**: Manage settings via `.env` file
-- **Ngrok Integration**: Built-in tunnel setup for testing with public URLs
+- **Ngrok Integration**: Built-in tunnel setup for local testing with public URLs
 
 ## Project Structure
 
@@ -42,12 +42,13 @@ A structured FastAPI service that receives and processes webhook payloads with b
 
 ## Installation
 
-1. **Clone or navigate to the project directory**:
+1. **Clone the repository**:
    ```bash
-   cd /home/ubuntu/claude/elaaoms_claude
+   git clone https://github.com/webmasterarbez/elaaoms_claude.git
+   cd elaaoms_claude
    ```
 
-2. **Create a virtual environment** (optional but recommended):
+2. **Create a virtual environment** (recommended):
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -58,49 +59,102 @@ A structured FastAPI service that receives and processes webhook payloads with b
    pip install -r requirements.txt
    ```
 
-4. **Create environment file** (optional):
+4. **Configure environment variables**:
    ```bash
    cp .env.example .env
    ```
 
-   To use ngrok with authentication, add your auth token to `.env`:
+   Edit `.env` with your configuration:
+   ```bash
+   # ElevenLabs
+   ELEVENLABS_API_KEY=sk-elevenlabs-...
+   ELEVENLABS_POST_CALL_HMAC_KEY=your_hmac_secret
+
+   # OpenMemory (your independent instance)
+   OPENMEMORY_API_URL=https://your-openmemory-instance.com
+   OPENMEMORY_API_KEY=your_openmemory_api_key
+
+   # LLM (OpenAI, Anthropic, or Groq)
+   LLM_PROVIDER=openai
+   LLM_API_KEY=sk-...
+   LLM_MODEL=gpt-4-turbo
+
+   # Ngrok (optional, for local testing)
+   NGROK_AUTHTOKEN=your_ngrok_token
    ```
-   NGROK_AUTHTOKEN=your_token_here
-   ```
+
+5. **Setup OpenMemory independently** (see DEPLOYMENT.md for details)
 
 ## Quick Start
 
 ### Start the Service
 
-In Terminal 1:
+**Terminal 1: Run the FastAPI app**
 ```bash
 python main.py
 ```
 
 The service will start on `http://localhost:8000`
 
-### Create a Public Tunnel (Optional)
+### Create a Public Tunnel with Ngrok
 
-In Terminal 2:
+**Terminal 2: Start ngrok tunnel**
 ```bash
-python ngrok_config.py
+python scripts/ngrok_config.py
 ```
 
-This will print a public URL like `https://abc-123-def.ngrok.io` that you can use for testing.
+This will print a public URL like:
+```
+Ngrok URL: https://abc-123-def.ngrok.io
+```
+
+Use this URL to configure your ElevenLabs webhooks:
+- Client-Data: `https://abc-123-def.ngrok.io/webhook/client-data`
+- Post-Call: `https://abc-123-def.ngrok.io/webhook/post-call`
+- Search-Memory: `https://abc-123-def.ngrok.io/webhook/search-memory`
+
+### Verify It's Running
+
+```bash
+curl http://localhost:8000/health
+# Or via ngrok:
+curl https://abc-123-def.ngrok.io/health
+```
 
 ## Configuration
 
-### ElevenLabs Post-Call Webhooks Setup
+All configuration is managed through environment variables in the `.env` file.
 
-Before using the webhook endpoints, configure the required environment variables in your `.env` file:
+### Required Configuration
 
 ```env
-ELEVENLABS_POST_CALL_HMAC_KEY=your_hmac_secret_key_from_elevenlabs
+# ElevenLabs Configuration
+ELEVENLABS_API_KEY=sk-elevenlabs-...
+ELEVENLABS_POST_CALL_HMAC_KEY=your_hmac_secret_from_elevenlabs
+ELEVENLABS_API_URL=https://api.elevenlabs.io/v1
+
+# OpenMemory Configuration (your independent instance)
+OPENMEMORY_API_URL=https://your-openmemory-instance.com
+OPENMEMORY_API_KEY=your_openmemory_api_key
+
+# LLM Configuration
+LLM_PROVIDER=openai  # or anthropic, groq
+LLM_API_KEY=sk-...
+LLM_MODEL=gpt-4-turbo
+
+# Memory Settings
+AGENT_PROFILE_TTL_HOURS=24
+MEMORY_RELEVANCE_THRESHOLD=0.7
+HIGH_IMPORTANCE_THRESHOLD=8
+
+# Payload Storage
 ELEVENLABS_POST_CALL_PAYLOAD_PATH=./payloads
 ```
 
-- **ELEVENLABS_POST_CALL_HMAC_KEY**: The shared secret provided by ElevenLabs for webhook authentication
-- **ELEVENLABS_POST_CALL_PAYLOAD_PATH**: Base directory where webhook payloads will be stored
+**Important Notes:**
+- **OpenMemory must be setup independently** - this project connects to your existing OpenMemory instance
+- **HMAC key** must match the secret configured in your ElevenLabs dashboard
+- **LLM Provider** can be `openai`, `anthropic`, or `groq`
 
 ## API Endpoints
 
@@ -334,25 +388,23 @@ curl -X POST https://your-ngrok-url.ngrok.io/webhook \
   }'
 ```
 
-## Configuration
+## Additional Settings
 
-Settings are managed through environment variables in the `.env` file:
+Optional environment variables:
 
-```
-APP_NAME=FastAPI Service
-APP_VERSION=0.1.0
+```env
+APP_NAME=ELAUAOMS
+APP_VERSION=1.0.0
 DEBUG=True
 LOG_LEVEL=INFO
 NGROK_AUTHTOKEN=your_ngrok_auth_token_here
 ```
 
-### Available Settings
-
-- `APP_NAME`: Application name (default: "FastAPI Service")
-- `APP_VERSION`: Application version (default: "0.1.0")
+- `APP_NAME`: Application name (default: "ELAUAOMS")
+- `APP_VERSION`: Application version (default: "1.0.0")
 - `DEBUG`: Enable debug mode (default: True)
 - `LOG_LEVEL`: Logging level - INFO, DEBUG, WARNING, ERROR (default: "INFO")
-- `NGROK_AUTHTOKEN`: Ngrok authentication token (optional)
+- `NGROK_AUTHTOKEN`: Ngrok authentication token (optional, for local testing)
 
 ## Data Models
 
