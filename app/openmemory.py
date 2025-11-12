@@ -1,10 +1,12 @@
 """
 OpenMemory integration for webhook payload storage.
-Webhook data is saved to filesystem and tagged for OpenMemory processing.
-In Claude Code context, use MCP tools to persist memories directly.
+Note: The local /memory/ingest endpoint has a configuration issue where it rejects
+all content types with 500 errors. This module logs webhooks for processing.
+For actual OpenMemory storage, use the OpenMemory MCP tools via Claude Code.
 """
 
 import logging
+import json
 from typing import Optional, Dict, Any
 from config.settings import get_settings
 
@@ -53,66 +55,77 @@ def extract_caller_id(webhook_data: Dict[str, Any]) -> Optional[str]:
 
 def send_to_openmemory(webhook_payload: Dict[str, Any], request_id: str) -> bool:
     """
-    Send webhook payload to OpenMemory.
+    Log webhook for OpenMemory storage.
 
-    Note: OpenMemory integration works via MCP tools in Claude Code environment.
-    For standalone FastAPI deployment, webhook data is saved to filesystem.
-    In Claude Code context, use mcp__openmemory__openmemory_store to persist memories.
+    NOTE: The local OpenMemory /memory/ingest endpoint has a configuration issue
+    where it rejects all content types (text/html, application/json, etc.) with
+    HTTP 500 "Unsupported content type" errors. This is a bug in the endpoint
+    that needs to be fixed in the OpenMemory server configuration.
+
+    For actual webhook storage in OpenMemory, you have two options:
+    1. Use the MCP tools via Claude Code (recommended):
+       - mcp__openmemory__openmemory_store()
+    2. Use a different OpenMemory instance with a working /memory/ingest endpoint
 
     Args:
         webhook_payload: The complete webhook payload (type + data wrapper)
         request_id: Request tracking ID for logging
 
     Returns:
-        True if successful, False otherwise
+        True (always succeeds since we're just logging)
     """
     try:
         # Extract caller_id from nested dynamic_variables
         caller_id = extract_caller_id(webhook_payload.get("data", {}))
 
         if not caller_id:
-            logger.warning(f"[{request_id}] Skipping OpenMemory storage: caller_id not found")
+            logger.warning(f"[{request_id}] Skipping OpenMemory logging: caller_id not found")
             return False
 
-        # Prepare webhook data for storage
         webhook_type = webhook_payload.get("type")
         conversation_id = webhook_payload.get("data", {}).get("conversation_id")
         data_section = webhook_payload.get("data", {})
 
-        # Create content summary for the memory
-        if webhook_type == "post_call_transcription":
-            transcript = data_section.get("transcript", [])
-            transcript_summary = ". ".join([
-                f"{msg.get('role', 'unknown')}: {msg.get('message', '')}"
-                for msg in transcript
-            ])
-            content = f"ElevenLabs Webhook - Post Call Transcription. Conversation ID: {conversation_id}. Caller ID: {caller_id}. Transcript: {transcript_summary}"
-        else:
-            # For other webhook types, create a generic summary
-            content = f"ElevenLabs Webhook - {webhook_type}. Conversation ID: {conversation_id}. Caller ID: {caller_id}."
+        # Create a summary of the webhook for logging
+        summary = _create_webhook_summary(webhook_type, conversation_id, caller_id, data_section)
 
-        # Metadata for the memory
-        metadata = {
-            "webhook_type": webhook_type,
-            "conversation_id": conversation_id,
-            "request_id": request_id
-        }
-
-        logger.debug(f"[{request_id}] Processing webhook for OpenMemory storage - caller_id: {caller_id}")
-        logger.debug(f"[{request_id}] Webhook content: {content}")
-        logger.debug(f"[{request_id}] Note: In Claude Code environment, use MCP tools to store in OpenMemory. In standalone mode, webhook is saved to filesystem.")
-
-        # Log that webhook is queued for OpenMemory storage
-        # In production, this would integrate with OpenMemory via:
-        # - MCP tools in Claude Code context
-        # - Direct API calls to a compatible OpenMemory endpoint
+        # Log the webhook details
         logger.info(
-            f"[{request_id}] Webhook queued for OpenMemory storage: "
-            f"type={webhook_type}, conversation_id={conversation_id}, caller_id={caller_id}"
+            f"[{request_id}] Webhook ready for OpenMemory storage:\n"
+            f"  Type: {webhook_type}\n"
+            f"  Conversation ID: {conversation_id}\n"
+            f"  Caller ID: {caller_id}\n"
+            f"  Summary: {summary}"
+        )
+
+        logger.debug(
+            f"[{request_id}] Full webhook payload:\n"
+            f"{json.dumps(webhook_payload, indent=2, default=str)}"
         )
 
         return True
 
     except Exception as e:
-        logger.error(f"[{request_id}] Error preparing OpenMemory storage: {str(e)}", exc_info=True)
+        logger.error(f"[{request_id}] Error logging webhook for OpenMemory: {str(e)}", exc_info=True)
         return False
+
+
+def _create_webhook_summary(webhook_type: str, conversation_id: str, caller_id: str, data: Dict[str, Any]) -> str:
+    """Create a text summary of webhook data."""
+
+    if webhook_type == "post_call_transcription":
+        transcript_items = data.get("transcript", [])
+        transcript_summary = " | ".join([
+            f"{msg.get('role', 'Unknown')}: {msg.get('message', '')[:50]}"
+            for msg in transcript_items[:3]  # First 3 messages only
+        ])
+        return f"Transcription with {len(transcript_items)} messages: {transcript_summary}"
+
+    elif webhook_type == "post_call_audio":
+        return "Audio file received"
+
+    elif webhook_type == "call_initiation_failure":
+        return f"Call failed: {data.get('failure_reason', 'Unknown reason')}"
+
+    else:
+        return f"Webhook of type {webhook_type}"
