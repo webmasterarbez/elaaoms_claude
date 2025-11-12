@@ -36,3 +36,4 @@ ENV/
 .pytest_cache/
 htmlcov/
 .coverage
+.services.pids
