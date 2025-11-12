@@ -6,8 +6,13 @@ Usage: python ngrok_config.py
 from pyngrok import ngrok
 import logging
 import os
+import sys
 import shutil
 from pathlib import Path
+
+# Add parent directory to path so we can import config module
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config.settings import get_settings
 
 logger = logging.getLogger(__name__)
