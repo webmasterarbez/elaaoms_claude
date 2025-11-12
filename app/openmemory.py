@@ -84,8 +84,9 @@ def send_to_openmemory(webhook_payload: Dict[str, Any], request_id: str) -> bool
         base64_encoded = base64.b64encode(json_str.encode('utf-8')).decode('utf-8')
 
         # Prepare payload for memory ingestion
+        # Note: OpenMemory /memory/ingest endpoint doesn't seem to support content_type field
+        # Send data as base64-encoded JSON without content_type declaration
         payload = {
-            "content_type": "text/plain",
             "data": base64_encoded,
             "metadata": {
                 "user": caller_id,
