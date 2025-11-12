@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import logging
 from config.settings import get_settings
 from .routes import router
+from .background_jobs import start_background_worker, stop_background_worker
 
 settings = get_settings()
 
@@ -42,8 +43,16 @@ async def startup_event():
     logger = logging.getLogger(__name__)
     logger.info(f"Starting {settings.app_name} v{settings.app_version}")
 
+    # Start background worker for memory extraction
+    start_background_worker()
+    logger.info("Background worker started for memory extraction")
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
     logger = logging.getLogger(__name__)
     logger.info(f"Shutting down {settings.app_name}")
+
+    # Stop background worker
+    stop_background_worker()
+    logger.info("Background worker stopped")
