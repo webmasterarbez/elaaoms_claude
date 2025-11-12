@@ -6,6 +6,7 @@ Sends post-call webhook payloads to OpenMemory using multimodal ingestion.
 import requests
 import logging
 import json
+import base64
 from typing import Optional, Dict, Any
 from config.settings import get_settings
 
@@ -56,18 +57,22 @@ def send_to_openmemory(webhook_payload: Dict[str, Any], request_id: str) -> bool
             return False
 
         # Prepare OpenMemory API request
-        api_url = f"{settings.openmemory_api_url}/api/v1/ingest"
+        api_url = f"{settings.openmemory_api_url}/memory/ingest"
         headers = {
             "Authorization": f"Bearer {settings.openmemory_api_key}",
             "Content-Type": "application/json"
         }
 
-        # Prepare payload for multimodal ingestion
-        # OpenMemory will parse and store all content from the payload
+        # Base64 encode the webhook JSON payload
+        json_str = json.dumps(webhook_payload, indent=2, default=str)
+        base64_encoded = base64.b64encode(json_str.encode('utf-8')).decode('utf-8')
+
+        # Prepare payload for memory ingestion
         payload = {
-            "content": json.dumps(webhook_payload, indent=2, default=str),
-            "user_id": caller_id,
+            "content_type": "application/json",
+            "data": base64_encoded,
             "metadata": {
+                "user": caller_id,
                 "webhook_type": webhook_payload.get("type"),
                 "conversation_id": webhook_payload.get("data", {}).get("conversation_id"),
                 "request_id": request_id
