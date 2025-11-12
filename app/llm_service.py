@@ -5,7 +5,7 @@ LLM service for memory extraction and personalization.
 import logging
 import json
 from typing import List, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 from config.settings import get_settings
 
 logger = logging.getLogger(__name__)
@@ -77,7 +77,7 @@ class LLMService:
             for msg in transcript
         ])
 
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.now(timezone.utc).isoformat()
 
         return f"""Extract memories from this AI agent conversation for future reference.
 
@@ -118,11 +118,11 @@ Rules:
     async def _extract_with_openai(self, prompt: str) -> List[Dict[str, Any]]:
         """Extract memories using OpenAI API."""
         try:
-            import openai
+            from openai import AsyncOpenAI
 
-            openai.api_key = self.api_key
+            client = AsyncOpenAI(api_key=self.api_key)
 
-            response = await openai.ChatCompletion.acreate(
+            response = await client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
@@ -301,11 +301,11 @@ Return ONLY the first message text (no JSON, no explanation).
     async def _generate_with_openai(self, prompt: str) -> str:
         """Generate first message using OpenAI."""
         try:
-            import openai
+            from openai import AsyncOpenAI
 
-            openai.api_key = self.api_key
+            client = AsyncOpenAI(api_key=self.api_key)
 
-            response = await openai.ChatCompletion.acreate(
+            response = await client.chat.completions.create(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,

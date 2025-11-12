@@ -4,10 +4,10 @@ Background job processor for memory extraction.
 
 import logging
 import asyncio
-from queue import Queue
+from queue import Queue, Empty
 from threading import Thread
 from typing import Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.openmemory_client import (
     OpenMemoryClient,
@@ -38,7 +38,7 @@ class MemoryExtractionJob:
         self.transcript = transcript
         self.duration = duration
         self.status = status
-        self.created_at = datetime.utcnow()
+        self.created_at = datetime.now(timezone.utc)
 
 
 class BackgroundJobProcessor:
@@ -90,7 +90,7 @@ class BackgroundJobProcessor:
                 # Get job from queue (blocking with timeout)
                 try:
                     job = self.queue.get(timeout=1)
-                except:
+                except Empty:
                     continue
 
                 # Process the job
