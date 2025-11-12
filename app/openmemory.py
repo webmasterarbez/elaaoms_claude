@@ -85,7 +85,7 @@ def send_to_openmemory(webhook_payload: Dict[str, Any], request_id: str) -> bool
 
         # Prepare payload for memory ingestion
         payload = {
-            "content_type": "application/json",
+            "content_type": "text/plain",
             "data": base64_encoded,
             "metadata": {
                 "user": caller_id,
