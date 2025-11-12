@@ -46,7 +46,7 @@ async def receive_elevenlabs_webhook(request: Request):
 
         logger.debug(f"[{request_id}] Raw body length: {len(body)} bytes")
 
-        # Verify HMAC signature
+        # Verify HMAC signature (all requests must be signed)
         verify_elevenlabs_webhook(
             request_body=body,
             signature_header=signature_header,
