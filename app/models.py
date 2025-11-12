@@ -1,13 +1,13 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Any, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class PayloadRequest(BaseModel):
     """Generic payload request model"""
     event_type: str = Field(..., description="Type of event being sent")
     data: Dict[str, Any] = Field(default_factory=dict, description="Event data")
-    timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow, description="Request timestamp")
+    timestamp: Optional[datetime] = Field(default_factory=lambda: datetime.now(timezone.utc), description="Request timestamp")
     user_id: Optional[str] = Field(None, description="Optional user identifier")
 
     class Config:
