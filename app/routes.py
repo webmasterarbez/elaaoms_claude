@@ -40,25 +40,20 @@ async def receive_elevenlabs_webhook(request: Request):
     try:
         # Get signature header
         signature_header = request.headers.get("elevenlabs-signature")
-        is_internal_request = request.headers.get("x-internal-request") == "true"
 
         # Get raw request body for HMAC validation
         body = await request.body()
 
         logger.debug(f"[{request_id}] Raw body length: {len(body)} bytes")
-        logger.debug(f"[{request_id}] Internal request: {is_internal_request}")
 
-        # Skip HMAC validation for internal requests (e.g., from utility scripts)
-        if not is_internal_request:
-            # Verify HMAC signature for external ElevenLabs webhooks
-            verify_elevenlabs_webhook(
-                request_body=body,
-                signature_header=signature_header,
-                secret=settings.elevenlabs_post_call_hmac_key
-            )
-            logger.info(f"[{request_id}] HMAC signature validated successfully")
-        else:
-            logger.info(f"[{request_id}] Internal request - skipping HMAC validation")
+        # Verify HMAC signature (all requests must be signed)
+        verify_elevenlabs_webhook(
+            request_body=body,
+            signature_header=signature_header,
+            secret=settings.elevenlabs_post_call_hmac_key
+        )
+
+        logger.info(f"[{request_id}] HMAC signature validated successfully")
 
         # Parse the webhook payload
         webhook_payload = json.loads(body.decode('utf-8'))

@@ -11,6 +11,7 @@ Example:
 
 Environment Variables:
     ELEVENLABS_API_KEY: Your ElevenLabs API key (required)
+    ELEVENLABS_POST_CALL_HMAC_KEY: HMAC key for signing webhook requests (required)
     WEBHOOK_URL: Webhook endpoint URL (default: http://localhost:8000/webhook/post-call)
 """
 
@@ -20,6 +21,9 @@ import json
 import logging
 import argparse
 import requests
+import hmac
+import time
+from hashlib import sha256
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
@@ -37,18 +41,22 @@ class ConversationGetter:
     ELEVENLABS_API_BASE = "https://api.elevenlabs.io/v1"
     DEFAULT_WEBHOOK_URL = "http://localhost:8000/webhook/post-call"
 
-    def __init__(self, api_key: str, webhook_url: Optional[str] = None):
+    def __init__(self, api_key: str, hmac_key: str, webhook_url: Optional[str] = None):
         """
         Initialize the conversation getter.
 
         Args:
             api_key: ElevenLabs API key
+            hmac_key: HMAC key for signing webhook requests
             webhook_url: Optional webhook URL (defaults to localhost)
         """
         if not api_key:
             raise ValueError("ELEVENLABS_API_KEY is required")
+        if not hmac_key:
+            raise ValueError("ELEVENLABS_POST_CALL_HMAC_KEY is required for signing requests")
 
         self.api_key = api_key
+        self.hmac_key = hmac_key
         self.webhook_url = webhook_url or self.DEFAULT_WEBHOOK_URL
         self.session = requests.Session()
         self.session.headers.update({
@@ -133,12 +141,36 @@ class ConversationGetter:
 
         return webhook_payload
 
+    def _sign_webhook_request(self, payload_json: str) -> str:
+        """
+        Create HMAC signature for webhook request.
+
+        Uses the same signature format as ElevenLabs:
+        - Payload to sign: {timestamp}.{json_payload}
+        - Header format: t={timestamp},v0={hash}
+
+        Args:
+            payload_json: JSON string of the payload
+
+        Returns:
+            Signature header value (t={timestamp},v0={hash})
+        """
+        timestamp = int(time.time())
+        full_payload_to_sign = f"{timestamp}.{payload_json}"
+
+        mac = hmac.new(
+            key=self.hmac_key.encode("utf-8"),
+            msg=full_payload_to_sign.encode("utf-8"),
+            digestmod=sha256,
+        )
+        calculated_hash = mac.hexdigest()
+
+        signature_header = f"t={timestamp},v0={calculated_hash}"
+        return signature_header
+
     def send_to_webhook(self, webhook_payload: Dict[str, Any]) -> bool:
         """
-        Send formatted conversation data to webhook endpoint.
-
-        Note: This sends without HMAC signature since it's an internal call.
-        The webhook endpoint should handle this appropriately.
+        Send formatted conversation data to webhook endpoint with HMAC signature.
 
         Args:
             webhook_payload: Formatted webhook payload
@@ -151,12 +183,19 @@ class ConversationGetter:
         logger.info(f"Sending conversation {conversation_id} to webhook: {self.webhook_url}")
 
         try:
+            # Serialize payload
+            payload_json = json.dumps(webhook_payload)
+
+            # Create HMAC signature
+            signature_header = self._sign_webhook_request(payload_json)
+
+            # Send request with signature
             response = requests.post(
                 self.webhook_url,
-                json=webhook_payload,
+                data=payload_json,  # Use data instead of json to send pre-serialized JSON
                 headers={
                     "Content-Type": "application/json",
-                    "X-Internal-Request": "true"  # Flag for internal requests
+                    "elevenlabs-signature": signature_header
                 },
                 timeout=30
             )
@@ -270,6 +309,12 @@ Examples:
     )
 
     parser.add_argument(
+        "--hmac-key",
+        default=os.getenv("ELEVENLABS_POST_CALL_HMAC_KEY"),
+        help="HMAC key for signing requests (default: from ELEVENLABS_POST_CALL_HMAC_KEY env)"
+    )
+
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Enable debug logging"
@@ -287,10 +332,17 @@ Examples:
         logger.error("Set it via environment variable or --api-key flag")
         sys.exit(1)
 
+    # Validate HMAC key
+    if not args.hmac_key:
+        logger.error("ERROR: ELEVENLABS_POST_CALL_HMAC_KEY is required")
+        logger.error("Set it via environment variable or --hmac-key flag")
+        sys.exit(1)
+
     # Create conversation getter
     try:
         getter = ConversationGetter(
             api_key=args.api_key,
+            hmac_key=args.hmac_key,
             webhook_url=args.webhook_url
         )
 

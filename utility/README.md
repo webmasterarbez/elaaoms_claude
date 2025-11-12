@@ -8,15 +8,23 @@ Fetches conversation details from ElevenLabs API and sends them to the OpenMemor
 
 ### Setup
 
-1. Set your ElevenLabs API key in your `.env` file:
+1. Set your ElevenLabs credentials in your `.env` file:
    ```bash
    ELEVENLABS_API_KEY=your_api_key_here
+   ELEVENLABS_POST_CALL_HMAC_KEY=your_hmac_key_from_elevenlabs
    ```
 
 2. Optionally configure the webhook URL (defaults to `http://localhost:8000/webhook/post-call`):
    ```bash
    WEBHOOK_URL=http://your-webhook-url.com/webhook/post-call
    ```
+
+### Security
+
+All requests to the webhook endpoint are signed with HMAC-SHA256 using the same algorithm as ElevenLabs webhooks. This ensures that:
+- Only authorized requests can send data to the webhook
+- The webhook can verify the authenticity of the request
+- No one can bypass signature validation with fake headers
 
 ### Usage
 
@@ -69,6 +77,7 @@ The script provides detailed logging of:
 
 ### Notes
 
-- The script adds an `X-Internal-Request: true` header to bypass HMAC signature validation
+- The script signs all requests with HMAC-SHA256 for security
 - Make sure your webhook endpoint is running before executing the script
 - You need a valid ElevenLabs API key with access to the Conversational AI API
+- Both `ELEVENLABS_API_KEY` and `ELEVENLABS_POST_CALL_HMAC_KEY` are required
