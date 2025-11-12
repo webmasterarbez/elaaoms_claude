@@ -138,3 +138,98 @@ class ElevenLabsWebhook(BaseModel):
                 }
             }
         }
+
+
+# Client-Data Webhook Models (Conversation Initiation)
+
+class DynamicVariables(BaseModel):
+    """Dynamic variables from ElevenLabs"""
+    system__caller_id: Optional[str] = Field(None, alias="system__caller_id", description="Caller phone number")
+
+    class Config:
+        populate_by_name = True
+
+
+class ClientDataRequest(BaseModel):
+    """Request model for /webhook/client-data (Conversation Initiation)"""
+    agent_id: str = Field(..., description="Agent identifier")
+    conversation_id: str = Field(..., description="Conversation identifier")
+    dynamic_variables: Optional[DynamicVariables] = Field(None, description="Dynamic variables including caller_id")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "agent_id": "agent_abc123",
+                "conversation_id": "conv_xyz789",
+                "dynamic_variables": {
+                    "system__caller_id": "+15551234567"
+                }
+            }
+        }
+
+
+class ClientDataResponse(BaseModel):
+    """Response model for /webhook/client-data"""
+    first_message: Optional[str] = Field(None, description="Personalized first message for the agent")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "first_message": "Hi again! I hope your order XYZ-789 arrived safely. How can I help you today?"
+            }
+        }
+
+
+# Search-Memory Webhook Models (Server Tool)
+
+class SearchMemoryRequest(BaseModel):
+    """Request model for /webhook/search-memory (Server Tool)"""
+    query: str = Field(..., description="Search query")
+    caller_id: str = Field(..., description="Caller identifier")
+    agent_id: str = Field(..., description="Agent identifier")
+    conversation_id: Optional[str] = Field(None, description="Current conversation identifier")
+    search_all_agents: Optional[bool] = Field(False, description="Search across all agents")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "query": "What was my last order number?",
+                "caller_id": "+15551234567",
+                "agent_id": "agent_abc123",
+                "conversation_id": "conv_current123",
+                "search_all_agents": False
+            }
+        }
+
+
+class MemoryResult(BaseModel):
+    """Individual memory search result"""
+    memory: str = Field(..., description="Memory content")
+    relevance: float = Field(..., description="Relevance score (0-1)")
+    timestamp: str = Field(..., description="When the memory was created")
+    conversation_id: Optional[str] = Field(None, description="Source conversation")
+    agent_id: Optional[str] = Field(None, description="Source agent")
+
+
+class SearchMemoryResponse(BaseModel):
+    """Response model for /webhook/search-memory"""
+    results: list[MemoryResult] = Field(default_factory=list, description="Search results")
+    summary: Optional[str] = Field(None, description="Summary of results")
+    searched_agents: Optional[str] = Field(None, description="Which agents were searched")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "results": [
+                    {
+                        "memory": "Customer ordered product XYZ-789 on March 15th",
+                        "relevance": 0.92,
+                        "timestamp": "2025-11-10T14:30:00Z",
+                        "conversation_id": "conv_prev456",
+                        "agent_id": "agent_abc123"
+                    }
+                ],
+                "summary": "Most recent order: XYZ-789 on March 15th",
+                "searched_agents": "agent_abc123"
+            }
+        }
