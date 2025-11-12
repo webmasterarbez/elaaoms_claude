@@ -2,6 +2,14 @@
 
 This directory contains utility scripts for the ElevenLabs + OpenMemory integration system.
 
+## Quick Reference
+
+| Script | Purpose |
+|--------|---------|
+| `get_conversation.py` | Fetch and process conversations from ElevenLabs API |
+| `generate_hmac.py` | Generate valid HMAC signatures for testing webhooks |
+| `sample_payload.json` | Sample webhook payload for testing |
+
 ## get_conversation.py
 
 Fetches conversation details from ElevenLabs API and sends them to the OpenMemory system via the `/webhook/post-call` endpoint.
@@ -81,3 +89,131 @@ The script provides detailed logging of:
 - Make sure your webhook endpoint is running before executing the script
 - You need a valid ElevenLabs API key with access to the Conversational AI API
 - Both `ELEVENLABS_API_KEY` and `ELEVENLABS_POST_CALL_HMAC_KEY` are required
+
+---
+
+## generate_hmac.py
+
+Generates valid HMAC-SHA256 signatures for testing webhook endpoints that require ElevenLabs-style HMAC authentication.
+
+### Usage
+
+**Generate signature from JSON file:**
+```bash
+python utility/generate_hmac.py utility/sample_payload.json
+```
+
+**Generate signature from inline JSON:**
+```bash
+python utility/generate_hmac.py --payload '{"type":"post_call_transcription","data":{}}'
+```
+
+**Use custom secret:**
+```bash
+python utility/generate_hmac.py sample_payload.json --secret my_secret_key
+```
+
+**Generate for specific endpoint:**
+```bash
+python utility/generate_hmac.py sample_payload.json \
+  --url http://localhost:8000 \
+  --endpoint /webhook/client-data
+```
+
+**Generate with specific timestamp (for testing replay attacks):**
+```bash
+python utility/generate_hmac.py sample_payload.json --timestamp 1234567890
+```
+
+**Show only signature (no curl command):**
+```bash
+python utility/generate_hmac.py sample_payload.json --no-curl
+```
+
+### What it does
+
+1. Reads the JSON payload (from file or command line)
+2. Generates a valid HMAC-SHA256 signature using the provided secret
+3. Outputs the `elevenlabs-signature` header value
+4. Provides a ready-to-use cURL command for testing
+
+### Output Example
+
+```
+======================================================================
+HMAC-SHA256 Signature Generated
+======================================================================
+
+Payload: {"type":"post_call_transcription","data":{...}}
+Secret:  your_hmac_secret_key
+Header:  elevenlabs-signature: t=1699876543,v0=abc123def456...
+
+======================================================================
+Complete cURL Command
+======================================================================
+
+curl -X POST http://localhost:8000/webhook/post-call \
+  -H "Content-Type: application/json" \
+  -H "elevenlabs-signature: t=1699876543,v0=abc123def456..." \
+  -d '{"type":"post_call_transcription","data":{...}}'
+
+======================================================================
+✅ Ready to test!
+======================================================================
+```
+
+### Command-Line Options
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `file` | JSON payload file path | - |
+| `-p, --payload` | JSON payload as string | - |
+| `-s, --secret` | HMAC secret key | `your_hmac_secret_key` |
+| `-t, --timestamp` | Unix timestamp | Current time |
+| `-u, --url` | Base URL | `http://localhost:8000` |
+| `-e, --endpoint` | Endpoint path | `/webhook/post-call` |
+| `--no-curl` | Don't generate curl command | False |
+
+### Testing with sample_payload.json
+
+A sample payload file is provided for testing:
+
+```bash
+# Test post-call webhook
+python utility/generate_hmac.py utility/sample_payload.json
+
+# Copy and run the generated curl command
+```
+
+### Integration with Tests
+
+You can integrate this into your test workflow:
+
+```bash
+# Generate signature and execute in one command
+SIGNATURE=$(python utility/generate_hmac.py sample_payload.json --no-curl | grep "Header:" | cut -d' ' -f4-)
+curl -X POST http://localhost:8000/webhook/post-call \
+  -H "Content-Type: application/json" \
+  -H "elevenlabs-signature: $SIGNATURE" \
+  -d @utility/sample_payload.json
+```
+
+### Notes
+
+- The timestamp is automatically set to the current time unless specified
+- Timestamps must be within 30 minutes of the server's current time
+- The signature format is: `t=<timestamp>,v0=<hmac_hash>`
+- The HMAC is calculated on: `<timestamp>.<json_payload>`
+- Use the same secret key that's configured in your `.env` file's `ELEVENLABS_POST_CALL_HMAC_KEY`
+
+---
+
+## sample_payload.json
+
+A complete sample webhook payload for testing. Contains a realistic conversation transcript with:
+- Multiple message exchanges
+- Agent and user roles
+- Order tracking conversation
+- Dynamic variables (caller_id)
+
+Use this with `generate_hmac.py` for quick testing without creating payloads manually.
