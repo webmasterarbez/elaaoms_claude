@@ -8,8 +8,10 @@ class Settings(BaseSettings):
     debug: bool = True
     log_level: str = "INFO"
     ngrok_authtoken: str = ""
+    elevenlabs_api_key: str = ""
     elevenlabs_post_call_hmac_key: str = ""
     elevenlabs_post_call_payload_path: str = "./payloads"
+    webhook_url: str = "http://localhost:8000/webhook/post-call"
     openmemory_api_url: str = "http://localhost:8080"
     openmemory_api_key: str = ""
 
