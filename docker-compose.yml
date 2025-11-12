@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # FastAPI application
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - ELEVENLABS_POST_CALL_HMAC_KEY=${ELEVENLABS_POST_CALL_HMAC_KEY}
+      - ELEVENLABS_API_URL=https://api.elevenlabs.io/v1
+      - OPENMEMORY_API_URL=http://openmemory:8080
+      - OPENMEMORY_API_KEY=${OPENMEMORY_API_KEY}
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4-turbo}
+      - AGENT_PROFILE_TTL_HOURS=24
+      - MEMORY_RELEVANCE_THRESHOLD=0.7
+      - HIGH_IMPORTANCE_THRESHOLD=8
+      - ELEVENLABS_POST_CALL_PAYLOAD_PATH=/app/payloads
+    volumes:
+      - ./payloads:/app/payloads
+    depends_on:
+      - openmemory
+      - postgres
+    restart: unless-stopped
+
+  # OpenMemory service
+  openmemory:
+    image: caviraoss/openmemory:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=postgresql://openmemory:openmemory_pass@postgres:5432/openmemory
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # PostgreSQL database for OpenMemory
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=openmemory
+      - POSTGRES_USER=openmemory
+      - POSTGRES_PASSWORD=openmemory_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
