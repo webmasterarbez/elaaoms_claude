@@ -11,6 +11,11 @@ import base64
 from hashlib import sha256
 from datetime import datetime
 import sys
+from pathlib import Path
+
+# Add parent directory to path so we can import config module
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from config.settings import get_settings
 
 settings = get_settings()
