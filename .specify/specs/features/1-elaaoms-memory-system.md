@@ -2,12 +2,21 @@
 
 **Status**: Draft  
 **Created**: 2024-12-19  
-**Last Updated**: 2024-12-19  
+**Last Updated**: 2024-12-19 (Clarified)  
 **Feature Number**: 1
 
 ## Overview
 
 ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intelligent memory management platform that enables AI voice agents to remember, learn from, and personalize conversations across multiple customer interactions. The system automatically captures conversation context during phone calls, extracts meaningful information, and uses that knowledge to provide personalized experiences when customers call back—whether they're speaking to the same agent or a different one.
+
+## Clarifications
+
+### Session 2024-12-19
+- Q: How should agents authenticate when accessing memories, and are there different permission levels? → A: No authentication — agents are trusted based on organization membership only
+- Q: What should happen when a memory's retention period expires, and how should memory deletion requests be processed? → A: No automatic deletion — only manual deletion upon explicit request
+- Q: What is the maximum number of retry attempts for failed memory extractions, and what is the final state when all retries are exhausted? → A: 3 retries with exponential backoff (1min, 5min, 30min), then store transcript for manual processing
+- Q: What format and structure should pre-call context use when delivered to AI agents? → A: Structured JSON with sections (memories, preferences, relationship insights) and max 2000 tokens
+- Q: How should memory similarity be calculated for deduplication purposes? → A: Semantic similarity using embeddings (vector cosine similarity)
 
 ## User Scenarios & Testing
 
@@ -88,7 +97,8 @@ ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intellige
 - Context includes: previous conversation summaries, extracted memories, customer preferences, relationship insights
 - Agent receives context before greeting customer
 - System handles cases where caller ID is unavailable gracefully
-- Context is formatted for easy consumption by AI agent
+- Context is formatted as structured JSON with sections (memories, preferences, relationship insights) with maximum 2000 tokens total
+- JSON structure enables easy parsing and consumption by AI agent
 
 ### FR2: Real-Time Memory Search During Calls
 **Description**: During active calls, AI agents must be able to search the customer's conversation history to answer questions about previous interactions.
@@ -121,7 +131,7 @@ ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intellige
 
 **Acceptance Criteria**:
 - Memories with importance rating ≥ 8/10 are automatically marked as shareable
-- All agents in the same organization can access shared memories
+- All agents in the same organization can access shared memories (agents are trusted based on organization membership only, no additional authentication required)
 - Shared memories appear in pre-call context for any agent
 - Memory sharing works seamlessly with zero data loss
 - System maintains audit trail of which agents accessed which shared memories
@@ -131,8 +141,8 @@ ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intellige
 **Description**: Before storing new memories, the system must check against existing memories to avoid redundancy.
 
 **Acceptance Criteria**:
-- System compares new memory against existing memories for the same caller
-- If similar memory exists (similarity threshold configurable, default 85%), system reinforces existing memory rather than creating duplicate
+- System compares new memory against existing memories for the same caller using semantic similarity (vector cosine similarity of embeddings)
+- If similar memory exists (similarity threshold configurable, default 85% cosine similarity), system reinforces existing memory rather than creating duplicate
 - Reinforcement updates: timestamp, conversation ID, confidence score
 - If no similar memory exists, new memory is stored
 - Deduplication completes as part of memory extraction process
@@ -147,6 +157,7 @@ ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intellige
   - In-call memory search webhook (receives search query, returns results)
   - Post-call transcription webhook (receives transcript, triggers extraction)
 - All webhooks validate incoming requests using HMAC-SHA256 signatures
+- Agent authentication: Agents are trusted based on organization membership provided in webhook payloads (no additional authentication required)
 - Webhooks respond within ElevenLabs timeout limits
 - System handles webhook failures gracefully with appropriate error responses
 - Webhook payloads are validated against expected schema
@@ -254,11 +265,11 @@ ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intellige
 ### EC3: Memory Extraction Failure (LLM API Errors)
 **Scenario**: LLM API returns errors, rate limits, or timeouts during memory extraction
 **Handling**:
-- System implements exponential backoff retry logic
+- System implements exponential backoff retry logic: 3 retry attempts with delays of 1 minute, 5 minutes, and 30 minutes respectively
 - Failed extractions are queued for retry with increasing delays
 - System logs extraction failures for manual review
-- After maximum retry attempts, system stores raw transcript for later processing
-- System notifies administrators of persistent extraction failures
+- After 3 retry attempts are exhausted, system stores raw transcript for later manual processing
+- System notifies administrators of persistent extraction failures and stores transcript with status "extraction_failed" for manual review
 
 ### EC4: Conflicting Memories
 **Scenario**: Customer provides different information in different calls (e.g., different address, different preference)
@@ -293,8 +304,9 @@ ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intellige
 - System implements configurable privacy filters to detect and redact sensitive patterns
 - Organizations can define custom privacy rules
 - Sensitive memories are flagged and require special access permissions
-- System supports memory deletion requests for privacy compliance
-- Audit logs track all access to sensitive memories
+- System supports memory deletion requests for privacy compliance (manual deletion only, no automatic deletion)
+- Deletion requests are processed upon explicit request from authorized personnel
+- Audit logs track all access to sensitive memories and all deletion operations
 
 ### EC8: Caller ID Spoofing or Shared Phone Numbers
 **Scenario**: Caller ID is spoofed or multiple people use the same phone number
@@ -335,7 +347,7 @@ ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) is an intellige
 7. **Organization Structure**: Organizations have clear agent hierarchies and sharing boundaries
 8. **Memory Importance Rating**: LLM can reliably assign importance ratings (1-10) to extracted memories
 9. **Call Volume**: Typical call volume is within system capacity, with scaling mechanisms for peak loads
-10. **Data Retention**: Organizations have defined data retention policies that system will respect
+10. **Data Retention**: Organizations have defined data retention policies that system will respect; memories are not automatically deleted upon retention expiry — deletion occurs only upon explicit manual request
 
 ## Dependencies
 
