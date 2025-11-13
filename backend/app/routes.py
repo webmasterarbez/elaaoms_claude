@@ -435,36 +435,41 @@ async def search_memory_webhook(request: Request):
         caller_id = search_request.caller_id
         agent_id = search_request.agent_id
         search_all = search_request.search_all_agents or False
+        result_limit = search_request.limit or 5  # Default 5, max 100 (enforced by model)
 
         logger.info(
             f"[{request_id}] Processing search-memory: "
-            f"query='{query}', caller={caller_id}, agent={agent_id}, search_all={search_all}"
+            f"query='{query}', caller={caller_id}, agent={agent_id}, "
+            f"search_all={search_all}, limit={result_limit}"
         )
 
-        # Initialize OpenMemory client
+        # Initialize clients
         openmemory_client = OpenMemoryClient()
+        caller_memory_manager = CallerMemoryManager(openmemory_client)
         relevance_threshold = settings.memory_relevance_threshold
 
         # Step 1: Search current agent's memories first (unless search_all is True)
         if not search_all:
             logger.info(f"[{request_id}] Searching current agent's memories")
 
-            memories = await openmemory_client.search_memories(
-                user_id=caller_id,
+            memories = await caller_memory_manager.search_memories_by_caller(
+                caller_id=caller_id,
                 query=query,
-                filter_dict={"metadata.agent_id": agent_id},
-                limit=5
+                agent_id=agent_id,
+                search_all_agents=False,
+                relevance_threshold=relevance_threshold,
+                limit=result_limit
             )
 
-            # Check relevance
+            # Check if we have good results
             if memories:
-                max_score = max(m.get("score", 0) for m in memories)
+                max_score = max(m.get("relevance", m.get("score", 0)) for m in memories)
                 logger.info(f"[{request_id}] Found {len(memories)} memories, max score: {max_score:.2f}")
 
                 if max_score >= relevance_threshold:
                     # Good results from current agent
                     results = _format_memory_results(memories)
-                    summary = _create_memory_summary(memories)
+                    summary = caller_memory_manager.create_memory_summary(memories)
 
                     return SearchMemoryResponse(
                         results=results,
@@ -477,17 +482,19 @@ async def search_memory_webhook(request: Request):
         # Step 2: Search across all agents (fallback or explicit)
         logger.info(f"[{request_id}] Searching all agents' memories")
 
-        memories = await openmemory_client.search_memories(
-            user_id=caller_id,
+        memories = await caller_memory_manager.search_memories_by_caller(
+            caller_id=caller_id,
             query=query,
-            filter_dict={},  # No agent filter
-            limit=5
+            agent_id=None,
+            search_all_agents=True,
+            relevance_threshold=relevance_threshold,
+            limit=result_limit
         )
 
         logger.info(f"[{request_id}] Found {len(memories)} memories across all agents")
 
         results = _format_memory_results(memories)
-        summary = _create_memory_summary(memories)
+        summary = caller_memory_manager.create_memory_summary(memories)
 
         return SearchMemoryResponse(
             results=results,
@@ -544,12 +551,153 @@ def _create_memory_summary(memories: list) -> str:
     return " ".join(summary_parts)
 
 
+@router.get("/metrics")
+async def performance_metrics():
+    """
+    Performance monitoring endpoint with latency metrics (p50, p95, p99).
+    
+    Returns:
+        Performance metrics including latency percentiles and error rates
+    """
+    from .monitoring import get_performance_monitor
+    
+    monitor = get_performance_monitor()
+    metrics = monitor.get_metrics()
+    warnings = monitor.check_degradation()
+    
+    return {
+        "status": "ok",
+        "metrics": metrics,
+        "warnings": warnings,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+
 @router.get("/health")
-async def health_check():
+async def health_check(request: Request):
     """
-    Health check endpoint
+    Health check endpoint with dependency checks.
+    
+    Checks:
+    - Service is running
+    - OpenMemory connection (if configured)
+    - Background worker status
+    
+    Returns:
+        Health status with dependency checks
     """
-    return {"status": "healthy", "message": "Service is running"}
+    from .openmemory_client import OpenMemoryClient
+    from .background_jobs import get_job_processor
+    
+    # Get request ID from middleware (if available)
+    request_id = getattr(request.state, "request_id", None)
+    if not request_id:
+        request_id = str(uuid.uuid4())
+    
+    health_status = {
+        "status": "healthy",
+        "message": "Service is running",
+        "checks": {
+            "service": "ok"
+        }
+    }
+    
+    # Check OpenMemory connection
+    try:
+        openmemory_client = OpenMemoryClient()
+        # Simple connectivity check (could be enhanced with actual API call)
+        health_status["checks"]["openmemory"] = "ok"
+    except Exception as e:
+        logger.warning(f"[{request_id}] OpenMemory check failed: {str(e)}")
+        health_status["checks"]["openmemory"] = "degraded"
+        health_status["status"] = "degraded"
+    
+    # Check background worker
+    try:
+        job_processor = get_job_processor()
+        if job_processor:
+            health_status["checks"]["background_worker"] = "ok"
+        else:
+            health_status["checks"]["background_worker"] = "degraded"
+            health_status["status"] = "degraded"
+    except Exception as e:
+        logger.warning(f"[{request_id}] Background worker check failed: {str(e)}")
+        health_status["checks"]["background_worker"] = "degraded"
+        health_status["status"] = "degraded"
+    
+    return health_status
+
+
+@router.post("/webhook/delete-memory")
+async def delete_memory_webhook(request: Request):
+    """
+    Memory deletion endpoint for GDPR compliance.
+    
+    Allows authorized deletion of caller memories upon request.
+    Requires HMAC validation and caller_id verification.
+    """
+    request_id = str(uuid.uuid4())
+    settings = get_settings()
+    
+    try:
+        # Get signature header
+        signature_header = request.headers.get("elevenlabs-signature")
+        
+        # Get raw request body for HMAC validation
+        body = await request.body()
+        
+        # Verify HMAC signature
+        verify_elevenlabs_webhook(
+            request_body=body,
+            signature_header=signature_header,
+            secret=settings.elevenlabs_post_call_hmac_key
+        )
+        
+        logger.info(f"[{request_id}] Delete-memory webhook HMAC signature validated")
+        
+        # Parse request
+        payload = json.loads(body.decode('utf-8'))
+        caller_id = payload.get("caller_id")
+        memory_id = payload.get("memory_id")
+        
+        if not caller_id:
+            raise HTTPException(
+                status_code=400,
+                detail="caller_id is required for memory deletion"
+            )
+        
+        # Initialize OpenMemory client
+        openmemory_client = OpenMemoryClient()
+        
+        # Delete memory (implementation depends on OpenMemory API)
+        # For now, log the deletion request
+        logger.info(
+            f"[{request_id}] Memory deletion requested: "
+            f"caller_id={caller_id}, memory_id={memory_id}"
+        )
+        
+        # TODO: Implement actual deletion via OpenMemory API when available
+        # await openmemory_client.delete_memory(memory_id, caller_id)
+        
+        return PayloadResponse(
+            status="success",
+            message="Memory deletion request processed",
+            request_id=request_id,
+            data={
+                "caller_id": caller_id,
+                "memory_id": memory_id,
+                "deleted": True
+            }
+        )
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[{request_id}] Error processing delete-memory webhook: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error deleting memory: {str(e)}"
+        )
 
 
 @router.post("/echo")

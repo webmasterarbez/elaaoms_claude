@@ -78,15 +78,15 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T001 Create project directory structure per implementation plan in backend/
-- [ ] T002 Create requirements.txt with FastAPI 0.104.1, Pydantic 2.5.0, HTTPX 0.25.2, Uvicorn 0.24.0, Pyngrok 7.4.1
-- [ ] T003 Create docker-compose.yml with postgres, openmemory, and backend services
-- [ ] T004 Create .env.example template with all required environment variables
-- [ ] T005 Create .gitignore excluding .env, data/, venv/, __pycache__, *.pyc
-- [ ] T006 Create README.md with project overview, setup instructions, and quick start guide
-- [ ] T007 Create data/ directory structure: data/payloads/, data/logs/
-- [ ] T008 Create backend/config/ directory for settings module
-- [ ] T009 Create CHANGELOG.md with initial version entry following conventional commits format
+- [X] T001 Create project directory structure per implementation plan in backend/
+- [X] T002 Create requirements.txt with FastAPI 0.104.1, Pydantic 2.5.0, HTTPX 0.25.2, Uvicorn 0.24.0, Pyngrok 7.4.1
+- [X] T003 Create docker-compose.yml with postgres, openmemory, and backend services
+- [X] T004 Create .env.example template with all required environment variables
+- [X] T005 Create .gitignore excluding .env, data/, venv/, __pycache__, *.pyc
+- [X] T006 Create README.md with project overview, setup instructions, and quick start guide
+- [X] T007 Create data/ directory structure: data/payloads/, data/logs/
+- [X] T008 Create backend/config/ directory for settings module
+- [X] T009 Create CHANGELOG.md with initial version entry following conventional commits format
 
 ---
 
@@ -98,12 +98,12 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T010 Create backend/config/settings.py with Pydantic Settings for environment configuration
-- [ ] T011 [P] Create backend/app/auth.py with HMAC-SHA256 signature validation function (with constant-time comparison to prevent timing attacks)
-- [ ] T012 [P] Create backend/app/storage.py with file system operations for payload storage
-- [ ] T013 [P] Create backend/main.py with FastAPI app initialization and CORS configuration
-- [ ] T014 [P] Implement GET /health endpoint in backend/app/routes.py with dependency checks
-- [ ] T015 Create logging configuration in backend/config/logging.py with structured logging, request ID tracking, and API key masking (max 8 characters) per constitution
+- [X] T010 Create backend/config/settings.py with Pydantic Settings for environment configuration
+- [X] T011 [P] Create backend/app/auth.py with HMAC-SHA256 signature validation function (with constant-time comparison to prevent timing attacks)
+- [X] T012 [P] Create backend/app/storage.py with file system operations for payload storage
+- [X] T013 [P] Create backend/main.py with FastAPI app initialization and CORS configuration
+- [X] T014 [P] Implement GET /health endpoint in backend/app/routes.py with dependency checks
+- [X] T015 Create logging configuration in backend/config/logging.py with structured logging, request ID tracking, and API key masking (max 8 characters) per constitution
 
 ---
 
@@ -117,13 +117,13 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T016 [US6] Create backend/app/models.py with Pydantic models: ClientDataRequest, ClientDataResponse, SearchMemoryRequest, SearchMemoryResponse, PostCallRequest, PostCallResponse, ErrorResponse
-- [ ] T017 [US6] Implement POST /webhook/client-data endpoint in backend/app/routes.py with HMAC validation
-- [ ] T018 [US6] Implement POST /webhook/search-memory endpoint in backend/app/routes.py with HMAC validation
-- [ ] T019 [US6] Implement POST /webhook/post-call endpoint in backend/app/routes.py with HMAC validation and payload saving
-- [ ] T020 [US6] Create request ID generation middleware in backend/app/middleware.py for all requests
-- [ ] T021 [US6] Implement error handling middleware in backend/app/middleware.py with consistent error response format
-- [ ] T022 [US6] Add request validation using Pydantic models in all webhook endpoints
+- [X] T016 [US6] Create backend/app/models.py with Pydantic models: ClientDataRequest, ClientDataResponse, SearchMemoryRequest, SearchMemoryResponse, PostCallRequest, PostCallResponse, ErrorResponse
+- [X] T017 [US6] Implement POST /webhook/client-data endpoint in backend/app/routes.py with HMAC validation
+- [X] T018 [US6] Implement POST /webhook/search-memory endpoint in backend/app/routes.py with HMAC validation
+- [X] T019 [US6] Implement POST /webhook/post-call endpoint in backend/app/routes.py with HMAC validation and payload saving
+- [X] T020 [US6] Create request ID generation middleware in backend/app/middleware.py for all requests
+- [X] T021 [US6] Implement error handling middleware in backend/app/middleware.py with consistent error response format
+- [X] T022 [US6] Add request validation using Pydantic models in all webhook endpoints
 
 ---
 
@@ -137,19 +137,19 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T023 [US3] Create backend/app/openmemory_client.py with OpenMemoryClient class for memory storage and retrieval
-- [ ] T024 [US3] Implement store_memory method in backend/app/openmemory_client.py with metadata support
-- [ ] T025 [US3] Implement search_memories method in backend/app/openmemory_client.py with semantic search
-- [ ] T026 [P] [US3] Create backend/app/llm_service.py with LLMService abstraction class
-- [ ] T027 [P] [US3] Create backend/app/llm_clients/openai_client.py with OpenAI memory extraction implementation
-- [ ] T028 [P] [US3] Create backend/app/llm_clients/anthropic_client.py with Anthropic memory extraction implementation
-- [ ] T029 [P] [US3] Implement extract_memories method in backend/app/llm_service.py with structured output (5 memory types, importance 1-10)
-- [ ] T030 [US3] Create backend/app/background_jobs.py with BackgroundJobProcessor class for async memory extraction
-- [ ] T031 [US3] Implement memory extraction job in backend/app/background_jobs.py with LLM call and OpenMemory storage
-- [ ] T032 [US3] Integrate background job queue in POST /webhook/post-call endpoint in backend/app/routes.py
-- [ ] T033 [US3] Implement retry logic in backend/app/background_jobs.py with 3 attempts (1min, 5min, 30min exponential backoff)
-- [ ] T034 [US3] Add error handling in backend/app/background_jobs.py to save transcript with "extraction_failed" status after retries exhausted
-- [ ] T035 [US3] Create backend/app/elevenlabs_client.py with ElevenLabsClient class for agent profile fetching
+- [X] T023 [US3] Create backend/app/openmemory_client.py with OpenMemoryClient class for memory storage and retrieval
+- [X] T024 [US3] Implement store_memory method in backend/app/openmemory_client.py with metadata support
+- [X] T025 [US3] Implement search_memories method in backend/app/openmemory_client.py with semantic search
+- [X] T026 [P] [US3] Create backend/app/llm_service.py with LLMService abstraction class
+- [X] T027 [P] [US3] Create backend/app/llm_clients/openai_client.py with OpenAI memory extraction implementation
+- [X] T028 [P] [US3] Create backend/app/llm_clients/anthropic_client.py with Anthropic memory extraction implementation
+- [X] T029 [P] [US3] Implement extract_memories method in backend/app/llm_service.py with structured output (5 memory types, importance 1-10)
+- [X] T030 [US3] Create backend/app/background_jobs.py with BackgroundJobProcessor class for async memory extraction
+- [X] T031 [US3] Implement memory extraction job in backend/app/background_jobs.py with LLM call and OpenMemory storage
+- [X] T032 [US3] Integrate background job queue in POST /webhook/post-call endpoint in backend/app/routes.py
+- [X] T033 [US3] Implement retry logic in backend/app/background_jobs.py with 3 attempts (1min, 5min, 30min exponential backoff)
+- [X] T034 [US3] Add error handling in backend/app/background_jobs.py to save transcript with "extraction_failed" status after retries exhausted
+- [X] T035 [US3] Create backend/app/elevenlabs_client.py with ElevenLabsClient class for agent profile fetching
 
 ---
 
@@ -163,15 +163,15 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T036 [US1] Create backend/app/caller_memory_manager.py with CallerMemoryManager class for retrieving caller memories
-- [ ] T037 [US1] Implement get_last_conversation_memories method in backend/app/caller_memory_manager.py
-- [ ] T038 [US1] Implement get_high_importance_cross_agent_memories method in backend/app/caller_memory_manager.py (importance >= 8)
-- [ ] T039 [US1] Create backend/app/agent_profile_manager.py with AgentProfileManager class for caching agent profiles
-- [ ] T040 [US1] Implement get_agent_profile method in backend/app/agent_profile_manager.py with 24-hour TTL caching
-- [ ] T041 [P] [US1] Implement generate_personalized_first_message method in backend/app/llm_service.py using agent profile and memories
-- [ ] T042 [P] [US1] Implement format_context_json method in backend/app/caller_memory_manager.py with structured JSON (memories, preferences, relationship_insights) and 2000 token limit
-- [ ] T043 [US1] Update POST /webhook/client-data endpoint in backend/app/routes.py to retrieve memories, generate greeting, and return structured context
-- [ ] T044 [US1] Add graceful handling for missing caller_id in POST /webhook/client-data endpoint in backend/app/routes.py with generic greeting fallback
+- [X] T036 [US1] Create backend/app/caller_memory_manager.py with CallerMemoryManager class for retrieving caller memories
+- [X] T037 [US1] Implement get_last_conversation_memories method in backend/app/caller_memory_manager.py
+- [X] T038 [US1] Implement get_high_importance_cross_agent_memories method in backend/app/caller_memory_manager.py (importance >= 8)
+- [X] T039 [US1] Create backend/app/agent_profile_manager.py with AgentProfileManager class for caching agent profiles
+- [X] T040 [US1] Implement get_agent_profile method in backend/app/agent_profile_manager.py with 24-hour TTL caching
+- [X] T041 [P] [US1] Implement generate_personalized_first_message method in backend/app/llm_service.py using agent profile and memories
+- [X] T042 [P] [US1] Implement format_context_json method in backend/app/caller_memory_manager.py with structured JSON (memories, preferences, relationship_insights) and 2000 token limit
+- [X] T043 [US1] Update POST /webhook/client-data endpoint in backend/app/routes.py to retrieve memories, generate greeting, and return structured context
+- [X] T044 [US1] Add graceful handling for missing caller_id in POST /webhook/client-data endpoint in backend/app/routes.py with generic greeting fallback
 
 ---
 
@@ -185,14 +185,14 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T045 [US2] Implement search_memories_by_caller method in backend/app/caller_memory_manager.py with semantic search
-- [ ] T046 [US2] Add relevance threshold filtering (default 0.7) in backend/app/caller_memory_manager.py search methods
-- [ ] T047 [US2] Implement search_all_agents option in backend/app/caller_memory_manager.py for cross-agent memory search
-- [ ] T048 [US2] Create format_memory_results method in backend/app/caller_memory_manager.py with memory type, timestamp, relevance score
-- [ ] T049 [US2] Create create_memory_summary method in backend/app/caller_memory_manager.py for natural language summary generation
-- [ ] T050 [US2] Update POST /webhook/search-memory endpoint in backend/app/routes.py to execute search and return ranked results
-- [ ] T051 [P] [US2] Add result limit configuration (default 5, max 100) in POST /webhook/search-memory endpoint in backend/app/routes.py
-- [ ] T052 [P] [US2] Implement concurrent search handling in POST /webhook/search-memory endpoint in backend/app/routes.py
+- [X] T045 [US2] Implement search_memories_by_caller method in backend/app/caller_memory_manager.py with semantic search
+- [X] T046 [US2] Add relevance threshold filtering (default 0.7) in backend/app/caller_memory_manager.py search methods
+- [X] T047 [US2] Implement search_all_agents option in backend/app/caller_memory_manager.py for cross-agent memory search
+- [X] T048 [US2] Create format_memory_results method in backend/app/caller_memory_manager.py with memory type, timestamp, relevance score
+- [X] T049 [US2] Create create_memory_summary method in backend/app/caller_memory_manager.py for natural language summary generation
+- [X] T050 [US2] Update POST /webhook/search-memory endpoint in backend/app/routes.py to execute search and return ranked results
+- [X] T051 [P] [US2] Add result limit configuration (default 5, max 100) in POST /webhook/search-memory endpoint in backend/app/routes.py
+- [X] T052 [P] [US2] Implement concurrent search handling in POST /webhook/search-memory endpoint in backend/app/routes.py
 
 ---
 
@@ -206,11 +206,11 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T053 [US5] Implement check_similar_memories method in backend/app/openmemory_client.py using semantic search with 0.85 similarity threshold
-- [ ] T054 [US5] Create reinforce_memory method in backend/app/openmemory_client.py to update timestamp, conversation_id, and confidence score
-- [ ] T055 [US5] Integrate deduplication check in memory extraction job in backend/app/background_jobs.py before storing new memories
-- [ ] T056 [US5] Implement conflict detection in backend/app/background_jobs.py to store conflicting memories with conflict markers
-- [ ] T057 [US5] Add similarity threshold configuration (default 0.85) in backend/config/settings.py
+- [X] T053 [US5] Implement check_similar_memories method in backend/app/openmemory_client.py using semantic search with 0.85 similarity threshold
+- [X] T054 [US5] Create reinforce_memory method in backend/app/openmemory_client.py to update timestamp, conversation_id, and confidence score
+- [X] T055 [US5] Integrate deduplication check in memory extraction job in backend/app/background_jobs.py before storing new memories
+- [X] T056 [US5] Implement conflict detection in backend/app/background_jobs.py to store conflicting memories with conflict markers
+- [X] T057 [US5] Add similarity threshold configuration (default 0.85) in backend/config/settings.py
 
 ---
 
@@ -224,11 +224,11 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T058 [US4] Implement mark_memory_as_shareable method in backend/app/openmemory_client.py for memories with importance >= 8
-- [ ] T059 [US4] Update memory extraction job in backend/app/background_jobs.py to automatically mark high-importance memories as shareable
-- [ ] T060 [US4] Update get_high_importance_cross_agent_memories method in backend/app/caller_memory_manager.py to include shareable memories from all agents
-- [ ] T061 [US4] Create audit logging for shared memory access in backend/app/caller_memory_manager.py with agent_id and memory_id tracking
-- [ ] T062 [US4] Update POST /webhook/client-data endpoint in backend/app/routes.py to include cross-agent shared memories in context
+- [X] T058 [US4] Implement mark_memory_as_shareable method in backend/app/openmemory_client.py for memories with importance >= 8
+- [X] T059 [US4] Update memory extraction job in backend/app/background_jobs.py to automatically mark high-importance memories as shareable
+- [X] T060 [US4] Update get_high_importance_cross_agent_memories method in backend/app/caller_memory_manager.py to include shareable memories from all agents
+- [X] T061 [US4] Create audit logging for shared memory access in backend/app/caller_memory_manager.py with agent_id and memory_id tracking
+- [X] T062 [US4] Update POST /webhook/client-data endpoint in backend/app/routes.py to include cross-agent shared memories in context
 
 ---
 
@@ -242,11 +242,11 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T063 [US9] Add LLM_PROVIDER configuration in backend/config/settings.py (openai, anthropic, or auto)
-- [ ] T064 [US9] Implement provider selection logic in backend/app/llm_service.py based on organization or global setting
-- [ ] T065 [US9] Add fallback provider logic in backend/app/llm_service.py when primary provider fails
-- [ ] T066 [US9] Implement response validation in backend/app/llm_service.py using Pydantic models before memory storage
-- [ ] T067 [US9] Add provider-specific timeout configuration (30s for LLM calls) in backend/config/settings.py
+- [X] T063 [US9] Add LLM_PROVIDER configuration in backend/config/settings.py (openai, anthropic, or auto)
+- [X] T064 [US9] Implement provider selection logic in backend/app/llm_service.py based on organization or global setting
+- [X] T065 [US9] Add fallback provider logic in backend/app/llm_service.py when primary provider fails
+- [X] T066 [US9] Implement response validation in backend/app/llm_service.py using Pydantic models before memory storage
+- [X] T067 [US9] Add provider-specific timeout configuration (30s for LLM calls) in backend/config/settings.py
 
 ---
 
@@ -260,11 +260,11 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T068 [US7] Verify OpenMemory indexes on caller_id, conversation_id, agent_id, type, importance_rating in backend/app/openmemory_client.py
-- [ ] T069 [US7] Implement query optimization in backend/app/caller_memory_manager.py for pre-call context retrieval (<2s target)
-- [ ] T070 [US7] Implement query optimization in backend/app/caller_memory_manager.py for memory search (<3s target)
-- [ ] T071 [US7] Add referential integrity checks in backend/app/openmemory_client.py when storing memories
-- [ ] T072 [US7] Implement date range and importance rating filtering in backend/app/caller_memory_manager.py query methods
+- [X] T068 [US7] Verify OpenMemory indexes on caller_id, conversation_id, agent_id, type, importance_rating in backend/app/openmemory_client.py
+- [X] T069 [US7] Implement query optimization in backend/app/caller_memory_manager.py for pre-call context retrieval (<2s target)
+- [X] T070 [US7] Implement query optimization in backend/app/caller_memory_manager.py for memory search (<3s target)
+- [X] T071 [US7] Add referential integrity checks in backend/app/openmemory_client.py when storing memories
+- [X] T072 [US7] Implement date range and importance rating filtering in backend/app/caller_memory_manager.py query methods
 
 ---
 
@@ -278,11 +278,11 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T073 [US8] Configure async/await patterns throughout backend/app/ for non-blocking I/O operations
-- [ ] T074 [US8] Implement connection pooling for OpenMemory queries in backend/app/openmemory_client.py
-- [ ] T075 [US8] Add performance monitoring endpoints in backend/app/routes.py for latency metrics (p50, p95, p99)
-- [ ] T076 [US8] Create performance alerting in backend/app/monitoring.py for degradation detection
-- [ ] T077 [US8] Add load testing scripts in tests/load/ for validating 100 concurrent request target
+- [X] T073 [US8] Configure async/await patterns throughout backend/app/ for non-blocking I/O operations
+- [X] T074 [US8] Implement connection pooling for OpenMemory queries in backend/app/openmemory_client.py
+- [X] T075 [US8] Add performance monitoring endpoints in backend/app/routes.py for latency metrics (p50, p95, p99)
+- [X] T076 [US8] Create performance alerting in backend/app/monitoring.py for degradation detection
+- [X] T077 [US8] Add load testing scripts in tests/load/ for validating 100 concurrent request target
 
 ---
 
@@ -294,26 +294,26 @@ This document provides an actionable, dependency-ordered task list for implement
 
 ### Tasks
 
-- [ ] T078 Handle missing caller_id edge case in all webhook endpoints in backend/app/routes.py with graceful fallbacks
-- [ ] T079 Implement long conversation chunking (>10K tokens) in backend/app/llm_service.py for memory extraction
-- [ ] T080 Add concurrent call handling with proper locking in backend/app/background_jobs.py
-- [ ] T081 Implement privacy filters for sensitive information detection in backend/app/privacy.py
-- [ ] T082 Add memory deletion endpoint for GDPR compliance in backend/app/routes.py (POST /webhook/delete-memory)
-- [ ] T083 Create comprehensive error messages with request IDs in all error responses
-- [ ] T084 Add request tracing with correlation IDs in all log messages
-- [ ] T085 Update API documentation in backend/app/routes.py with detailed endpoint descriptions
-- [ ] T086 Create deployment documentation in docs/DEPLOYMENT.md with production setup instructions
-- [ ] T087 Add integration test suite in tests/integration/ for end-to-end webhook flows
-- [ ] T088 Create .env.example with all required variables and descriptions
-- [ ] T089 Add Docker healthcheck directives in docker-compose.yml
-- [ ] T090 Implement graceful shutdown handling in backend/main.py
-- [ ] T091 Add unit test suite in tests/unit/ for all components (OpenMemoryClient, LLMService, CallerMemoryManager, etc.) with >80% code coverage
-- [ ] T092 Add security test suite in tests/security/ for HMAC validation, input validation, error handling, and API key masking
-- [ ] T093 Add POST /echo endpoint in backend/app/routes.py for testing webhook payloads
-- [ ] T094 Add validation for HMAC secret minimum length (32 bytes) in backend/config/settings.py
-- [ ] T095 Add conflict flagging in pre-call context in backend/app/caller_memory_manager.py to expose conflict history to agents
-- [ ] T096 Add organization-level privacy controls validation in backend/app/caller_memory_manager.py
-- [ ] T097 Add memory extraction accuracy validation task or acceptance test criteria (validate 85% accuracy requirement from FR3)
+- [X] T078 Handle missing caller_id edge case in all webhook endpoints in backend/app/routes.py with graceful fallbacks
+- [X] T079 Implement long conversation chunking (>10K tokens) in backend/app/llm_service.py for memory extraction
+- [X] T080 Add concurrent call handling with proper locking in backend/app/background_jobs.py
+- [X] T081 Implement privacy filters for sensitive information detection in backend/app/privacy.py
+- [X] T082 Add memory deletion endpoint for GDPR compliance in backend/app/routes.py (POST /webhook/delete-memory)
+- [X] T083 Create comprehensive error messages with request IDs in all error responses
+- [X] T084 Add request tracing with correlation IDs in all log messages
+- [X] T085 Update API documentation in backend/app/routes.py with detailed endpoint descriptions
+- [X] T086 Create deployment documentation in docs/DEPLOYMENT.md with production setup instructions
+- [X] T087 Add integration test suite in tests/integration/ for end-to-end webhook flows
+- [X] T088 Create .env.example with all required variables and descriptions
+- [X] T089 Add Docker healthcheck directives in docker-compose.yml
+- [X] T090 Implement graceful shutdown handling in backend/main.py
+- [X] T091 Add unit test suite in tests/unit/ for all components (OpenMemoryClient, LLMService, CallerMemoryManager, etc.) with >80% code coverage
+- [X] T092 Add security test suite in tests/security/ for HMAC validation, input validation, error handling, and API key masking
+- [X] T093 Add POST /echo endpoint in backend/app/routes.py for testing webhook payloads
+- [X] T094 Add validation for HMAC secret minimum length (32 bytes) in backend/config/settings.py
+- [X] T095 Add conflict flagging in pre-call context in backend/app/caller_memory_manager.py to expose conflict history to agents
+- [X] T096 Add organization-level privacy controls validation in backend/app/caller_memory_manager.py
+- [X] T097 Add memory extraction accuracy validation task or acceptance test criteria (validate 85% accuracy requirement from FR3)
 
 ---
 

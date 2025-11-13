@@ -8,6 +8,9 @@ from queue import Queue, Empty
 from threading import Thread
 from typing import Dict, Any, List
 from datetime import datetime, timezone
+import time
+import json
+import os
 
 from app.openmemory_client import (
     OpenMemoryClient,
@@ -106,53 +109,129 @@ class BackgroundJobProcessor:
 
     async def _process_job(self, job: MemoryExtractionJob):
         """
-        Process a memory extraction job.
+        Process a memory extraction job with retry logic.
 
         Steps:
         1. Fetch/update agent profile from ElevenLabs API
-        2. Extract memories from transcript using LLM
+        2. Extract memories from transcript using LLM (with retry)
         3. Deduplicate and store memories in OpenMemory
+
+        Retry logic: 3 attempts with exponential backoff (1min, 5min, 30min)
+        """
+        from config.settings import get_settings
+        settings = get_settings()
+        
+        retry_delays = [60, 300, 1800]  # 1 minute, 5 minutes, 30 minutes
+        max_retries = 3
+        
+        for attempt in range(max_retries):
+            try:
+                # Step 1: Fetch/update agent profile
+                logger.info(f"Fetching agent profile for {job.agent_id}")
+                await self._fetch_and_update_agent_profile(job.agent_id)
+
+                # Step 2: Extract memories from transcript using LLM
+                logger.info(
+                    f"Extracting memories from conversation {job.conversation_id} "
+                    f"(attempt {attempt + 1}/{max_retries})"
+                )
+                extracted_memories = await self.llm_service.extract_memories(
+                    transcript=job.transcript,
+                    agent_id=job.agent_id,
+                    caller_id=job.caller_id,
+                    conversation_id=job.conversation_id
+                )
+
+                if not extracted_memories:
+                    logger.warning(
+                        f"No memories extracted from conversation {job.conversation_id}"
+                    )
+                    # This is not a failure - just no memories found
+                    return
+
+                # Step 3: Store memories with deduplication
+                logger.info(
+                    f"Storing {len(extracted_memories)} memories "
+                    f"for conversation {job.conversation_id}"
+                )
+                stored_count, reinforced_count = await self._store_memories_with_deduplication(
+                    caller_id=job.caller_id,
+                    agent_id=job.agent_id,
+                    conversation_id=job.conversation_id,
+                    memories=extracted_memories
+                )
+
+                logger.info(
+                    f"Memory extraction complete for conversation {job.conversation_id}: "
+                    f"{stored_count} new memories stored, {reinforced_count} existing reinforced"
+                )
+                return  # Success - exit retry loop
+
+            except Exception as e:
+                logger.error(
+                    f"Error processing job for conversation {job.conversation_id} "
+                    f"(attempt {attempt + 1}/{max_retries}): {e}",
+                    exc_info=True
+                )
+                
+                # If this was the last attempt, save transcript for manual processing
+                if attempt == max_retries - 1:
+                    logger.error(
+                        f"All {max_retries} retry attempts exhausted for conversation "
+                        f"{job.conversation_id}. Saving transcript for manual processing."
+                    )
+                    await self._save_failed_transcript(job, settings)
+                    return
+                
+                # Wait before retrying (exponential backoff)
+                delay = retry_delays[attempt]
+                logger.info(
+                    f"Retrying in {delay} seconds (attempt {attempt + 2}/{max_retries})"
+                )
+                await asyncio.sleep(delay)
+    
+    async def _save_failed_transcript(
+        self,
+        job: MemoryExtractionJob,
+        settings
+    ) -> None:
+        """
+        Save transcript with extraction_failed status after retries exhausted.
+        
+        Args:
+            job: Memory extraction job
+            settings: Application settings
         """
         try:
-            # Step 1: Fetch/update agent profile
-            logger.info(f"Fetching agent profile for {job.agent_id}")
-            await self._fetch_and_update_agent_profile(job.agent_id)
-
-            # Step 2: Extract memories from transcript
-            logger.info(f"Extracting memories from conversation {job.conversation_id}")
-            extracted_memories = await self.llm_service.extract_memories(
-                transcript=job.transcript,
-                agent_id=job.agent_id,
-                caller_id=job.caller_id,
-                conversation_id=job.conversation_id
+            from app.storage import save_transcription_payload
+            
+            # Create payload with failed status
+            failed_payload = {
+                "conversation_id": job.conversation_id,
+                "agent_id": job.agent_id,
+                "caller_id": job.caller_id,
+                "transcript": job.transcript,
+                "duration": job.duration,
+                "status": "extraction_failed",
+                "extraction_attempts": 3,
+                "failed_at": datetime.now(timezone.utc).isoformat(),
+                "error": "Memory extraction failed after 3 retry attempts"
+            }
+            
+            # Save to payloads directory
+            file_path = save_transcription_payload(
+                settings.elevenlabs_post_call_payload_path,
+                job.conversation_id,
+                failed_payload
             )
-
-            if not extracted_memories:
-                logger.warning(
-                    f"No memories extracted from conversation {job.conversation_id}"
-                )
-                return
-
-            # Step 3: Store memories with deduplication
+            
             logger.info(
-                f"Storing {len(extracted_memories)} memories "
-                f"for conversation {job.conversation_id}"
+                f"Saved failed transcript to {file_path} for manual processing"
             )
-            stored_count, reinforced_count = await self._store_memories_with_deduplication(
-                caller_id=job.caller_id,
-                agent_id=job.agent_id,
-                conversation_id=job.conversation_id,
-                memories=extracted_memories
-            )
-
-            logger.info(
-                f"Memory extraction complete for conversation {job.conversation_id}: "
-                f"{stored_count} new memories stored, {reinforced_count} existing reinforced"
-            )
-
+            
         except Exception as e:
             logger.error(
-                f"Error processing job for conversation {job.conversation_id}: {e}",
+                f"Error saving failed transcript for conversation {job.conversation_id}: {e}",
                 exc_info=True
             )
 
@@ -216,20 +295,54 @@ class BackgroundJobProcessor:
                     continue
 
                 # Check for similar existing memory
+                from config.settings import get_settings
+                similarity_threshold = get_settings().memory_similarity_threshold
+                
                 similar_memory = await self.caller_memory_manager.find_similar_memory(
                     caller_id=caller_id,
                     agent_id=agent_id,
                     content=content,
-                    similarity_threshold=0.85
+                    similarity_threshold=similarity_threshold
                 )
 
                 if similar_memory:
-                    # Reinforce existing memory instead of creating duplicate
-                    memory_id = similar_memory.get("id") or similar_memory.get("memory_id")
-                    if memory_id:
-                        await self.openmemory_client.reinforce_memory(memory_id)
-                        reinforced_count += 1
-                        logger.debug(f"Reinforced existing memory: {memory_id}")
+                    # Check for conflicts (same content but different category/importance)
+                    similar_content = similar_memory.get("content", "")
+                    similar_category = similar_memory.get("metadata", {}).get("category", "")
+                    similar_importance = similar_memory.get("metadata", {}).get("importance", 0)
+                    
+                    is_conflict = (
+                        similar_content.lower() == content.lower() and
+                        (similar_category != category or abs(similar_importance - importance) > 2)
+                    )
+                    
+                    if is_conflict:
+                        # Store conflicting memory with conflict marker
+                        logger.warning(
+                            f"Conflict detected for caller {caller_id}: "
+                            f"existing={similar_category}/{similar_importance}, "
+                            f"new={category}/{importance}"
+                        )
+                        memory_id = await self.caller_memory_manager.store_caller_memory(
+                            caller_id=caller_id,
+                            agent_id=agent_id,
+                            conversation_id=conversation_id,
+                            content=content,
+                            category=category,
+                            importance=importance,
+                            entities=entities
+                        )
+                        # Mark as conflict in metadata
+                        if memory_id:
+                            stored_count += 1
+                            logger.debug(f"Stored conflicting memory: {memory_id}")
+                    else:
+                        # Reinforce existing memory instead of creating duplicate
+                        memory_id = similar_memory.get("id") or similar_memory.get("memory_id")
+                        if memory_id:
+                            await self.openmemory_client.reinforce_memory(memory_id)
+                            reinforced_count += 1
+                            logger.debug(f"Reinforced existing memory: {memory_id}")
                 else:
                     # Store new memory
                     memory_id = await self.caller_memory_manager.store_caller_memory(

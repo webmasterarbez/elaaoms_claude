@@ -2,20 +2,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 from config.settings import get_settings
+from config.logging import setup_logging
 from .routes import router
+from .middleware import RequestIDMiddleware, ErrorHandlingMiddleware
 from .background_jobs import start_background_worker, stop_background_worker
 
 settings = get_settings()
 
-# Configure logging
-log_level = settings.log_level
-# Set to DEBUG for development
-if settings.debug:
-    log_level = "DEBUG"
-
-logging.basicConfig(
-    level=log_level,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+# Configure structured logging with request ID tracking and API key masking
+setup_logging(
+    log_level=settings.log_level,
+    debug=settings.debug
 )
 
 # Create FastAPI app
@@ -25,7 +22,9 @@ app = FastAPI(
     debug=settings.debug
 )
 
-# Add CORS middleware
+# Add middleware (order matters - first added is outermost)
+app.add_middleware(ErrorHandlingMiddleware)  # Outermost - catches all errors
+app.add_middleware(RequestIDMiddleware)  # Generates request IDs
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

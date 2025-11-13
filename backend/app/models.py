@@ -189,6 +189,7 @@ class SearchMemoryRequest(BaseModel):
     agent_id: str = Field(..., description="Agent identifier")
     conversation_id: Optional[str] = Field(None, description="Current conversation identifier")
     search_all_agents: Optional[bool] = Field(False, description="Search across all agents")
+    limit: Optional[int] = Field(5, description="Maximum number of results (default 5, max 100)", ge=1, le=100)
 
     class Config:
         json_schema_extra = {

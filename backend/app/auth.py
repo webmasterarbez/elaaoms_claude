@@ -5,6 +5,7 @@ ElevenLabs webhook HMAC authentication module
 import hmac
 import time
 import logging
+import secrets
 from hashlib import sha256
 from fastapi import HTTPException, status
 
@@ -104,7 +105,8 @@ def verify_elevenlabs_webhook(
         )
         calculated_hash = mac.hexdigest()
 
-        if calculated_hash != provided_hash:
+        # Use constant-time comparison to prevent timing attacks
+        if not secrets.compare_digest(calculated_hash, provided_hash):
             logger.warning(
                 f"HMAC signature mismatch. "
                 f"Expected: {calculated_hash}, Provided: {provided_hash}"

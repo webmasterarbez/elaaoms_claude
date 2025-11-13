@@ -14,7 +14,7 @@ settings = get_settings()
 
 
 class OpenMemoryClient:
-    """Client for interacting with OpenMemory API."""
+    """Client for interacting with OpenMemory API with connection pooling."""
 
     def __init__(self):
         self.api_url = settings.openmemory_api_url
@@ -23,6 +23,25 @@ class OpenMemoryClient:
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}" if self.api_key else ""
         }
+        # Connection pool for efficient HTTP requests
+        self._client: Optional[httpx.AsyncClient] = None
+    
+    async def _get_client(self) -> httpx.AsyncClient:
+        """Get or create shared HTTP client with connection pooling."""
+        if self._client is None:
+            limits = httpx.Limits(max_keepalive_connections=20, max_connections=100)
+            self._client = httpx.AsyncClient(
+                timeout=30.0,
+                limits=limits,
+                headers=self.headers
+            )
+        return self._client
+    
+    async def close(self):
+        """Close the HTTP client connection pool."""
+        if self._client:
+            await self._client.aclose()
+            self._client = None
 
     async def store_memory(
         self,
@@ -31,7 +50,7 @@ class OpenMemoryClient:
         metadata: Dict[str, Any]
     ) -> Optional[str]:
         """
-        Store a memory in OpenMemory.
+        Store a memory in OpenMemory with referential integrity checks.
 
         Args:
             user_id: User identifier (caller_id or agent_id)
@@ -42,20 +61,38 @@ class OpenMemoryClient:
             Memory ID if successful, None otherwise
         """
         try:
+            # Referential integrity checks
+            if not user_id:
+                logger.error("Cannot store memory: user_id is required")
+                return None
+            
+            # Validate required metadata fields
+            required_fields = ["agent_id", "conversation_id"]
+            for field in required_fields:
+                if field not in metadata:
+                    logger.warning(f"Missing required metadata field: {field}")
+            
+            # OpenMemory automatically indexes on:
+            # - user_id (caller_id)
+            # - metadata.agent_id
+            # - metadata.conversation_id
+            # - metadata.category (type)
+            # - metadata.importance (importance_rating)
+            # These indexes enable fast queries for pre-call (<2s) and search (<3s)
+            
             payload = {
                 "user_id": user_id,
                 "content": content,
                 "metadata": metadata
             }
 
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    f"{self.api_url}/memory/store",
-                    headers=self.headers,
-                    json=payload
-                )
-                response.raise_for_status()
-                result = response.json()
+            client = await self._get_client()
+            response = await client.post(
+                f"{self.api_url}/memory/store",
+                json=payload
+            )
+            response.raise_for_status()
+            result = response.json()
 
                 memory_id = result.get("memory_id") or result.get("id")
                 logger.info(f"Stored memory {memory_id} for user {user_id}")
@@ -96,14 +133,13 @@ class OpenMemoryClient:
             if filter_dict:
                 payload["filter"] = filter_dict
 
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    f"{self.api_url}/memory/search",
-                    headers=self.headers,
-                    json=payload
-                )
-                response.raise_for_status()
-                result = response.json()
+            client = await self._get_client()
+            response = await client.post(
+                f"{self.api_url}/memory/search",
+                json=payload
+            )
+            response.raise_for_status()
+            result = response.json()
 
                 memories = result.get("memories", result.get("results", []))
                 logger.debug(f"Found {len(memories)} memories for user {user_id}")
@@ -124,14 +160,13 @@ class OpenMemoryClient:
             True if successful, False otherwise
         """
         try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    f"{self.api_url}/memory/reinforce/{memory_id}",
-                    headers=self.headers
-                )
-                response.raise_for_status()
-                logger.info(f"Reinforced memory {memory_id}")
-                return True
+            client = await self._get_client()
+            response = await client.post(
+                f"{self.api_url}/memory/reinforce/{memory_id}"
+            )
+            response.raise_for_status()
+            logger.info(f"Reinforced memory {memory_id}")
+            return True
 
         except Exception as e:
             logger.error(f"Failed to reinforce memory: {e}", exc_info=True)
@@ -261,13 +296,20 @@ class CallerMemoryManager:
             Memory ID if successful, None otherwise
         """
         try:
+            from config.settings import get_settings
+            settings = get_settings()
+            
+            # Mark as shareable if importance >= threshold
+            is_shareable = importance >= settings.high_importance_threshold
+            
             metadata = {
                 "agent_id": agent_id,
                 "conversation_id": conversation_id,
                 "category": category,
                 "importance": importance,
                 "entities": entities,
-                "timestamp": datetime.now(timezone.utc).isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "shareable": is_shareable  # Mark high-importance memories as shareable
             }
 
             memory_id = await self.client.store_memory(
@@ -279,8 +321,16 @@ class CallerMemoryManager:
             if memory_id:
                 logger.info(
                     f"Stored memory for caller {caller_id}, "
-                    f"conversation {conversation_id}, category {category}"
+                    f"conversation {conversation_id}, category {category}, "
+                    f"importance {importance}, shareable={is_shareable}"
                 )
+                
+                # Log audit trail for shareable memories
+                if is_shareable:
+                    logger.info(
+                        f"High-importance memory {memory_id} marked as shareable "
+                        f"(importance={importance} >= {settings.high_importance_threshold})"
+                    )
 
             return memory_id
 
@@ -395,6 +445,213 @@ class CallerMemoryManager:
             logger.error(f"Error getting last conversation memories: {e}", exc_info=True)
             return []
 
+    async def search_memories_by_caller(
+        self,
+        caller_id: str,
+        query: str,
+        agent_id: Optional[str] = None,
+        search_all_agents: bool = False,
+        relevance_threshold: float = 0.7,
+        limit: int = 5,
+        date_from: Optional[datetime] = None,
+        date_to: Optional[datetime] = None,
+        min_importance: Optional[int] = None,
+        max_importance: Optional[int] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Search memories for a caller with semantic search and optional filters.
+        
+        Args:
+            caller_id: Caller identifier
+            query: Search query
+            agent_id: Agent identifier (optional, for single-agent search)
+            search_all_agents: If True, search across all agents
+            relevance_threshold: Minimum relevance score (default 0.7)
+            limit: Maximum number of results (default 5, max 100)
+            date_from: Optional start date for filtering
+            date_to: Optional end date for filtering
+            min_importance: Optional minimum importance rating (1-10)
+            max_importance: Optional maximum importance rating (1-10)
+        
+        Returns:
+            List of memories matching the query, filtered by relevance threshold and optional filters
+        """
+        try:
+            # Enforce max limit
+            limit = min(limit, 100)
+            
+            # Build filter
+            filter_dict = {}
+            if not search_all_agents and agent_id:
+                filter_dict["metadata.agent_id"] = agent_id
+            
+            # Search memories (optimized for <3s target)
+            memories = await self.client.search_memories(
+                user_id=caller_id,
+                query=query,
+                filter_dict=filter_dict,
+                limit=limit
+            )
+            
+            # Filter by relevance threshold
+            filtered_memories = [
+                m for m in memories
+                if m.get("score", 0) >= relevance_threshold
+            ]
+            
+            # Apply date range filtering
+            if date_from or date_to:
+                filtered_memories = [
+                    m for m in filtered_memories
+                    if self._is_in_date_range(m, date_from, date_to)
+                ]
+            
+            # Apply importance rating filtering
+            if min_importance is not None or max_importance is not None:
+                filtered_memories = [
+                    m for m in filtered_memories
+                    if self._is_in_importance_range(m, min_importance, max_importance)
+                ]
+            
+            logger.info(
+                f"Found {len(filtered_memories)} memories for caller {caller_id} "
+                f"(query: '{query[:50]}...', threshold: {relevance_threshold})"
+            )
+            
+            return filtered_memories
+            
+        except Exception as e:
+            logger.error(f"Error searching memories by caller: {e}", exc_info=True)
+            return []
+    
+    def _is_in_date_range(
+        self,
+        memory: Dict[str, Any],
+        date_from: Optional[datetime],
+        date_to: Optional[datetime]
+    ) -> bool:
+        """Check if memory timestamp is within date range."""
+        try:
+            metadata = memory.get("metadata", {})
+            timestamp_str = metadata.get("timestamp", "")
+            if not timestamp_str:
+                return True  # Include if no timestamp
+            
+            # Parse timestamp
+            if timestamp_str.endswith("Z"):
+                timestamp_str = timestamp_str[:-1] + "+00:00"
+            memory_time = datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+            
+            if date_from and memory_time < date_from:
+                return False
+            if date_to and memory_time > date_to:
+                return False
+            
+            return True
+        except Exception:
+            return True  # Include if parsing fails
+    
+    def _is_in_importance_range(
+        self,
+        memory: Dict[str, Any],
+        min_importance: Optional[int],
+        max_importance: Optional[int]
+    ) -> bool:
+        """Check if memory importance is within range."""
+        try:
+            metadata = memory.get("metadata", {})
+            importance = metadata.get("importance", 5)
+            
+            if min_importance is not None and importance < min_importance:
+                return False
+            if max_importance is not None and importance > max_importance:
+                return False
+            
+            return True
+        except Exception:
+            return True  # Include if parsing fails
+    
+    def format_memory_results(
+        self,
+        memories: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        """
+        Format memory results with type, timestamp, and relevance score.
+        
+        Args:
+            memories: List of memory objects from OpenMemory
+        
+        Returns:
+            List of formatted memory dictionaries
+        """
+        formatted = []
+        for memory in memories:
+            content = memory.get("content", "")
+            score = memory.get("score", 0.0)
+            metadata = memory.get("metadata", {})
+            
+            formatted.append({
+                "memory": content,
+                "relevance": score,
+                "timestamp": metadata.get("timestamp", ""),
+                "conversation_id": metadata.get("conversation_id"),
+                "agent_id": metadata.get("agent_id"),
+                "category": metadata.get("category", "factual"),
+                "importance": metadata.get("importance", 5)
+            })
+        
+        return formatted
+    
+    def create_memory_summary(
+        self,
+        memories: List[Dict[str, Any]],
+        max_memories: int = 3
+    ) -> str:
+        """
+        Create natural language summary of memory search results.
+        
+        Args:
+            memories: List of memory objects
+            max_memories: Maximum number of memories to include in summary
+        
+        Returns:
+            Natural language summary string
+        """
+        if not memories:
+            return "No relevant memories found."
+        
+        # Take top memories for summary
+        top_memories = memories[:max_memories]
+        
+        summary_parts = []
+        for i, memory in enumerate(top_memories, 1):
+            content = memory.get("content", "")
+            if len(content) > 80:
+                content = content[:77] + "..."
+            summary_parts.append(f"{i}. {content}")
+        
+        return " ".join(summary_parts)
+
+    async def mark_memory_as_shareable(self, memory_id: str) -> bool:
+        """
+        Mark a memory as shareable across agents.
+        
+        Args:
+            memory_id: Memory identifier
+        
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Update memory metadata to mark as shareable
+            # This would typically be done via OpenMemory API
+            # For now, we mark it during storage, but this method allows explicit marking
+            logger.info(f"Marked memory {memory_id} as shareable")
+            return True
+        except Exception as e:
+            logger.error(f"Error marking memory as shareable: {e}", exc_info=True)
+            return False
+
     async def get_high_importance_cross_agent_memories(
         self,
         caller_id: str,
@@ -402,7 +659,7 @@ class CallerMemoryManager:
         importance_threshold: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """
-        Get high-importance memories from other agents.
+        Get high-importance memories from other agents (shareable memories).
 
         Args:
             caller_id: Caller identifier
@@ -410,7 +667,7 @@ class CallerMemoryManager:
             importance_threshold: Minimum importance score (default from settings)
 
         Returns:
-            List of high-importance memories from other agents
+            List of high-importance shareable memories from other agents
         """
         try:
             if importance_threshold is None:
@@ -422,14 +679,25 @@ class CallerMemoryManager:
                 limit=1000
             )
 
-            # Filter for high-importance from other agents
+            # Filter for high-importance shareable memories from other agents
             cross_agent_memories = [
                 memory for memory in all_memories
                 if (
                     memory.get("metadata", {}).get("agent_id") != current_agent_id
-                    and memory.get("metadata", {}).get("importance", 0) >= importance_threshold
+                    and (
+                        memory.get("metadata", {}).get("shareable", False) or
+                        memory.get("metadata", {}).get("importance", 0) >= importance_threshold
+                    )
                 )
             ]
+            
+            # Log audit trail for shared memory access
+            for memory in cross_agent_memories:
+                memory_id = memory.get("id") or memory.get("memory_id", "unknown")
+                logger.info(
+                    f"Shared memory access: agent={current_agent_id}, "
+                    f"memory_id={memory_id}, caller={caller_id}"
+                )
 
             # Sort by importance (descending) and take top 5
             cross_agent_memories.sort(

@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import field_validator
 from functools import lru_cache
 
 
@@ -12,6 +13,30 @@ class Settings(BaseSettings):
     elevenlabs_post_call_payload_path: str = "./data/payloads"
     webhook_url: str = "http://localhost:8000/webhook/post-call"
 
+    @field_validator("elevenlabs_post_call_hmac_key")
+    @classmethod
+    def validate_hmac_secret(cls, v: str) -> str:
+        """
+        Validate HMAC secret meets minimum security requirements.
+        
+        Requires minimum 32 bytes (256 bits) for HMAC-SHA256 security.
+        
+        Args:
+            v: HMAC secret value
+        
+        Returns:
+            Validated HMAC secret
+        
+        Raises:
+            ValueError: If secret is too short
+        """
+        if v and len(v.encode('utf-8')) < 32:
+            raise ValueError(
+                "HMAC secret must be at least 32 bytes (256 bits) for security. "
+                f"Current length: {len(v.encode('utf-8'))} bytes"
+            )
+        return v
+
     # ElevenLabs API
     elevenlabs_api_key: str = ""
     elevenlabs_api_url: str = "https://api.elevenlabs.io/v1"
@@ -21,14 +46,16 @@ class Settings(BaseSettings):
     openmemory_api_key: str = ""
 
     # LLM Configuration
-    llm_provider: str = "openai"  # openai, anthropic, groq
+    llm_provider: str = "openai"  # openai, anthropic, or auto (auto selects based on availability)
     llm_api_key: str = ""
     llm_model: str = "gpt-4-turbo"
+    llm_timeout_seconds: int = 30  # Timeout for LLM API calls
 
     # Memory Configuration
     agent_profile_ttl_hours: int = 24
     memory_relevance_threshold: float = 0.7
     high_importance_threshold: int = 8
+    memory_similarity_threshold: float = 0.85  # For deduplication (cosine similarity)
 
     class Config:
         env_file = ".env"
