@@ -27,6 +27,42 @@ from hashlib import sha256
 from typing import Dict, Any, List, Optional
 from pathlib import Path
 
+
+def load_env_file():
+    """
+    Load environment variables from .env file in project root.
+    
+    Only sets variables that are not already in the environment,
+    allowing command-line flags to override .env values.
+    """
+    env_path = Path(__file__).parent.parent / ".env"
+    if env_path.exists():
+        with open(env_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                # Skip empty lines and comments
+                if not line or line.startswith('#'):
+                    continue
+                
+                # Parse key=value
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    key = key.strip()
+                    value = value.strip()
+                    
+                    # Remove quotes if present
+                    if (value.startswith('"') and value.endswith('"')) or \
+                       (value.startswith("'") and value.endswith("'")):
+                        value = value[1:-1]
+                    
+                    # Only set if not already in environment
+                    if key and key not in os.environ:
+                        os.environ[key] = value
+
+
+# Load .env file before anything else
+load_env_file()
+
 # Setup logging
 logging.basicConfig(
     level=logging.INFO,
@@ -79,6 +115,9 @@ class ConversationGetter:
         url = f"{self.ELEVENLABS_API_BASE}/convai/conversations/{conversation_id}"
 
         logger.info(f"Fetching conversation details for: {conversation_id}")
+        logger.debug(f"API URL: {url}")
+        logger.debug(f"API key header present: {'xi-api-key' in self.session.headers}")
+        logger.debug(f"API key length: {len(self.api_key) if self.api_key else 0}")
 
         try:
             response = self.session.get(url)
@@ -92,7 +131,16 @@ class ConversationGetter:
 
         except requests.HTTPError as e:
             logger.error(f"HTTP error fetching conversation {conversation_id}: {e}")
-            logger.error(f"Response: {e.response.text if e.response else 'No response'}")
+            if e.response is not None:
+                logger.error(f"Status code: {e.response.status_code}")
+                logger.error(f"Response headers: {dict(e.response.headers)}")
+                try:
+                    error_body = e.response.text
+                    logger.error(f"Response body: {error_body[:500]}")  # First 500 chars
+                except Exception:
+                    logger.error("Response: Could not read response body")
+            else:
+                logger.error("Response: No response object")
             raise
         except Exception as e:
             logger.error(f"Error fetching conversation {conversation_id}: {e}")
@@ -330,13 +378,19 @@ Examples:
     if not args.api_key:
         logger.error("ERROR: ELEVENLABS_API_KEY is required")
         logger.error("Set it via environment variable or --api-key flag")
+        logger.debug(f"Environment variable ELEVENLABS_API_KEY: {'SET' if os.getenv('ELEVENLABS_API_KEY') else 'NOT SET'}")
         sys.exit(1)
 
     # Validate HMAC key
     if not args.hmac_key:
         logger.error("ERROR: ELEVENLABS_POST_CALL_HMAC_KEY is required")
         logger.error("Set it via environment variable or --hmac-key flag")
+        logger.debug(f"Environment variable ELEVENLABS_POST_CALL_HMAC_KEY: {'SET' if os.getenv('ELEVENLABS_POST_CALL_HMAC_KEY') else 'NOT SET'}")
         sys.exit(1)
+    
+    # Log API key status (without showing the actual key)
+    api_key_preview = args.api_key[:8] + "..." if len(args.api_key) > 8 else "***"
+    logger.debug(f"Using API key: {api_key_preview} (length: {len(args.api_key)})")
 
     # Create conversation getter
     try:
