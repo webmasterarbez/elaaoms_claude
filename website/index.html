@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ELAAOMS - Universal Memory System for ElevenLabs Voice Agents. 90% cost savings, 15-minute setup.">
+    <meta name="keywords" content="ElevenLabs, Voice AI, Agent Memory, Conversational AI, Memory System">
+    <title>ELAAOMS - Universal Memory for Voice AI Agents</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <span>ELAAOMS</span>
+                </div>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#roadmap">Roadmap</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="https://github.com/webmasterarbez/elaaoms_claude" target="_blank" class="btn-secondary">
+                        <i class="fab fa-github"></i> GitHub
+                    </a></li>
+                    <li><a href="https://github.com/webmasterarbez/elaaoms_claude#-quick-start" target="_blank" class="btn-primary">Get Started</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="particles" id="particles"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-icon">🚀</span>
+                    <span>Open Source • Self-Hosted • Enterprise Ready</span>
+                </div>
+                <h1 class="hero-title">
+                    Universal Memory for <span class="gradient-text">Voice AI Agents</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Give your ElevenLabs agents perfect memory—without the enterprise price tag.
+                    Deploy in 15 minutes. Save 90% on costs.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">90%</div>
+                        <div class="stat-label">Cost Savings</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">15min</div>
+                        <div class="stat-label">Setup Time</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">$0.026</div>
+                        <div class="stat-label">Per Call</div>
+                    </div>
+                </div>
+                <div class="hero-cta">
+                    <a href="https://github.com/webmasterarbez/elaaoms_claude" target="_blank" class="btn-primary btn-large">
+                        <i class="fab fa-github"></i> Star on GitHub
+                    </a>
+                    <a href="https://github.com/webmasterarbez/elaaoms_claude/blob/main/README.md" target="_blank" class="btn-secondary btn-large">
+                        <i class="fas fa-book"></i> Documentation
+                    </a>
+                </div>
+                <div class="trusted-by">
+                    <p>Built for developers, consultants, and enterprises using ElevenLabs</p>
+                </div>
+            </div>
+        </div>
+        <div class="hero-wave"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose <span class="gradient-text">ELAAOMS</span></h2>
+                <p class="section-subtitle">The most advanced open-source memory system for voice AI agents</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Automatic Memory Extraction</h3>
+                    <p>LLM automatically extracts factual, preference, emotional, and relational memories from every conversation—no manual structuring required.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3>Personalized Greetings</h3>
+                    <p>Returning callers receive customized first messages based on conversation history. Boost engagement by up to 67%.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Real-Time Memory Search</h3>
+                    <p>Agents can search caller history during active calls using Server Tools. Deliver contextual responses instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <h3>Multi-Agent Support</h3>
+                    <p>Share high-importance memories across different agents. Create unified customer experiences across all touchpoints.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Zero Database Setup</h3>
+                    <p>Everything stored in OpenMemory with PostgreSQL backend. One Docker Compose command to deploy the entire stack.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>HMAC Authentication</h3>
+                    <p>All webhooks validated using ElevenLabs HMAC-SHA256 signatures. Enterprise-grade security out of the box.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3>Self-Hosted Privacy</h3>
+                    <p>Your data stays on your infrastructure. Perfect for compliance, GDPR, and data sovereignty requirements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Open Source</h3>
+                    <p>MIT licensed. Transparent code, no vendor lock-in. Community-driven development with extensible architecture.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How It <span class="gradient-text">Works</span></h2>
+                <p class="section-subtitle">Three simple steps to add memory to your voice agents</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-number">1</div>
+                    <div class="timeline-content">
+                        <h3>Deploy in Minutes</h3>
+                        <p>Run <code>docker-compose up -d</code> to start the entire stack. Configure your .env file with API keys. Point ElevenLabs webhooks to your endpoint.</p>
+                        <div class="code-block">
+                            <pre><code>git clone https://github.com/webmasterarbez/elaaoms_claude.git
+cd elaaoms_claude
+cp .env.example .env
+docker-compose up -d</code></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">2</div>
+                    <div class="timeline-content">
+                        <h3>Automatic Processing</h3>
+                        <p>When calls end, ElevenLabs sends transcription webhooks. ELAAOMS extracts memories using LLM, deduplicates against existing data, and stores in OpenMemory.</p>
+                        <ul class="feature-list">
+                            <li><i class="fas fa-check"></i> Pre-call personalized greetings</li>
+                            <li><i class="fas fa-check"></i> During-call memory search</li>
+                            <li><i class="fas fa-check"></i> Post-call memory extraction</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-number">3</div>
+                    <div class="timeline-content">
+                        <h3>Scale & Monitor</h3>
+                        <p>Track performance with built-in monitoring. Scale horizontally as needed. Optimize costs with transparent pricing at ~$0.026 per call.</p>
+                        <div class="metrics-preview">
+                            <div class="metric"><span>Response Time:</span> &lt;2s</div>
+                            <div class="metric"><span>Memory Search:</span> &lt;3s</div>
+                            <div class="metric"><span>Background Processing:</span> 10-20s</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Comparison Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Cost <span class="gradient-text">Comparison</span></h2>
+                <p class="section-subtitle">See how much you can save with ELAAOMS</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Hosted Services</h3>
+                        <div class="price">$0.15-$0.50<span>/call</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-times"></i> Expensive at scale</li>
+                        <li><i class="fas fa-times"></i> Vendor lock-in</li>
+                        <li><i class="fas fa-times"></i> Data privacy concerns</li>
+                        <li><i class="fas fa-times"></i> Limited customization</li>
+                        <li><i class="fas fa-times"></i> Monthly minimums</li>
+                    </ul>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">BEST VALUE</div>
+                    <div class="pricing-header">
+                        <h3>ELAAOMS</h3>
+                        <div class="price">$0.026<span>/call</span></div>
+                        <div class="savings">Save 80-95%</div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> Self-hosted infrastructure</li>
+                        <li><i class="fas fa-check"></i> Open source & MIT licensed</li>
+                        <li><i class="fas fa-check"></i> Complete data control</li>
+                        <li><i class="fas fa-check"></i> Unlimited customization</li>
+                        <li><i class="fas fa-check"></i> No vendor lock-in</li>
+                        <li><i class="fas fa-check"></i> Multi-agent memory</li>
+                        <li><i class="fas fa-check"></i> 15-minute setup</li>
+                    </ul>
+                    <a href="https://github.com/webmasterarbez/elaaoms_claude" target="_blank" class="btn-primary btn-block">
+                        Get Started Free
+                    </a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Custom Built</h3>
+                        <div class="price">$$$<span>/project</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-times"></i> Weeks of development</li>
+                        <li><i class="fas fa-times"></i> High upfront cost</li>
+                        <li><i class="fas fa-times"></i> Ongoing maintenance</li>
+                        <li><i class="fas fa-times"></i> Testing & debugging</li>
+                        <li><i class="fas fa-times"></i> No community support</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="cost-calculator">
+                <h3>Cost Calculator</h3>
+                <div class="calculator">
+                    <div class="calculator-input">
+                        <label>Monthly Calls:</label>
+                        <input type="number" id="monthlyCallsInput" value="10000" min="0">
+                    </div>
+                    <div class="calculator-results">
+                        <div class="calc-result">
+                            <span>Hosted Services:</span>
+                            <strong id="hostedCost">$1,500 - $5,000</strong>
+                        </div>
+                        <div class="calc-result elaaoms">
+                            <span>ELAAOMS:</span>
+                            <strong id="elaaomsCost">$260</strong>
+                        </div>
+                        <div class="calc-result savings">
+                            <span>You Save:</span>
+                            <strong id="savings">$1,240 - $4,740</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section class="roadmap" id="roadmap">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Development <span class="gradient-text">Roadmap</span></h2>
+                <p class="section-subtitle">Our vision for the future of voice agent memory</p>
+            </div>
+            <div class="roadmap-timeline">
+                <div class="roadmap-item completed">
+                    <div class="roadmap-marker"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-phase">Phase 1 - COMPLETED</div>
+                        <h3>Core Memory System</h3>
+                        <ul>
+                            <li>Automatic memory extraction with LLM</li>
+                            <li>Multi-agent memory sharing</li>
+                            <li>Real-time memory search</li>
+                            <li>Docker deployment</li>
+                            <li>HMAC webhook authentication</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="roadmap-item completed">
+                    <div class="roadmap-marker"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-phase">Phase 2 - COMPLETED</div>
+                        <h3>Production Readiness</h3>
+                        <ul>
+                            <li>Comprehensive documentation</li>
+                            <li>OpenMemory integration</li>
+                            <li>Background job processing</li>
+                            <li>Memory deduplication</li>
+                            <li>Agent profile caching</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="roadmap-item active">
+                    <div class="roadmap-marker"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-phase">Phase 3 - IN PROGRESS</div>
+                        <h3>Community & Growth</h3>
+                        <ul>
+                            <li>Marketing strategy execution</li>
+                            <li>Community building (Discord/Slack)</li>
+                            <li>Integration partnerships</li>
+                            <li>Tutorial videos & content</li>
+                            <li>One-click cloud deployments</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-marker"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-phase">Phase 4 - Q2 2025</div>
+                        <h3>Advanced Features</h3>
+                        <ul>
+                            <li>Advanced analytics dashboard</li>
+                            <li>Memory quality scoring</li>
+                            <li>Multi-language support</li>
+                            <li>Custom memory types</li>
+                            <li>Webhook replay system</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="roadmap-marker"></div>
+                    <div class="roadmap-content">
+                        <div class="roadmap-phase">Phase 5 - Q3 2025</div>
+                        <h3>Enterprise & Scale</h3>
+                        <ul>
+                            <li>High-availability setup</li>
+                            <li>Horizontal scaling guides</li>
+                            <li>Managed hosting option</li>
+                            <li>Enterprise support packages</li>
+                            <li>Advanced integrations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+                <p class="section-subtitle">Everything you need to know about ELAAOMS</p>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What is ELAAOMS?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>ELAAOMS (ElevenLabs Universal Agentic Open Memory System) is an open-source memory system that automatically extracts, stores, and retrieves conversation memories for ElevenLabs voice AI agents. It provides personalized greetings for returning callers and real-time memory search during calls.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How much does it cost?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>ELAAOMS is completely free and open source (MIT license). The only costs are your infrastructure (self-hosted or cloud) and LLM API costs (~$0.026 per call with OpenAI). This is 80-95% cheaper than hosted memory services which charge $0.15-$0.50 per call.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>How long does setup take?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Approximately 15 minutes. Clone the repository, configure your .env file with API keys, run docker-compose up, and configure ElevenLabs webhooks. Our comprehensive documentation guides you through each step.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What LLM providers are supported?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Currently supports OpenAI (GPT-4, GPT-3.5) and Anthropic (Claude). You can easily extend to other providers by modifying the LLM service module. We're planning to add support for Groq, Cohere, and local models in future releases.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Is my data secure?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! ELAAOMS is self-hosted on your infrastructure, so your data never leaves your servers. All ElevenLabs webhooks are authenticated using HMAC-SHA256 signatures. The system uses industry-standard security practices for data storage and transmission.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I use it with multiple agents?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Absolutely! ELAAOMS is designed for multi-agent environments. It can share high-importance memories across different agents, creating a unified customer experience. Each agent can also have its own private memories.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>What kind of memories are extracted?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>The LLM extracts five types of memories: <strong>Factual</strong> (order numbers, addresses), <strong>Preference</strong> (likes, dislikes), <strong>Issue</strong> (problems, complaints), <strong>Emotional</strong> (sentiment, mood), and <strong>Relational</strong> (names, relationships). Each memory is scored for importance.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>Can I contribute to the project?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes! ELAAOMS is open source and welcomes contributions. Check out our CONTRIBUTING.md guide on GitHub. We're looking for help with features, documentation, testing, and integrations. Join our community Discord for discussions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Give Your Agents Perfect Memory?</h2>
+                <p>Join developers building the future of personalized voice AI</p>
+                <div class="cta-buttons">
+                    <a href="https://github.com/webmasterarbez/elaaoms_claude" target="_blank" class="btn-primary btn-large">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                    <a href="https://github.com/webmasterarbez/elaaoms_claude/blob/main/README.md#-quick-start" target="_blank" class="btn-secondary btn-large">
+                        <i class="fas fa-rocket"></i> Get Started Now
+                    </a>
+                </div>
+                <div class="cta-stats">
+                    <div class="cta-stat">
+                        <i class="fas fa-code-branch"></i>
+                        <span>MIT Licensed</span>
+                    </div>
+                    <div class="cta-stat">
+                        <i class="fas fa-users"></i>
+                        <span>Active Community</span>
+                    </div>
+                    <div class="cta-stat">
+                        <i class="fas fa-book-open"></i>
+                        <span>Full Documentation</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-brain"></i>
+                        <span>ELAAOMS</span>
+                    </div>
+                    <p>Universal Memory System for ElevenLabs Voice Agents</p>
+                    <div class="social-links">
+                        <a href="https://github.com/webmasterarbez/elaaoms_claude" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#roadmap">Roadmap</a></li>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude/blob/main/CHANGELOG.md" target="_blank">Changelog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude/blob/main/README.md" target="_blank">Documentation</a></li>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude/blob/main/MEMORY_SYSTEM_GUIDE.md" target="_blank">Memory Guide</a></li>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude/blob/main/DEPLOYMENT.md" target="_blank">Deployment</a></li>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude#-troubleshooting" target="_blank">Troubleshooting</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude/issues" target="_blank">GitHub Issues</a></li>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude/discussions" target="_blank">Discussions</a></li>
+                        <li><a href="https://github.com/webmasterarbez/elaaoms_claude/blob/main/CONTRIBUTING.md" target="_blank">Contributing</a></li>
+                        <li><a href="#" target="_blank">Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ELAAOMS. Released under MIT License.</p>
+                <p>Built with <i class="fas fa-heart"></i> for the ElevenLabs community</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
