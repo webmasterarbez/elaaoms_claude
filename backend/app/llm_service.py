@@ -60,8 +60,11 @@ class LLMService:
                     f"Processing chunk {i+1}/{len(chunks)} for conversation {conversation_id}"
                 )
                 
+                # Check if we need json_object format (for GPT-4 models)
+                use_json_object = "gpt-4" in self.model.lower()
+                
                 prompt = self._create_memory_extraction_prompt(
-                    chunk, agent_id, caller_id, conversation_id
+                    chunk, agent_id, caller_id, conversation_id, use_json_object=use_json_object
                 )
 
                 # Select provider (with fallback support)
@@ -298,7 +301,8 @@ class LLMService:
         transcript: List[Dict[str, str]],
         agent_id: str,
         caller_id: str,
-        conversation_id: str
+        conversation_id: str,
+        use_json_object: bool = False
     ) -> str:
         """Create prompt for memory extraction."""
 
@@ -309,6 +313,30 @@ class LLMService:
         ])
 
         timestamp = datetime.now(timezone.utc).isoformat()
+
+        # Format response based on whether we're using json_object format
+        if use_json_object:
+            response_format = """Return ONLY a JSON object (no markdown, no explanation):
+{{
+  "memories": [
+    {{
+      "content": "Clear, concise, atomic memory statement",
+      "category": "factual|preference|issue|emotional|relational",
+      "importance": 1-10,
+      "entities": ["entity1", "entity2"]
+    }}
+  ]
+}}"""
+        else:
+            response_format = """Return ONLY a JSON array (no markdown, no explanation):
+[
+  {{
+    "content": "Clear, concise, atomic memory statement",
+    "category": "factual|preference|issue|emotional|relational",
+    "importance": 1-10,
+    "entities": ["entity1", "entity2"]
+  }}
+]"""
 
         return f"""Extract memories from this AI agent conversation for future reference.
 
@@ -322,28 +350,23 @@ Full Transcript:
 {transcript_text}
 
 Extract memories in these categories:
-1. FACTUAL: Names, IDs, numbers, dates, locations, transactions, objective facts
+1. FACTUAL: Names (FIRST AND LAST names separately), IDs, numbers, dates, locations, transactions, objective facts
 2. PREFERENCES: User preferences, likes/dislikes, communication style, scheduling preferences
 3. ISSUES: Problems mentioned, complaints, unresolved issues, follow-up needed
 4. EMOTIONAL: Customer sentiment (satisfied, frustrated, neutral), tone of interaction
 5. RELATIONAL: People or entities mentioned, relationships between concepts
 
-Return ONLY a JSON array (no markdown, no explanation):
-[
-  {{
-    "content": "Clear, concise, atomic memory statement",
-    "category": "factual|preference|issue|emotional|relational",
-    "importance": 1-10,
-    "entities": ["entity1", "entity2"]
-  }}
-]
+{response_format}
 
 Rules:
 - Each memory should be ONE atomic fact
 - Be specific and factual
-- Importance: 10=critical (account numbers, VIP status), 1=minor detail
+- IMPORTANT: Extract BOTH first name AND last name as SEPARATE memories if both are mentioned
+- Names are high importance (8-9): Extract "Caller's first name is [name]" and "Caller's last name is [name]" separately
+- If a name is spelled out (e.g., "3-B-R-E-E-T"), extract it as the actual name (e.g., "Breet")
+- Importance: 10=critical (account numbers, VIP status), 8-9=names, 1=minor detail
 - Extract 5-20 memories per conversation
-- If nothing memorable, return empty array []
+- If nothing memorable, return empty array [] or {{"memories": []}}
 """
 
     async def _extract_with_openai(self, prompt: str) -> List[Dict[str, Any]]:
