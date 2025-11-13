@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database for OpenMemory
+  postgres:
+    image: postgres:15-alpine
+    container_name: elaaoms-postgres
+    environment:
+      POSTGRES_DB: openmemory
+      POSTGRES_USER: openmemory
+      POSTGRES_PASSWORD: openmemory_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openmemory"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - elaaoms-network
+
+  # OpenMemory API service
+  openmemory:
+    image: caviraoss/openmemory:latest
+    container_name: elaaoms-openmemory
+    environment:
+      DATABASE_URL: postgresql://openmemory:openmemory_password@postgres:5432/openmemory
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - elaaoms-network
+
+  # FastAPI backend service
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: elaaoms-backend
+    environment:
+      - DEBUG=False
+      - LOG_LEVEL=INFO
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - ELEVENLABS_POST_CALL_HMAC_KEY=${ELEVENLABS_POST_CALL_HMAC_KEY}
+      - ELEVENLABS_POST_CALL_PAYLOAD_PATH=/app/data/payloads
+      - ELEVENLABS_API_URL=https://api.elevenlabs.io/v1
+      - OPENMEMORY_API_URL=http://openmemory:8080
+      - OPENMEMORY_API_KEY=${OPENMEMORY_API_KEY:-}
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4-turbo}
+      - AGENT_PROFILE_TTL_HOURS=${AGENT_PROFILE_TTL_HOURS:-24}
+      - MEMORY_RELEVANCE_THRESHOLD=${MEMORY_RELEVANCE_THRESHOLD:-0.7}
+      - HIGH_IMPORTANCE_THRESHOLD=${HIGH_IMPORTANCE_THRESHOLD:-8}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./backend:/app
+    depends_on:
+      openmemory:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - elaaoms-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  elaaoms-network:
+    driver: bridge

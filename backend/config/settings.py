@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     ngrok_authtoken: str = ""
     elevenlabs_post_call_hmac_key: str = ""
-    elevenlabs_post_call_payload_path: str = "./payloads"
+    elevenlabs_post_call_payload_path: str = "./data/payloads"
     webhook_url: str = "http://localhost:8000/webhook/post-call"
 
     # ElevenLabs API
