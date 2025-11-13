@@ -64,8 +64,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./data:/app/data
       - ./backend:/app
+      - ./data:/app/data
     depends_on:
       openmemory:
         condition: service_healthy
