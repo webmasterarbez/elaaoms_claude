@@ -82,8 +82,10 @@ start_services() {
 
     # Start FastAPI service
     echo -e "${GREEN}Starting FastAPI service...${NC}"
+    cd "$PROJECT_ROOT/backend"
     python main.py > /tmp/fastapi.log 2>&1 &
     FASTAPI_PID=$!
+    cd "$PROJECT_ROOT"
     sleep 3
 
     # Save PIDs to file
