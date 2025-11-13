@@ -129,7 +129,7 @@
                         <i class="fas fa-database"></i>
                     </div>
                     <h3>Zero Database Setup</h3>
-                    <p>Everything stored in OpenMemory with PostgreSQL backend. One Docker Compose command to deploy the entire stack.</p>
+                    <p>Everything stored in OpenMemory (configured independently). Deploy the backend with Docker Compose and connect to your OpenMemory instance.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -168,7 +168,7 @@
                     <div class="timeline-number">1</div>
                     <div class="timeline-content">
                         <h3>Deploy in Minutes</h3>
-                        <p>Run <code>docker-compose up -d</code> to start the entire stack. Configure your .env file with API keys. Point ElevenLabs webhooks to your endpoint.</p>
+                        <p>Run <code>docker-compose up -d</code> to start the backend service. Configure your .env file with API keys and OpenMemory URL. Ensure OpenMemory is running independently. Point ElevenLabs webhooks to your endpoint.</p>
                         <div class="code-block">
                             <pre><code>git clone https://github.com/webmasterarbez/elaaoms_claude.git
 cd elaaoms_claude
@@ -400,7 +400,7 @@ docker-compose up -d</code></pre>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        <p>Approximately 15 minutes. Clone the repository, configure your .env file with API keys, run docker-compose up, and configure ElevenLabs webhooks. Our comprehensive documentation guides you through each step.</p>
+                        <p>Approximately 15 minutes. Clone the repository, configure your .env file with API keys and OpenMemory URL, ensure OpenMemory is running independently, run docker-compose up, and configure ElevenLabs webhooks. Our comprehensive documentation guides you through each step.</p>
                     </div>
                 </div>
                 <div class="faq-item">

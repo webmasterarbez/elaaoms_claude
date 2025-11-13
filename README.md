@@ -90,7 +90,7 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 ├── data/                       # Runtime data (gitignored)
 │   ├── payloads/              # Webhook payloads
 │   └── logs/                  # Application logs
-├── docker-compose.yml         # Full stack orchestration
+├── docker-compose.yml         # Backend service orchestration
 ├── .env.example              # Environment variables template
 └── README.md                 # This file
 ```
@@ -100,7 +100,8 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 ### Prerequisites
 - Python 3.10 or higher
 - pip (Python package manager)
-- Docker (optional, for OpenMemory)
+- Docker (optional, for backend containerization)
+- OpenMemory instance (must be configured and running independently)
 
 ### Steps
 
@@ -134,6 +135,7 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
    ELEVENLABS_POST_CALL_PAYLOAD_PATH=./payloads
 
    # OpenMemory Configuration
+   # Note: OpenMemory must be configured and running independently
    OPENMEMORY_API_URL=http://localhost:8080
    OPENMEMORY_API_KEY=your_openmemory_key
 
@@ -147,7 +149,7 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 
 ### Option 1: Docker Compose (Recommended)
 
-Start the entire stack (FastAPI + OpenMemory + PostgreSQL):
+Start the FastAPI backend service:
 
 ```bash
 docker-compose up -d
@@ -155,15 +157,14 @@ docker-compose up -d
 
 This starts:
 - FastAPI app on port 8000
-- OpenMemory on port 8080
-- PostgreSQL database
+
+**Note:** OpenMemory must be configured and running independently. Ensure your `.env` file has the correct `OPENMEMORY_API_URL` pointing to your OpenMemory instance.
 
 ### Option 2: Local Development
 
-1. **Start OpenMemory** (separate terminal):
-   ```bash
-   docker run -d -p 8080:8080 caviraoss/openmemory:latest
-   ```
+1. **Ensure OpenMemory is running** (must be configured independently):
+   - Verify your OpenMemory instance is accessible at the URL specified in your `.env` file
+   - Test connection: `curl http://your-openmemory-url:8080/health`
 
 2. **Start the FastAPI service**:
    ```bash
@@ -191,7 +192,7 @@ All configuration is managed through environment variables in `.env`:
 | `ELEVENLABS_API_KEY` | Yes | ElevenLabs API key | - |
 | `ELEVENLABS_POST_CALL_HMAC_KEY` | Yes | Webhook HMAC secret | - |
 | `ELEVENLABS_API_URL` | No | ElevenLabs API base URL | `https://api.elevenlabs.io/v1` |
-| `OPENMEMORY_API_URL` | Yes | OpenMemory API URL | `http://localhost:8080` |
+| `OPENMEMORY_API_URL` | Yes | OpenMemory API URL (must point to external instance) | `http://localhost:8080` |
 | `OPENMEMORY_API_KEY` | No | OpenMemory API key (if auth enabled) | - |
 | `LLM_PROVIDER` | Yes | LLM provider (`openai` or `anthropic`) | `openai` |
 | `LLM_API_KEY` | Yes | OpenAI or Anthropic API key | - |
@@ -679,24 +680,18 @@ See `backend/requirements.txt` for the complete list with exact versions.
 **Solutions:**
 1. Ensure ElevenLabs agent is configured with `dynamic_variables`
 2. Check logs for "No caller_id found" warnings
-3. Verify OpenMemory is running: `curl http://localhost:8080/health`
+3. Verify OpenMemory is accessible: `curl http://your-openmemory-url:8080/health`
 4. Check LLM API key is valid and has credits
 
 ### OpenMemory Connection Errors
 
-**Cause:** OpenMemory service not running
+**Cause:** OpenMemory service not accessible or misconfigured
 
 **Solutions:**
-```bash
-# Check if OpenMemory is running
-docker ps | grep openmemory
-
-# Restart OpenMemory
-docker-compose restart openmemory
-
-# Check logs
-docker-compose logs -f openmemory
-```
+1. Verify OpenMemory is running independently: `curl http://your-openmemory-url:8080/health`
+2. Check that `OPENMEMORY_API_URL` in `.env` matches your OpenMemory instance URL
+3. Ensure OpenMemory instance is accessible from your backend (network/firewall settings)
+4. Verify `OPENMEMORY_API_KEY` is correct if authentication is enabled
 
 ### OpenAI API Errors
 
@@ -730,7 +725,7 @@ See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines on contributing to th
 
 For issues, questions, or feature requests:
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Review logs: `tail -f data/logs/app.log` or `docker-compose logs -f backend`
+2. Review logs: `tail -f data/logs/app.log` or `docker-compose logs -f backend` (if using Docker)
 3. Consult the documentation guides linked above
 4. Open an issue on GitHub
 

@@ -14,9 +14,12 @@ pip install -r requirements.txt
 
 # 3. Configure environment
 cp .env.example .env
-# Edit .env with your API keys
+# Edit .env with your API keys and OpenMemory URL
 
-# 4. Start with Docker Compose
+# 4. Ensure OpenMemory is running independently
+# Set OPENMEMORY_API_URL in .env to point to your OpenMemory instance
+
+# 5. Start with Docker Compose
 docker-compose up -d
 
 # Service running on http://localhost:8000`,

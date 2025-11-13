@@ -34,20 +34,23 @@ LLM_API_KEY=sk-...  # OpenAI or Anthropic
 OPENMEMORY_API_KEY=your_openmemory_key  # Optional
 ```
 
-4. **Start the entire stack:**
+4. **Ensure OpenMemory is configured:**
+   - OpenMemory must be configured and running independently
+   - Set `OPENMEMORY_API_URL` in your `.env` file to point to your OpenMemory instance
+
+5. **Start the backend service:**
 ```bash
 docker-compose up -d
 ```
 
 This starts:
 - ✅ FastAPI app (port 8000)
-- ✅ OpenMemory (port 8080)
-- ✅ PostgreSQL database
 
-5. **Verify it's running:**
+**Note:** OpenMemory must be running independently. The backend connects to it via the `OPENMEMORY_API_URL` environment variable.
+
+6. **Verify it's running:**
 ```bash
 curl http://localhost:8000/health
-curl http://localhost:8080/health  # OpenMemory
 ```
 
 **Expected response:**
@@ -55,9 +58,9 @@ curl http://localhost:8080/health  # OpenMemory
 {"status": "healthy", "message": "Service is running"}
 ```
 
-6. **View logs:**
+7. **View logs:**
 ```bash
-docker-compose logs -f app
+docker-compose logs -f backend
 ```
 
 ---
@@ -66,7 +69,7 @@ docker-compose logs -f app
 
 **Prerequisites:**
 - Python 3.10+
-- Docker (for OpenMemory)
+- OpenMemory instance (must be configured and running independently)
 
 **Steps:**
 
@@ -93,12 +96,10 @@ cp .env.example .env
 # Edit .env with your API keys
 ```
 
-5. **Start OpenMemory (separate terminal):**
-```bash
-docker run -d -p 8080:8080 \
-  -e DATABASE_URL=sqlite:///data/openmemory.db \
-  caviraoss/openmemory:latest
-```
+5. **Ensure OpenMemory is running:**
+   - Verify your OpenMemory instance is accessible
+   - Set `OPENMEMORY_API_URL` in `.env` to point to your OpenMemory instance
+   - Test connection: `curl http://your-openmemory-url:8080/health`
 
 6. **Run the application:**
 ```bash
@@ -172,7 +173,7 @@ railway variables set LLM_API_KEY=sk-...
 
 #### Deploy to AWS/GCP/Azure
 
-Use the provided `Dockerfile` and `docker-compose.yml` with:
+Use the provided `Dockerfile` and `docker-compose.yml` to run the backend service. Note that OpenMemory must be configured independently:
 - AWS ECS/Fargate
 - Google Cloud Run
 - Azure Container Instances
@@ -366,6 +367,8 @@ HIGH_IMPORTANCE_THRESHOLD=8
 
 **Staging docker-compose.yml:**
 
+**Note:** OpenMemory must be configured and running independently. Set `OPENMEMORY_API_URL` in `.env.staging` to point to your OpenMemory instance.
+
 ```yaml
 version: '3.8'
 
@@ -380,7 +383,6 @@ services:
       - ./payloads:/app/payloads
     restart: unless-stopped
     depends_on:
-      - openmemory
       - prometheus
     networks:
       - elaaoms-network
@@ -389,30 +391,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-
-  openmemory:
-    image: caviraoss/openmemory:latest
-    ports:
-      - "8080:8080"
-    environment:
-      - DATABASE_URL=postgresql://user:pass@postgres:5432/openmemory_staging
-    depends_on:
-      - postgres
-    restart: unless-stopped
-    networks:
-      - elaaoms-network
-
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: openmemory
-      POSTGRES_PASSWORD: staging_secure_password
-      POSTGRES_DB: openmemory_staging
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
-    networks:
-      - elaaoms-network
 
   prometheus:
     image: prom/prometheus:latest
@@ -426,7 +404,6 @@ services:
       - elaaoms-network
 
 volumes:
-  postgres_data:
   prometheus_data:
 
 networks:
@@ -487,6 +464,8 @@ DATABASE_MAX_OVERFLOW=10
 
 **Production docker-compose.yml:**
 
+**Note:** OpenMemory must be configured and running independently. Set `OPENMEMORY_API_URL` in `.env.production` to point to your OpenMemory instance.
+
 ```yaml
 version: '3.8'
 
@@ -509,8 +488,6 @@ services:
     volumes:
       - ./payloads:/app/payloads
     restart: always
-    depends_on:
-      - openmemory
     networks:
       - elaaoms-network
     logging:
@@ -524,27 +501,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-  openmemory:
-    image: caviraoss/openmemory:${OPENMEMORY_VERSION}
-    deploy:
-      replicas: 2
-      resources:
-        limits:
-          cpus: '1'
-          memory: 2G
-    ports:
-      - "8080:8080"
-    environment:
-      - DATABASE_URL=${DATABASE_URL}  # Managed DB URL
-    restart: always
-    networks:
-      - elaaoms-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   nginx:
     image: nginx:alpine
@@ -1280,25 +1236,23 @@ curl -X POST http://localhost:8080/api/v1/memories/search \
 
 **Backup OpenMemory Data:**
 
-```bash
-# Export all memories to JSON
-curl http://localhost:8080/api/v1/export > memories_backup.json
+**Note:** OpenMemory backup/restore should be handled through your OpenMemory instance's management tools. The following examples assume you have access to your OpenMemory API:
 
-# Backup PostgreSQL database
-docker-compose exec postgres pg_dump -U openmemory openmemory > openmemory_backup.sql
+```bash
+# Export all memories to JSON (if your OpenMemory instance supports this endpoint)
+curl http://your-openmemory-url:8080/api/v1/export > memories_backup.json
 ```
 
 **Restore OpenMemory Data:**
 
 ```bash
-# Import memories from JSON
-curl -X POST http://localhost:8080/api/v1/import \
+# Import memories from JSON (if your OpenMemory instance supports this endpoint)
+curl -X POST http://your-openmemory-url:8080/api/v1/import \
   -H "Content-Type: application/json" \
   -d @memories_backup.json
-
-# Restore PostgreSQL database
-docker-compose exec -T postgres psql -U openmemory openmemory < openmemory_backup.sql
 ```
+
+**Note:** Database-level backups should be handled through your OpenMemory instance's database management tools, as OpenMemory is configured independently.
 
 ---
 
@@ -1381,10 +1335,10 @@ Comprehensive monitoring is crucial for production deployments. This section cov
 
 **Docker Compose:**
 ```bash
-docker-compose logs -f app
-docker-compose logs -f openmemory
-docker-compose logs -f postgres
+docker-compose logs -f backend
 ```
+
+**Note:** OpenMemory logs should be checked through your OpenMemory instance's management tools, as OpenMemory is configured independently.
 
 **Local:**
 ```bash
@@ -1903,9 +1857,10 @@ sum(rate(memory_extraction_total[5m])) / (sum(rate(memory_extraction_total[5m]))
 **Cause:** OpenMemory not running or wrong URL
 
 **Solution:**
-1. Check OpenMemory: `docker ps | grep openmemory`
-2. Verify `OPENMEMORY_API_URL` in .env
-3. Restart: `docker-compose restart openmemory`
+1. Verify OpenMemory is accessible: `curl http://your-openmemory-url:8080/health`
+2. Check `OPENMEMORY_API_URL` in `.env` matches your OpenMemory instance URL
+3. Ensure OpenMemory instance is running and accessible from your backend (network/firewall settings)
+4. Check OpenMemory logs through your OpenMemory instance's management tools
 
 ---
 
@@ -1935,13 +1890,7 @@ sum(rate(memory_extraction_total[5m])) / (sum(rate(memory_extraction_total[5m]))
 
 ### Backup OpenMemory Data
 
-```bash
-# PostgreSQL backup
-docker-compose exec postgres pg_dump -U openmemory openmemory > backup.sql
-
-# Restore
-docker-compose exec -T postgres psql -U openmemory openmemory < backup.sql
-```
+**Note:** OpenMemory backup/restore should be handled through your OpenMemory instance's management tools, as OpenMemory is configured independently. Database-level backups should be managed through your OpenMemory instance's database management tools.
 
 ### Backup Conversation Payloads
 
@@ -1958,7 +1907,7 @@ tar -czf payloads-backup.tar.gz payloads/
 - ✅ API keys stored in .env (not committed to git)
 - ✅ HTTPS enabled (use ngrok or reverse proxy)
 - ✅ OpenMemory API key configured (OPENMEMORY_API_KEY)
-- ✅ Database password changed from default (in docker-compose.yml)
+- ✅ OpenMemory instance properly secured (configured independently)
 - ✅ Rate limiting configured (optional, for production)
 
 ---

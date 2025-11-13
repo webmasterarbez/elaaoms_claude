@@ -151,7 +151,10 @@ elevenlabs_post_call_hmac_key: str = ""
 **In docker-compose.yml:**
 ```yaml
 - ELEVENLABS_POST_CALL_HMAC_KEY=${ELEVENLABS_POST_CALL_HMAC_KEY}
+- OPENMEMORY_API_URL=${OPENMEMORY_API_URL}  # Points to external OpenMemory instance
 ```
+
+**Note:** docker-compose.yml now only contains the backend service. OpenMemory must be configured independently.
 
 **Actually used in code (auth.py:63, routes.py:63, etc):**
 ```python

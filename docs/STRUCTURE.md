@@ -19,7 +19,7 @@ elaaoms_claude/
 ├── tests/                      # Test files
 ├── data/                       # Runtime data (gitignored)
 ├── .github/                    # GitHub templates and workflows
-├── docker-compose.yml         # Full stack orchestration
+├── docker-compose.yml         # Backend service orchestration
 ├── .env.example              # Environment variables template
 ├── .gitignore                # Git ignore rules
 ├── LICENSE                   # MIT License
@@ -190,7 +190,7 @@ GitHub-specific templates and workflows.
 
 ### Root Level
 
-- **`docker-compose.yml`** - Orchestrates the full stack (PostgreSQL, OpenMemory, Backend)
+- **`docker-compose.yml`** - Orchestrates the backend service (OpenMemory must be configured independently)
 - **`.env.example`** - Template for environment variables
 - **`.gitignore`** - Git ignore rules
 - **`LICENSE`** - MIT License
@@ -250,13 +250,12 @@ All paths have been updated in:
 
 ```bash
 # Using Docker Compose (recommended)
+# Note: OpenMemory must be configured and running independently
 docker-compose up -d
 
 # Or manually:
-# Terminal 1: Start OpenMemory
-docker run -d -p 8080:8080 caviraoss/openmemory:latest
-
-# Terminal 2: Start Backend
+# Ensure OpenMemory is running independently, then:
+# Terminal: Start Backend
 cd backend
 python main.py
 

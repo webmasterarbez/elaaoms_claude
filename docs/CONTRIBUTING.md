@@ -59,10 +59,10 @@ This project adheres to a Code of Conduct that all contributors are expected to 
    # Edit .env with your configuration
    ```
 
-4. **Start OpenMemory**:
-   ```bash
-   docker run -d -p 8080:8080 caviraoss/openmemory:latest
-   ```
+4. **Ensure OpenMemory is running**:
+   - OpenMemory must be configured and running independently
+   - Set `OPENMEMORY_API_URL` in `.env` to point to your OpenMemory instance
+   - Verify connection: `curl http://your-openmemory-url:8080/health`
 
 5. **Run the application**:
    ```bash

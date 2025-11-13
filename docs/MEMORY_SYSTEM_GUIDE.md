@@ -372,10 +372,10 @@ curl -X POST http://localhost:8000/webhook/post-call \
 pip install -r requirements.txt
 ```
 
-2. **Start OpenMemory:**
-```bash
-docker run -p 8080:8080 caviraoss/openmemory:latest
-```
+2. **Ensure OpenMemory is running:**
+   - OpenMemory must be configured and running independently
+   - Verify your OpenMemory instance is accessible
+   - Set `OPENMEMORY_API_URL` in `.env` to point to your OpenMemory instance
 
 3. **Configure Environment:**
 ```bash
@@ -392,7 +392,7 @@ Service starts at: `http://localhost:8000`
 
 ### Production Deployment (Docker Compose)
 
-Use the provided `docker-compose.yml` for production:
+Use the provided `docker-compose.yml` to run the backend service:
 
 ```bash
 docker-compose up -d
@@ -400,8 +400,8 @@ docker-compose up -d
 
 This starts:
 - FastAPI app (port 8000)
-- OpenMemory (port 8080)
-- PostgreSQL (for OpenMemory)
+
+**Note:** OpenMemory must be configured and running independently. Ensure your `.env` file has the correct `OPENMEMORY_API_URL` pointing to your OpenMemory instance.
 - Redis (for job queue)
 - Background workers
 
