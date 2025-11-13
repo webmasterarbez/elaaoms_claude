@@ -1,0 +1,192 @@
+{
+  "user_id": "+16129782029",
+  "total_memories": 8,
+  "total_conversations": 1,
+  "statistics": {
+    "by_category": {
+      "unknown": 8
+    },
+    "by_agent": {
+      "unknown": 8
+    },
+    "by_importance": {}
+  },
+  "memories": [
+    {
+      "id": "992b678b-f709-48a0-bcc6-70859e613da5",
+      "content": "Sheila prefers to have more leisure time during travel",
+      "score": 1.9998850735012832,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "0fade38f-f24d-4ea9-ac20-223f6caf90ae",
+        "992b678b-f709-48a0-bcc6-70859e613da5"
+      ],
+      "salience": 0.999996491601597,
+      "last_seen_at": 1763064387151
+    },
+    {
+      "id": "c2b39fb1-0ad7-46df-845d-ae9cd58babdd",
+      "content": "User shared their entrepreneurial journey and vision for the future",
+      "score": 1.9998850735012832,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "0fade38f-f24d-4ea9-ac20-223f6caf90ae",
+        "c2b39fb1-0ad7-46df-845d-ae9cd58babdd"
+      ],
+      "salience": 0.9999964915483565,
+      "last_seen_at": 1763064387151
+    },
+    {
+      "id": "0fade38f-f24d-4ea9-ac20-223f6caf90ae",
+      "content": ". 6, \"max_documents_length\": 50000, \"max_retrieved_rag_chunks_count\": 20}, \"timezone\": null, \"backup_llm_config\": {\"preference\": \"default\"}, \"tools\": [{\"type\": \"system\", \"name\": \"end_call\", \"description\": \"\", \"response_timeout_secs\": 20, \"disable_interruptions\": false, \"force_pre_tool_speech\": false",
+      "score": -0.48616938828882744,
+      "sectors": [
+        "emotional",
+        "episodic",
+        "procedural",
+        "reflective",
+        "semantic"
+      ],
+      "primary_sector": "emotional",
+      "path": [
+        "0fade38f-f24d-4ea9-ac20-223f6caf90ae"
+      ],
+      "salience": 0.9999859701069782,
+      "last_seen_at": 1763064387151
+    },
+    {
+      "id": "a7d33edd-2e63-4225-8d66-f0c5739e7e48",
+      "content": "\\u201d* |  \\n| **Connection Check** | *\\u201cYes, I\\u2019m here. \\u201d*  \\n  - **Memory Recall:** *\\u201c. **Emergency Protocols**  \\n   - Distress: *\\u201cWould you like to take a break. \\u201d* |  \\n| **Memory Prompt** | *\\u201c",
+      "score": -0.4863814212443105,
+      "sectors": [
+        "emotional",
+        "episodic",
+        "semantic"
+      ],
+      "primary_sector": "emotional",
+      "path": [
+        "a7d33edd-2e63-4225-8d66-f0c5739e7e48"
+      ],
+      "salience": 0.9999859696810588,
+      "last_seen_at": 1763064387150
+    },
+    {
+      "id": "2a32f497-8080-4540-acf2-9c65d9bd5093",
+      "content": "\\n- Ask about people who mattered, lessons learned, and meaningful experiences. \\\"\\n  - If name is not found: \\\"Before we begin, may I please have your name. tell me more\\\" or \\\"How interesting. \\n\\n**Connection Management**\\n- If caller asks \\\"Are you there",
+      "score": -0.49194492294780684,
+      "sectors": [
+        "emotional",
+        "episodic",
+        "procedural",
+        "reflective",
+        "semantic"
+      ],
+      "primary_sector": "emotional",
+      "path": [
+        "2a32f497-8080-4540-acf2-9c65d9bd5093"
+      ],
+      "salience": 0.999985969468099,
+      "last_seen_at": 1763064387150
+    },
+    {
+      "id": "c77a66b2-0e31-4cea-bf3b-6a16915506fd",
+      "content": "Sheila returned to the United States and pursued a master's degree",
+      "score": -0.4944761944563119,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "c77a66b2-0e31-4cea-bf3b-6a16915506fd"
+      ],
+      "salience": 0.999996492293724,
+      "last_seen_at": 1763064387150
+    },
+    {
+      "id": "c91d5c83-a5c3-4230-9f8e-29238bac3c02",
+      "content": "Sheila lived in Iran for three years",
+      "score": -0.49842380681778076,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "c91d5c83-a5c3-4230-9f8e-29238bac3c02"
+      ],
+      "salience": 0.999969579595539,
+      "last_seen_at": 1763063881650
+    },
+    {
+      "id": "1ec6b4ea-d044-44f3-8fa2-79d93883bfcf",
+      "content": "Sheila and her friend Peggy traveled together in Europe",
+      "score": -0.5077753409384014,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "1ec6b4ea-d044-44f3-8fa2-79d93883bfcf"
+      ],
+      "salience": 0.9996974244456562,
+      "last_seen_at": 1763058768942
+    }
+  ],
+  "grouped_by_conversation": {
+    "unknown": [
+      {
+        "id": "992b678b-f709-48a0-bcc6-70859e613da5",
+        "content": "Sheila prefers to have more leisure time during travel",
+        "metadata": null,
+        "score": 1.9998850735012832
+      },
+      {
+        "id": "c2b39fb1-0ad7-46df-845d-ae9cd58babdd",
+        "content": "User shared their entrepreneurial journey and vision for the future",
+        "metadata": null,
+        "score": 1.9998850735012832
+      },
+      {
+        "id": "0fade38f-f24d-4ea9-ac20-223f6caf90ae",
+        "content": ". 6, \"max_documents_length\": 50000, \"max_retrieved_rag_chunks_count\": 20}, \"timezone\": null, \"backup_llm_config\": {\"preference\": \"default\"}, \"tools\": [{\"type\": \"system\", \"name\": \"end_call\", \"description\": \"\", \"response_timeout_secs\": 20, \"disable_interruptions\": false, \"force_pre_tool_speech\": false",
+        "metadata": null,
+        "score": -0.48616938828882744
+      },
+      {
+        "id": "a7d33edd-2e63-4225-8d66-f0c5739e7e48",
+        "content": "\\u201d* |  \\n| **Connection Check** | *\\u201cYes, I\\u2019m here. \\u201d*  \\n  - **Memory Recall:** *\\u201c. **Emergency Protocols**  \\n   - Distress: *\\u201cWould you like to take a break. \\u201d* |  \\n| **Memory Prompt** | *\\u201c",
+        "metadata": null,
+        "score": -0.4863814212443105
+      },
+      {
+        "id": "2a32f497-8080-4540-acf2-9c65d9bd5093",
+        "content": "\\n- Ask about people who mattered, lessons learned, and meaningful experiences. \\\"\\n  - If name is not found: \\\"Before we begin, may I please have your name. tell me more\\\" or \\\"How interesting. \\n\\n**Connection Management**\\n- If caller asks \\\"Are you there",
+        "metadata": null,
+        "score": -0.49194492294780684
+      },
+      {
+        "id": "c77a66b2-0e31-4cea-bf3b-6a16915506fd",
+        "content": "Sheila returned to the United States and pursued a master's degree",
+        "metadata": null,
+        "score": -0.4944761944563119
+      },
+      {
+        "id": "c91d5c83-a5c3-4230-9f8e-29238bac3c02",
+        "content": "Sheila lived in Iran for three years",
+        "metadata": null,
+        "score": -0.49842380681778076
+      },
+      {
+        "id": "1ec6b4ea-d044-44f3-8fa2-79d93883bfcf",
+        "content": "Sheila and her friend Peggy traveled together in Europe",
+        "metadata": null,
+        "score": -0.5077753409384014
+      }
+    ]
+  }
+}

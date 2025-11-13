@@ -49,9 +49,21 @@ class LLMService:
             List of extracted memory objects
         """
         try:
+            # Pre-filter transcript to remove system prompts, config, and bad content
+            filtered_transcript = self._filter_transcript(transcript)
+            
+            if not filtered_transcript:
+                logger.warning(f"No valid conversation messages found in transcript for {conversation_id}")
+                return []
+            
+            logger.info(
+                f"Filtered transcript: {len(transcript)} -> {len(filtered_transcript)} messages "
+                f"for conversation {conversation_id}"
+            )
+            
             # Chunk long conversations with overlap and metadata
             chunk_data_list = self._chunk_transcript(
-                transcript,
+                filtered_transcript,
                 max_tokens=settings.llm_max_tokens_per_chunk,
                 overlap_tokens=settings.llm_chunk_overlap_tokens,
                 conversation_id=conversation_id
@@ -439,6 +451,78 @@ class LLMService:
         
         return chunks
 
+    def _filter_transcript(self, transcript: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Filter transcript to remove system prompts, config, and bad content.
+        
+        Args:
+            transcript: Raw transcript with all message fields
+            
+        Returns:
+            Filtered transcript with only clean conversation messages
+        """
+        import re
+        
+        filtered = []
+        system_keywords = [
+            "system", "config", "configuration", "api", "endpoint",
+            "json", "yaml", "xml", "markdown", "code", "function",
+            "tool_call", "rag_retrieval", "llm_usage", "metadata"
+        ]
+        
+        json_pattern = re.compile(r'\{[^{}]*"[^{}]*"[^{}]*\}', re.IGNORECASE)
+        config_pattern = re.compile(r'(max_|min_|timeout|config|setting)', re.IGNORECASE)
+        
+        for msg in transcript:
+            role = msg.get("role", "").lower()
+            message = msg.get("message", "")
+            
+            # Skip system messages
+            if role == "system":
+                continue
+            
+            # Only process user and agent messages
+            if role not in ["user", "agent"]:
+                continue
+            
+            # Skip empty or very short messages
+            if not message or len(message.strip()) < 3:
+                continue
+            
+            # Skip messages that look like JSON/config
+            message_lower = message.lower()
+            
+            # Check for JSON-like structures
+            if json_pattern.search(message) and len(message) < 500:
+                # Short JSON snippets are likely config, skip them
+                continue
+            
+            # Check for system/config keywords in short messages
+            if len(message) < 200:
+                has_system_keywords = any(keyword in message_lower for keyword in system_keywords)
+                if has_system_keywords and config_pattern.search(message):
+                    continue
+            
+            # Check for markdown table patterns (system documentation)
+            if "|" in message and "---" in message and message.count("|") > 3:
+                # Likely a markdown table, skip
+                continue
+            
+            # Check for code-like patterns
+            if message.count("{") > 2 and message.count("}") > 2:
+                # Multiple braces suggest JSON/config structure
+                if len(message) < 300:
+                    continue
+            
+            # Keep the message but only include essential fields
+            clean_msg = {
+                "role": role,
+                "message": message
+            }
+            filtered.append(clean_msg)
+        
+        return filtered
+
     def _create_memory_extraction_prompt(
         self,
         transcript: List[Dict[str, str]],
@@ -510,6 +594,21 @@ Rules:
 - Importance: 10=critical (account numbers, VIP status), 8-9=names, 1=minor detail
 - Extract 5-20 memories per conversation
 - If nothing memorable, return empty array [] or {{"memories": []}}
+
+CRITICAL CONTENT FILTERING RULES:
+- ONLY extract from actual spoken conversation between user and agent
+- SKIP any content that appears to be:
+  * System configuration or settings
+  * API documentation or endpoints
+  * JSON structures, YAML, XML, or code snippets
+  * Markdown tables or technical documentation
+  * Agent instructions or system prompts
+  * Configuration parameters (max_, min_, timeout, etc.)
+  * Tool calls, RAG retrieval info, or LLM usage data
+  * Metadata or technical implementation details
+- ONLY extract factual information, preferences, issues, emotions, or relationships mentioned in the conversation
+- If content looks like technical documentation, configuration, or system data, skip it entirely
+- Focus on what the USER said or what the AGENT said about the user, not system internals
 """
 
     async def _extract_with_openai(self, prompt: str) -> List[Dict[str, Any]]:

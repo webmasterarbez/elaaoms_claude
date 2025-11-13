@@ -136,16 +136,21 @@ class OpenMemoryClient:
         try:
             # Build payload according to OpenMemory API spec
             # Query endpoint: POST /memory/query
+            # See: https://openmemory.cavira.app/docs/api/query
             payload = {
-                "user_id": user_id,
-                "limit": limit
+                "query": query or "",  # Required field (empty string for all memories)
+                "k": limit  # Use 'k' not 'limit' per API spec
             }
             
-            if query:
-                payload["query"] = query
+            # Build filters object for proper user isolation
+            filters = {}
+            
+            # Always filter by user_id for proper isolation
+            if user_id:
+                filters["user_id"] = user_id
             
             # Add metadata filters if provided
-            # OpenMemory query API accepts metadata filters in metadata object
+            # OpenMemory query API accepts metadata filters in filters object
             if filter_dict:
                 # Handle nested metadata filters (e.g., "metadata.agent_id" -> "agent_id")
                 metadata_filters = {}
@@ -154,12 +159,20 @@ class OpenMemoryClient:
                         # Extract the actual metadata key (remove "metadata." prefix)
                         meta_key = key.replace("metadata.", "")
                         metadata_filters[meta_key] = value
-                    elif key not in ["query", "limit", "user_id"]:
+                    elif key not in ["query", "k", "user_id", "filters"]:
                         # Include other filter keys that aren't top-level fields
                         metadata_filters[key] = value
                 
                 if metadata_filters:
-                    payload["metadata"] = metadata_filters
+                    # Add metadata filters to filters object
+                    # Note: OpenMemory may support nested metadata filters differently
+                    # For now, we'll add them as separate filter conditions
+                    for key, value in metadata_filters.items():
+                        filters[key] = value
+            
+            # Add filters to payload if we have any
+            if filters:
+                payload["filters"] = filters
 
             client = await self._get_client()
             response = await client.post(
@@ -170,10 +183,48 @@ class OpenMemoryClient:
             result = response.json()
 
             # OpenMemory returns memories in different format
-            # Check for common response formats
-            memories = result.get("memories", result.get("results", result.get("data", [])))
-            logger.debug(f"Found {len(memories)} memories for user {user_id}")
-            return memories
+            # Check for common response formats (matches, memories, results, data)
+            memory_list = result.get("matches", result.get("memories", result.get("results", result.get("data", []))))
+            logger.debug(f"Found {len(memory_list)} memories for user {user_id}")
+            
+            # OpenMemory /memory/query doesn't return metadata, so we need to fetch full details
+            # for each memory to get metadata. Fetch in parallel for efficiency.
+            if memory_list:
+                import asyncio
+                async def fetch_full_memory(mem: Dict[str, Any]) -> Dict[str, Any]:
+                    """Fetch full memory details including metadata."""
+                    memory_id = mem.get("id")
+                    if not memory_id:
+                        return mem  # Return as-is if no ID
+                    
+                    try:
+                        # GET /memory/{id} returns full memory with metadata
+                        mem_response = await client.get(f"{self.api_url}/memory/{memory_id}")
+                        mem_response.raise_for_status()
+                        full_memory = mem_response.json()
+                        # Merge query result fields (score, salience) with full memory
+                        full_memory["score"] = mem.get("score")
+                        full_memory["salience"] = mem.get("salience")
+                        return full_memory
+                    except Exception as e:
+                        logger.warning(f"Failed to fetch full details for memory {memory_id}: {e}")
+                        return mem  # Return query result as fallback
+                
+                # Fetch full details for all memories in parallel
+                tasks = [fetch_full_memory(mem) for mem in memory_list]
+                memories = await asyncio.gather(*tasks, return_exceptions=True)
+                
+                # Filter out exceptions and return valid memories
+                valid_memories = []
+                for mem in memories:
+                    if isinstance(mem, Exception):
+                        logger.warning(f"Error fetching memory: {mem}")
+                    else:
+                        valid_memories.append(mem)
+                
+                return valid_memories
+            
+            return []
 
         except Exception as e:
             logger.error(f"Failed to search memories: {e}", exc_info=True)
@@ -201,6 +252,70 @@ class OpenMemoryClient:
         except Exception as e:
             logger.error(f"Failed to reinforce memory: {e}", exc_info=True)
             return False
+
+    async def update_memory(
+        self,
+        memory_id: str,
+        content: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        metadata: Optional[Dict[str, Any]] = None
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Update an existing memory in OpenMemory.
+
+        Args:
+            memory_id: Memory identifier
+            content: New content for the memory (optional, regenerates embeddings if provided)
+            tags: Updated tags array (optional, replaces all tags)
+            metadata: Updated or additional metadata (optional, merged with existing)
+
+        Returns:
+            Updated memory object if successful, None otherwise
+        """
+        try:
+            if not memory_id:
+                logger.error("Cannot update memory: memory_id is required")
+                return None
+
+            # Build payload with only provided fields
+            payload = {}
+            if content is not None:
+                payload["content"] = content
+            if tags is not None:
+                payload["tags"] = tags
+            if metadata is not None:
+                payload["metadata"] = metadata
+
+            if not payload:
+                logger.warning("No fields provided to update")
+                return None
+
+            client = await self._get_client()
+            
+            # Use PATCH endpoint as per OpenMemory API documentation
+            # PATCH /memory/{memory_id}
+            response = await client.patch(
+                f"{self.api_url}/memory/{memory_id}",
+                json=payload
+            )
+            response.raise_for_status()
+            result = response.json()
+            
+            logger.info(
+                f"Updated memory {memory_id} "
+                f"(fields: {', '.join(payload.keys())})"
+            )
+            return result
+
+        except HTTPStatusError as e:
+            if e.response.status_code == 404:
+                logger.warning(f"Memory {memory_id} not found")
+                return None
+            logger.error(f"HTTP error updating memory {memory_id}: {e}", exc_info=True)
+            return None
+        except Exception as e:
+            logger.error(f"Failed to update memory {memory_id}: {e}", exc_info=True)
+            return None
 
     async def delete_memory(self, memory_id: str, caller_id: Optional[str] = None) -> bool:
         """
@@ -374,6 +489,7 @@ class CallerMemoryManager:
             is_shareable = importance >= settings.high_importance_threshold
             
             metadata = {
+                "type": "conversation_memory",  # Distinguish from agent_profile
                 "agent_id": agent_id,
                 "conversation_id": conversation_id,
                 "category": category,
@@ -551,12 +667,15 @@ class CallerMemoryManager:
             # Enforce max limit
             limit = min(limit, 100)
             
-            # Build filter
-            filter_dict = {}
+            # Build filter - always exclude agent profiles and only get conversation memories
+            filter_dict = {
+                "metadata.type": "conversation_memory"  # Only conversation memories, not agent profiles
+            }
             if not search_all_agents and agent_id:
                 filter_dict["metadata.agent_id"] = agent_id
             
             # Search memories (optimized for <3s target)
+            # user_id is now properly filtered via filters.user_id in search_memories()
             memories = await self.client.search_memories(
                 user_id=caller_id,
                 query=query,
@@ -564,11 +683,24 @@ class CallerMemoryManager:
                 limit=limit
             )
             
-            # Filter by relevance threshold
-            filtered_memories = [
-                m for m in memories
-                if m.get("score", 0) >= relevance_threshold
-            ]
+            # Post-filter to ensure no agent profiles slip through
+            # Also filter by relevance threshold
+            filtered_memories = []
+            for m in memories:
+                # Skip agent profiles (defensive check)
+                metadata = m.get("metadata", {})
+                if isinstance(metadata, dict):
+                    mem_type = metadata.get("type")
+                    if mem_type == "agent_profile":
+                        continue
+                    # Only include conversation_memory type (or legacy memories without type)
+                    if mem_type and mem_type != "conversation_memory":
+                        continue
+                
+                # Filter by relevance threshold
+                score = m.get("score", 0)
+                if score >= relevance_threshold:
+                    filtered_memories.append(m)
             
             # Apply date range filtering
             if date_from or date_to:
@@ -705,7 +837,7 @@ class CallerMemoryManager:
 
     async def mark_memory_as_shareable(self, memory_id: str) -> bool:
         """
-        Mark a memory as shareable across agents.
+        Mark a memory as shareable across agents by updating its metadata.
         
         Args:
             memory_id: Memory identifier
@@ -714,11 +846,18 @@ class CallerMemoryManager:
             True if successful, False otherwise
         """
         try:
-            # Update memory metadata to mark as shareable
-            # This would typically be done via OpenMemory API
-            # For now, we mark it during storage, but this method allows explicit marking
-            logger.info(f"Marked memory {memory_id} as shareable")
-            return True
+            # Update memory metadata to mark as shareable using the update API
+            result = await self.client.update_memory(
+                memory_id=memory_id,
+                metadata={"shareable": True}
+            )
+            
+            if result:
+                logger.info(f"Marked memory {memory_id} as shareable")
+                return True
+            else:
+                logger.warning(f"Failed to mark memory {memory_id} as shareable")
+                return False
         except Exception as e:
             logger.error(f"Error marking memory as shareable: {e}", exc_info=True)
             return False

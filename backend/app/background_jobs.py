@@ -323,6 +323,18 @@ class BackgroundJobProcessor:
                 if not content:
                     logger.warning("Skipping memory with empty content")
                     continue
+                
+                # Validate content - reject bad content before storage
+                if not self._validate_memory_content(content):
+                    logger.warning(
+                        f"Rejecting memory with invalid content (system/config detected): "
+                        f"{content[:100]}..."
+                    )
+                    failed_memories.append({
+                        "memory": memory,
+                        "error": "Content validation failed - system/config content detected"
+                    })
+                    continue
 
                 # Check for similar existing memory
                 similarity_threshold = settings.memory_similarity_threshold
@@ -558,6 +570,57 @@ class BackgroundJobProcessor:
                     )
         
         return False
+    
+    def _validate_memory_content(self, content: str) -> bool:
+        """
+        Validate memory content to reject system prompts, config, and bad content.
+        
+        Args:
+            content: Memory content to validate
+            
+        Returns:
+            True if content is valid, False if it should be rejected
+        """
+        import re
+        
+        if not content or len(content.strip()) < 3:
+            return False
+        
+        content_lower = content.lower()
+        
+        # Reject JSON/config patterns
+        json_pattern = re.compile(r'\{[^{}]*"[^{}]*"[^{}]*\}', re.IGNORECASE)
+        if json_pattern.search(content) and len(content) < 500:
+            # Short JSON snippets are likely config
+            return False
+        
+        # Reject system/config keywords in short messages
+        system_keywords = [
+            "max_", "min_", "timeout", "config", "setting", "api", "endpoint",
+            "json", "yaml", "xml", "markdown", "code", "function",
+            "tool_call", "rag_retrieval", "llm_usage", "metadata"
+        ]
+        
+        if len(content) < 200:
+            has_system_keywords = any(keyword in content_lower for keyword in system_keywords)
+            config_pattern = re.compile(r'(max_|min_|timeout|config|setting)', re.IGNORECASE)
+            if has_system_keywords and config_pattern.search(content):
+                return False
+        
+        # Reject markdown table patterns
+        if "|" in content and "---" in content and content.count("|") > 3:
+            return False
+        
+        # Reject code-like patterns with multiple braces
+        if content.count("{") > 2 and content.count("}") > 2 and len(content) < 300:
+            return False
+        
+        # Reject content that looks like agent profile data
+        if "agent_profile" in content_lower or "elevenlabs_api" in content_lower:
+            if len(content) < 500:  # Short mentions might be OK, but longer ones are likely profile data
+                return False
+        
+        return True
     
     async def _validate_stored_memories(
         self,

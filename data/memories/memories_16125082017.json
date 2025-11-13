@@ -1,0 +1,410 @@
+{
+  "user_id": "+16125082017",
+  "total_memories": 8,
+  "total_conversations": 5,
+  "statistics": {
+    "by_category": {
+      "relational": 2,
+      "unknown": 3,
+      "factual": 3
+    },
+    "by_agent": {
+      "agent_01jvaxb67newtrqxfzwgkk97tz": 2,
+      "agent_01jz3qsjcdfvtv655cvkdfn2dw": 1,
+      "agent_01jxbrc1trfxev5sdp5xk4ra67": 5
+    },
+    "by_importance": {
+      "5": 2,
+      "7": 2,
+      "8": 1
+    }
+  },
+  "memories": [
+    {
+      "id": "c2b39fb1-0ad7-46df-845d-ae9cd58babdd",
+      "content": "User shared their entrepreneurial journey and vision for the future",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "relational",
+        "User",
+        "Entrepreneurial journey",
+        "Vision for the future"
+      ],
+      "metadata": {
+        "agent_id": "agent_01jvaxb67newtrqxfzwgkk97tz",
+        "conversation_id": "conv_01jvfntbqdfh5bd4q8g98y22gz",
+        "category": "relational",
+        "importance": 5,
+        "entities": [
+          "User",
+          "Entrepreneurial journey",
+          "Vision for the future"
+        ],
+        "timestamp": "2025-11-13T19:57:59.816185+00:00",
+        "shareable": false
+      },
+      "created_at": 1763063879818,
+      "updated_at": 1763063879818,
+      "last_seen_at": 1763064688824,
+      "salience": 0.9999948085632584,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16125082017",
+      "score": 2.9995996898081025
+    },
+    {
+      "id": "0fade38f-f24d-4ea9-ac20-223f6caf90ae",
+      "content": ". 6, \"max_documents_length\": 50000, \"max_retrieved_rag_chunks_count\": 20}, \"timezone\": null, \"backup_llm_config\": {\"preference\": \"default\"}, \"tools\": [{\"type\": \"system\", \"name\": \"end_call\", \"description\": \"\", \"response_timeout_secs\": 20, \"disable_interruptions\": false, \"force_pre_tool_speech\": false",
+      "primary_sector": "emotional",
+      "sectors": [
+        "emotional",
+        "episodic",
+        "procedural",
+        "reflective",
+        "semantic"
+      ],
+      "tags": [],
+      "metadata": {
+        "type": "agent_profile",
+        "agent_id": "agent_01jvaxb67newtrqxfzwgkk97tz",
+        "last_updated": "2025-11-13T19:16:23.101375+00:00",
+        "expires_at": "2025-11-16T19:16:23.101375+00:00",
+        "source": "elevenlabs_api"
+      },
+      "created_at": 1763061383104,
+      "updated_at": 1763061383104,
+      "last_seen_at": 1763064688824,
+      "salience": 0.9999792386879638,
+      "decay_lambda": 0.02,
+      "version": 1,
+      "user_id": "agent_01jvaxb67newtrqxfzwgkk97tz",
+      "score": -0.31204598726412286
+    },
+    {
+      "id": "a7d33edd-2e63-4225-8d66-f0c5739e7e48",
+      "content": "\\u201d* |  \\n| **Connection Check** | *\\u201cYes, I\\u2019m here. \\u201d*  \\n  - **Memory Recall:** *\\u201c. **Emergency Protocols**  \\n   - Distress: *\\u201cWould you like to take a break. \\u201d* |  \\n| **Memory Prompt** | *\\u201c",
+      "primary_sector": "emotional",
+      "sectors": [
+        "emotional",
+        "episodic",
+        "semantic"
+      ],
+      "tags": [],
+      "metadata": {
+        "type": "agent_profile",
+        "agent_id": "agent_01jz3qsjcdfvtv655cvkdfn2dw",
+        "last_updated": "2025-11-13T18:49:18.975909+00:00",
+        "expires_at": "2025-11-16T18:49:18.975909+00:00",
+        "source": "elevenlabs_api"
+      },
+      "created_at": 1763059758979,
+      "updated_at": 1763059758979,
+      "last_seen_at": 1763064688825,
+      "salience": 0.9999792384750056,
+      "decay_lambda": 0.02,
+      "version": 1,
+      "user_id": "agent_01jz3qsjcdfvtv655cvkdfn2dw",
+      "score": -0.3123196613365232
+    },
+    {
+      "id": "2a32f497-8080-4540-acf2-9c65d9bd5093",
+      "content": "\\n- Ask about people who mattered, lessons learned, and meaningful experiences. \\\"\\n  - If name is not found: \\\"Before we begin, may I please have your name. tell me more\\\" or \\\"How interesting. \\n\\n**Connection Management**\\n- If caller asks \\\"Are you there",
+      "primary_sector": "emotional",
+      "sectors": [
+        "emotional",
+        "episodic",
+        "procedural",
+        "reflective",
+        "semantic"
+      ],
+      "tags": [],
+      "metadata": {
+        "type": "agent_profile",
+        "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+        "last_updated": "2025-11-13T17:42:10.080215+00:00",
+        "expires_at": "2025-11-16T17:42:10.080215+00:00",
+        "source": "elevenlabs_api"
+      },
+      "created_at": 1763055730087,
+      "updated_at": 1763055730087,
+      "last_seen_at": 1763064688824,
+      "salience": 0.9999792382620475,
+      "decay_lambda": 0.02,
+      "version": 1,
+      "user_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+      "score": -0.319729421364921
+    },
+    {
+      "id": "c77a66b2-0e31-4cea-bf3b-6a16915506fd",
+      "content": "Sheila returned to the United States and pursued a master's degree",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "factual",
+        "Sheila",
+        "United States"
+      ],
+      "metadata": {
+        "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+        "conversation_id": "conv_01jy1zdbj8emq934gk1kby2pqh",
+        "category": "factual",
+        "importance": 7,
+        "entities": [
+          "Sheila",
+          "United States"
+        ],
+        "timestamp": "2025-11-13T18:28:04.764292+00:00",
+        "shareable": false
+      },
+      "created_at": 1763058484766,
+      "updated_at": 1763058484766,
+      "last_seen_at": 1763064688825,
+      "salience": 0.999994809468346,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+15074595005",
+      "score": -0.3231822897137322
+    },
+    {
+      "id": "c91d5c83-a5c3-4230-9f8e-29238bac3c02",
+      "content": "Sheila lived in Iran for three years",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "factual",
+        "Sheila",
+        "Iran"
+      ],
+      "metadata": {
+        "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+        "conversation_id": "conv_01jxk1wejhenk8x8tt9enzxw4a",
+        "category": "factual",
+        "importance": 8,
+        "entities": [
+          "Sheila",
+          "Iran"
+        ],
+        "timestamp": "2025-11-13T18:23:27.848147+00:00",
+        "shareable": true
+      },
+      "created_at": 1763058207850,
+      "updated_at": 1763058207850,
+      "last_seen_at": 1763064688824,
+      "salience": 0.9999948094151055,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+15074595005",
+      "score": -0.3282285048992681
+    },
+    {
+      "id": "1ec6b4ea-d044-44f3-8fa2-79d93883bfcf",
+      "content": "Sheila and her friend Peggy traveled together in Europe",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "relational",
+        "Sheila",
+        "Peggy"
+      ],
+      "metadata": {
+        "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+        "conversation_id": "conv_01jy1zdbj8emq934gk1kby2pqh",
+        "category": "relational",
+        "importance": 5,
+        "entities": [
+          "Sheila",
+          "Peggy"
+        ],
+        "timestamp": "2025-11-13T18:28:03.263646+00:00",
+        "shareable": false
+      },
+      "created_at": 1763058483265,
+      "updated_at": 1763058483265,
+      "last_seen_at": 1763064688824,
+      "salience": 0.9999948094151055,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+15074595005",
+      "score": -0.33973931624864506
+    },
+    {
+      "id": "867eb969-dce3-4e5a-93fc-931201b510d3",
+      "content": "Sheila traveled in Russia during the late 1960s",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "factual",
+        "Sheila",
+        "Russia",
+        "1960s"
+      ],
+      "metadata": {
+        "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+        "conversation_id": "conv_01jy1xxqmje7arqq7m1pqrfmav",
+        "category": "factual",
+        "importance": 7,
+        "entities": [
+          "Sheila",
+          "Russia",
+          "1960s"
+        ],
+        "timestamp": "2025-11-13T18:25:59.975638+00:00",
+        "shareable": false
+      },
+      "created_at": 1763058359978,
+      "updated_at": 1763058359978,
+      "last_seen_at": 1763064688825,
+      "salience": 0.9999948093618651,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+15074595005",
+      "score": -0.34986277089936724
+    }
+  ],
+  "grouped_by_conversation": {
+    "conv_01jvfntbqdfh5bd4q8g98y22gz": [
+      {
+        "id": "c2b39fb1-0ad7-46df-845d-ae9cd58babdd",
+        "content": "User shared their entrepreneurial journey and vision for the future",
+        "metadata": {
+          "agent_id": "agent_01jvaxb67newtrqxfzwgkk97tz",
+          "conversation_id": "conv_01jvfntbqdfh5bd4q8g98y22gz",
+          "category": "relational",
+          "importance": 5,
+          "entities": [
+            "User",
+            "Entrepreneurial journey",
+            "Vision for the future"
+          ],
+          "timestamp": "2025-11-13T19:57:59.816185+00:00",
+          "shareable": false
+        },
+        "score": 2.9995996898081025
+      }
+    ],
+    "unknown": [
+      {
+        "id": "0fade38f-f24d-4ea9-ac20-223f6caf90ae",
+        "content": ". 6, \"max_documents_length\": 50000, \"max_retrieved_rag_chunks_count\": 20}, \"timezone\": null, \"backup_llm_config\": {\"preference\": \"default\"}, \"tools\": [{\"type\": \"system\", \"name\": \"end_call\", \"description\": \"\", \"response_timeout_secs\": 20, \"disable_interruptions\": false, \"force_pre_tool_speech\": false",
+        "metadata": {
+          "type": "agent_profile",
+          "agent_id": "agent_01jvaxb67newtrqxfzwgkk97tz",
+          "last_updated": "2025-11-13T19:16:23.101375+00:00",
+          "expires_at": "2025-11-16T19:16:23.101375+00:00",
+          "source": "elevenlabs_api"
+        },
+        "score": -0.31204598726412286
+      },
+      {
+        "id": "a7d33edd-2e63-4225-8d66-f0c5739e7e48",
+        "content": "\\u201d* |  \\n| **Connection Check** | *\\u201cYes, I\\u2019m here. \\u201d*  \\n  - **Memory Recall:** *\\u201c. **Emergency Protocols**  \\n   - Distress: *\\u201cWould you like to take a break. \\u201d* |  \\n| **Memory Prompt** | *\\u201c",
+        "metadata": {
+          "type": "agent_profile",
+          "agent_id": "agent_01jz3qsjcdfvtv655cvkdfn2dw",
+          "last_updated": "2025-11-13T18:49:18.975909+00:00",
+          "expires_at": "2025-11-16T18:49:18.975909+00:00",
+          "source": "elevenlabs_api"
+        },
+        "score": -0.3123196613365232
+      },
+      {
+        "id": "2a32f497-8080-4540-acf2-9c65d9bd5093",
+        "content": "\\n- Ask about people who mattered, lessons learned, and meaningful experiences. \\\"\\n  - If name is not found: \\\"Before we begin, may I please have your name. tell me more\\\" or \\\"How interesting. \\n\\n**Connection Management**\\n- If caller asks \\\"Are you there",
+        "metadata": {
+          "type": "agent_profile",
+          "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+          "last_updated": "2025-11-13T17:42:10.080215+00:00",
+          "expires_at": "2025-11-16T17:42:10.080215+00:00",
+          "source": "elevenlabs_api"
+        },
+        "score": -0.319729421364921
+      }
+    ],
+    "conv_01jy1zdbj8emq934gk1kby2pqh": [
+      {
+        "id": "c77a66b2-0e31-4cea-bf3b-6a16915506fd",
+        "content": "Sheila returned to the United States and pursued a master's degree",
+        "metadata": {
+          "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+          "conversation_id": "conv_01jy1zdbj8emq934gk1kby2pqh",
+          "category": "factual",
+          "importance": 7,
+          "entities": [
+            "Sheila",
+            "United States"
+          ],
+          "timestamp": "2025-11-13T18:28:04.764292+00:00",
+          "shareable": false
+        },
+        "score": -0.3231822897137322
+      },
+      {
+        "id": "1ec6b4ea-d044-44f3-8fa2-79d93883bfcf",
+        "content": "Sheila and her friend Peggy traveled together in Europe",
+        "metadata": {
+          "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+          "conversation_id": "conv_01jy1zdbj8emq934gk1kby2pqh",
+          "category": "relational",
+          "importance": 5,
+          "entities": [
+            "Sheila",
+            "Peggy"
+          ],
+          "timestamp": "2025-11-13T18:28:03.263646+00:00",
+          "shareable": false
+        },
+        "score": -0.33973931624864506
+      }
+    ],
+    "conv_01jxk1wejhenk8x8tt9enzxw4a": [
+      {
+        "id": "c91d5c83-a5c3-4230-9f8e-29238bac3c02",
+        "content": "Sheila lived in Iran for three years",
+        "metadata": {
+          "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+          "conversation_id": "conv_01jxk1wejhenk8x8tt9enzxw4a",
+          "category": "factual",
+          "importance": 8,
+          "entities": [
+            "Sheila",
+            "Iran"
+          ],
+          "timestamp": "2025-11-13T18:23:27.848147+00:00",
+          "shareable": true
+        },
+        "score": -0.3282285048992681
+      }
+    ],
+    "conv_01jy1xxqmje7arqq7m1pqrfmav": [
+      {
+        "id": "867eb969-dce3-4e5a-93fc-931201b510d3",
+        "content": "Sheila traveled in Russia during the late 1960s",
+        "metadata": {
+          "agent_id": "agent_01jxbrc1trfxev5sdp5xk4ra67",
+          "conversation_id": "conv_01jy1xxqmje7arqq7m1pqrfmav",
+          "category": "factual",
+          "importance": 7,
+          "entities": [
+            "Sheila",
+            "Russia",
+            "1960s"
+          ],
+          "timestamp": "2025-11-13T18:25:59.975638+00:00",
+          "shareable": false
+        },
+        "score": -0.34986277089936724
+      }
+    ]
+  }
+}
