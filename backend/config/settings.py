@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
 from functools import lru_cache
+from pathlib import Path
 
 
 class Settings(BaseSettings):
@@ -58,7 +59,8 @@ class Settings(BaseSettings):
     memory_similarity_threshold: float = 0.85  # For deduplication (cosine similarity)
 
     class Config:
-        env_file = ".env"
+        # Look for .env file in project root (two levels up from backend/config/)
+        env_file = str(Path(__file__).parent.parent.parent / ".env")
         case_sensitive = False
 
 

@@ -85,7 +85,9 @@ def verify_elevenlabs_webhook(
 
         # Validate timestamp (check if within tolerance)
         current_time = int(time.time())
-        if current_time - timestamp > tolerance_seconds:
+        # Timestamp should be within the last 30 minutes (not too old)
+        # Equivalent to: timestamp >= (current_time - tolerance_seconds)
+        if timestamp < (current_time - tolerance_seconds):
             logger.warning(
                 f"Timestamp too old: current={current_time}, provided={timestamp}, "
                 f"difference={current_time - timestamp}s, tolerance={tolerance_seconds}s"
@@ -97,13 +99,20 @@ def verify_elevenlabs_webhook(
 
         # Validate HMAC signature
         full_payload_to_sign = f"{timestamp}.{request_body.decode('utf-8')}"
-
+        
+        # Debug logging (remove in production)
+        logger.debug(f"Payload to sign: {full_payload_to_sign[:100]}...")
+        logger.debug(f"Secret length: {len(secret)} bytes")
+        logger.debug(f"Provided hash: {provided_hash[:20]}...")
+        
         mac = hmac.new(
             key=secret.encode("utf-8"),
             msg=full_payload_to_sign.encode("utf-8"),
             digestmod=sha256,
         )
         calculated_hash = mac.hexdigest()
+        
+        logger.debug(f"Calculated hash: {calculated_hash[:20]}...")
 
         # Use constant-time comparison to prevent timing attacks
         if not secrets.compare_digest(calculated_hash, provided_hash):
