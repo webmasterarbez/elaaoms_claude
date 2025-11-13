@@ -119,6 +119,7 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 
 3. **Install dependencies**:
    ```bash
+   cd backend
    pip install -r requirements.txt
    ```
 
@@ -162,19 +163,25 @@ This starts:
 
 ### Option 2: Local Development
 
-1. **Ensure OpenMemory is running** (must be configured independently):
+1. **Install dependencies** (if not already done):
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+2. **Ensure OpenMemory is running** (must be configured independently):
    - Verify your OpenMemory instance is accessible at the URL specified in your `.env` file
    - Test connection: `curl http://your-openmemory-url:8080/health`
 
-2. **Start the FastAPI service**:
+3. **Start the FastAPI service**:
    ```bash
    cd backend
    python main.py
    ```
 
-The service will start on `http://localhost:8000`
+   The service will start on `http://localhost:8000`
 
-3. **Optional: Create a public tunnel** (for testing with ElevenLabs):
+4. **Optional: Create a public tunnel** (for testing with ElevenLabs):
    ```bash
    python scripts/ngrok_config.py
    ```
