@@ -1,0 +1,401 @@
+openapi: 3.0.3
+info:
+  title: ELAAOMS Memory Management Platform API
+  description: |
+    API for ElevenLabs Agents Universal Agentic Open Memory System.
+    Provides webhook endpoints for pre-call personalization, in-call memory search,
+    and post-call memory extraction.
+  version: 1.0.0
+  contact:
+    name: ELAAOMS Support
+
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Health
+    description: Health check and utility endpoints
+  - name: Memory System
+    description: Core memory management webhooks
+
+paths:
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: Returns system health status and dependency connectivity
+      operationId: healthCheck
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: System is degraded (dependencies unavailable)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /webhook/client-data:
+    post:
+      tags:
+        - Memory System
+      summary: Pre-call client data webhook
+      description: |
+        Called by ElevenLabs before conversation starts to retrieve personalized context.
+        Returns structured JSON with memories, preferences, and relationship insights
+        (max 2000 tokens).
+      operationId: clientDataWebhook
+      security:
+        - HMACSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientDataRequest'
+      responses:
+        '200':
+          description: Successfully retrieved context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDataResponse'
+        '401':
+          description: HMAC signature validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /webhook/search-memory:
+    post:
+      tags:
+        - Memory System
+      summary: In-call memory search webhook
+      description: |
+        Called by ElevenLabs agent during conversation to search caller's memory history.
+        Returns ranked results by relevance (completes in <3 seconds).
+      operationId: searchMemoryWebhook
+      security:
+        - HMACSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchMemoryRequest'
+      responses:
+        '200':
+          description: Memory search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMemoryResponse'
+        '401':
+          description: HMAC signature validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /webhook/post-call:
+    post:
+      tags:
+        - Memory System
+      summary: Post-call transcription webhook
+      description: |
+        Called by ElevenLabs after conversation ends with transcript.
+        Queues background job for memory extraction (responds in <1 second).
+      operationId: postCallWebhook
+      security:
+        - HMACSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCallRequest'
+      responses:
+        '200':
+          description: Webhook received, extraction queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCallResponse'
+        '401':
+          description: HMAC signature validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid request payload
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    HMACSignature:
+      type: apiKey
+      in: header
+      name: elevenlabs-signature
+      description: |
+        HMAC-SHA256 signature in format "t={timestamp},v0={signature}".
+        Timestamp must be within 30 minutes of current time.
+
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded]
+        message:
+          type: string
+        dependencies:
+          type: object
+          properties:
+            openmemory:
+              type: string
+              enum: [available, unavailable]
+            postgres:
+              type: string
+              enum: [available, unavailable]
+
+    ClientDataRequest:
+      type: object
+      required:
+        - agent_id
+        - conversation_id
+      properties:
+        agent_id:
+          type: string
+          description: AI agent identifier
+        conversation_id:
+          type: string
+          description: Conversation identifier
+        dynamic_variables:
+          type: object
+          description: Dynamic variables including caller_id
+          properties:
+            system__caller_id:
+              type: string
+              description: Caller phone number or identifier
+
+    ClientDataResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success, error]
+        message:
+          type: string
+        request_id:
+          type: string
+          format: uuid
+        data:
+          type: object
+          properties:
+            first_message:
+              type: string
+              description: Personalized greeting message (max 2000 tokens)
+            context:
+              type: object
+              description: Structured context data
+              properties:
+                memories:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      content:
+                        type: string
+                      type:
+                        type: string
+                        enum: [factual, preference, issue, emotion, relationship]
+                      importance:
+                        type: integer
+                        minimum: 1
+                        maximum: 10
+                preferences:
+                  type: array
+                  items:
+                    type: string
+                relationship_insights:
+                  type: array
+                  items:
+                    type: string
+
+    SearchMemoryRequest:
+      type: object
+      required:
+        - query
+        - caller_id
+        - agent_id
+      properties:
+        query:
+          type: string
+          description: Search query text
+          maxLength: 1000
+        caller_id:
+          type: string
+          description: Caller identifier
+        agent_id:
+          type: string
+          description: Current agent identifier
+        conversation_id:
+          type: string
+          description: Current conversation identifier
+        search_all_agents:
+          type: boolean
+          default: false
+          description: Whether to search across all agents
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 5
+          description: Maximum number of results
+
+    SearchMemoryResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success, error]
+        message:
+          type: string
+        request_id:
+          type: string
+          format: uuid
+        data:
+          type: object
+          properties:
+            results:
+              type: array
+              items:
+                $ref: '#/components/schemas/MemoryResult'
+            summary:
+              type: string
+              description: Natural language summary of results
+            searched_agents:
+              type: string
+              description: Agent ID or "all" if cross-agent search
+
+    MemoryResult:
+      type: object
+      properties:
+        memory_id:
+          type: string
+        content:
+          type: string
+        type:
+          type: string
+          enum: [factual, preference, issue, emotion, relationship]
+        importance:
+          type: integer
+          minimum: 1
+          maximum: 10
+        relevance_score:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+        timestamp:
+          type: string
+          format: date-time
+        conversation_id:
+          type: string
+
+    PostCallRequest:
+      type: object
+      required:
+        - type
+        - conversation_id
+      properties:
+        type:
+          type: string
+          enum: [post_call_transcription, post_call_audio, call_initiation_failure]
+        conversation_id:
+          type: string
+        agent_id:
+          type: string
+        caller_id:
+          type: string
+        transcript:
+          type: object
+          description: Full conversation transcript (for post_call_transcription)
+        audio:
+          type: string
+          format: base64
+          description: Base64-encoded MP3 audio (for post_call_audio)
+        error:
+          type: object
+          description: Error information (for call_initiation_failure)
+
+    PostCallResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success, error]
+        message:
+          type: string
+        request_id:
+          type: string
+          format: uuid
+        data:
+          type: object
+          properties:
+            file_path:
+              type: string
+              description: Path where payload was saved
+            webhook_type:
+              type: string
+            conversation_id:
+              type: string
+            extraction_status:
+              type: string
+              enum: [queued, processing, completed, failed]
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        message:
+          type: string
+        request_id:
+          type: string
+          format: uuid
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            details:
+              type: string
+
