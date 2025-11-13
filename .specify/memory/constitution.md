@@ -1,50 +1,220 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version change: N/A → 1.0.0 (Initial constitution creation)
+Modified principles: N/A (new constitution)
+Added sections:
+  - Project Purpose
+  - Core Principles (Professional Conduct, Contribution Values, Types of Accepted Contributions)
+  - Development Standards (Python Code Style, Code Quality Requirements, File Organization, Testing Requirements, Commit Message Format, Pull Request Requirements)
+  - Security Requirements (Critical Security Rules, API Key Management, Webhook Security, Data Protection, Vulnerability Handling, Required Security Features)
+  - Documentation Rules (Documentation-Code Alignment, Required Documentation, Documentation Quality Standards, Documentation Types, Documentation Maintenance)
+  - Governance
+Templates requiring updates:
+  - ✅ plan-template.md (Constitution Check section updated with specific compliance checks)
+  - ⚠️ spec-template.md (may need alignment with constitution principles - review recommended)
+  - ⚠️ tasks-template.md (may need alignment with constitution principles - review recommended)
+  - ⚠️ checklist-template.md (may need alignment with constitution principles - review recommended)
+Follow-up TODOs: None
+-->
+
+# ELAAOMS Development Constitution
+
+## Project Purpose
+
+A universal memory system for ElevenLabs AI agents that automatically extracts, stores, and retrieves conversation memories across all your agents. Provides personalized greetings for returning callers and real-time memory search during calls.
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### Professional Conduct
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+- Maintain respectful and professional interactions in all contributions
+- Provide constructive feedback during code reviews
+- Collaborate openly and transparently
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### Contribution Values
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+- **Quality over quantity**: Focused, well-tested changes preferred
+- **Documentation-first**: All changes must include relevant documentation
+- **Security-conscious**: Consider security implications in all development
+- **User-centric**: Prioritize features that enhance memory system reliability
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Types of Accepted Contributions
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- Bug fixes addressing issues in the codebase
+- New features adding functionality to memory system
+- Documentation improvements and additions
+- Test coverage additions and improvements
+- Code quality refactoring and performance optimization
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Development Standards
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Python Code Style (PEP 8 Modified)
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- **Line length**: 100 characters maximum
+- **Indentation**: 4 spaces, no tabs
+- **Quotes**: Double quotes for strings
+- **Imports**: Organized in three groups (standard library, third-party, local)
+
+### Code Quality Requirements
+
+- **Type hints**: Required for all function parameters and return values
+- **Docstrings**: Mandatory for all functions and classes
+- **Comments**: Required for complex logic
+- **Logging**: Use appropriate levels (DEBUG, INFO, WARNING, ERROR)
+- **Error handling**: Comprehensive try-except with proper logging
+
+### File Organization Pattern
+
+```
+app/
+├── __init__.py          # App initialization
+├── models.py            # Pydantic models
+├── routes.py            # API endpoints
+├── services/            # Business logic
+└── utils/               # Utility functions
+```
+
+### Testing Requirements
+
+- Place tests in `tests/` directory
+- Use pytest framework
+- Maintain >80% code coverage
+- Test both success and failure cases
+- Test security-sensitive code paths
+
+### Commit Message Format (Conventional Commits)
+
+```
+<type>(<scope>): <subject>
+```
+
+**Types**: feat, fix, docs, style, refactor, test, chore
+
+### Pull Request Requirements
+
+- Clear, descriptive title
+- Detailed description including rationale and testing approach
+- All tests passing
+- Documentation updated
+- CHANGELOG.md updated
+- Focused scope (avoid large, unfocused PRs)
+- At least one review required before merge
+
+## Security Requirements
+
+### Critical Security Rules
+
+- **Never commit secrets**: API keys, HMAC secrets, passwords stay out of version control
+- **HMAC validation**: All webhooks must validate HMAC-SHA256 signatures
+- **Input validation**: All inputs validated using Pydantic models
+- **HTTPS only**: Production deployments require HTTPS with valid certificates
+- **No information disclosure**: Error messages must not leak sensitive data
+
+### API Key Management
+
+- Store API keys in environment variables only
+- Never log full API keys (maximum first 8 characters)
+- Rotate keys regularly
+- Use separate keys for development and production
+- Monitor usage for anomalies
+
+### Webhook Security
+
+- HMAC-SHA256 signature validation mandatory
+- Timestamp validation (30-minute window)
+- Constant-time comparison to prevent timing attacks
+- HMAC secrets must be minimum 32 bytes
+
+### Data Protection
+
+- Conversation memories contain PII (phone numbers, names, preferences)
+- Implement data retention policies
+- Consider encryption at rest for sensitive data
+- Comply with GDPR/CCPA where applicable
+- Provide data deletion mechanisms
+
+### Vulnerability Handling
+
+- **Critical vulnerabilities**: Fix within 24-48 hours
+- **High severity**: Fix within 1 week
+- **Medium severity**: Fix within 2 weeks
+- Report security issues privately, never through public GitHub issues
+
+### Required Security Features
+
+- HMAC-SHA256 webhook signature validation
+- Timestamp-based replay attack prevention
+- Input validation using Pydantic models
+- Structured logging for audit trails
+- Environment-based configuration
+- Request ID tracking
+- CORS configuration
+
+## Documentation Rules
+
+### Documentation-Code Alignment
+
+- **Code changes require documentation updates**: No exceptions
+- **Documentation precedes implementation**: Document expected behavior first
+- **Keep docs synchronized**: Review and update affected docs with every code change
+- **No orphaned documentation**: Remove docs when features are removed
+
+### Required Documentation
+
+- Docstrings for all public functions and classes
+- API endpoint documentation with request/response examples
+- Configuration variable descriptions in README
+- Security considerations for new features
+- Architecture decisions documented when patterns change
+
+### Documentation Quality Standards
+
+- Clear, concise language
+- Practical examples included
+- Version-specific information clearly marked
+- Cross-references maintained between related docs
+- Security implications explicitly stated
+
+### Documentation Types
+
+- **README.md**: Project overview, quick start, API reference
+- **CONTRIBUTING.md**: Development guidelines and standards
+- **SECURITY.md**: Security policies and best practices
+- **DEPLOYMENT.md**: Production deployment instructions
+- **CHANGELOG.md**: Version history with security notes
+
+### Documentation Maintenance
+
+- Update documentation in the same PR as code changes
+- Verify all links and references are current
+- Review documentation during code review process
+- Archive outdated documentation, never delete (maintain history)
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices and guidelines. All code contributions, pull requests, and development decisions must comply with these principles and standards.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### Amendment Procedure
+
+- Amendments require documentation of rationale and impact assessment
+- Major changes (principle additions/removals) require team review and approval
+- Version increments follow semantic versioning:
+  - **MAJOR**: Backward incompatible governance/principle removals or redefinitions
+  - **MINOR**: New principle/section added or materially expanded guidance
+  - **PATCH**: Clarifications, wording, typo fixes, non-semantic refinements
+
+### Compliance Review
+
+- All PRs must verify compliance with constitution principles
+- Code reviews must check adherence to development standards
+- Security reviews required for security-sensitive changes
+- Documentation reviews ensure documentation-code alignment
+
+### Enforcement
+
+- Constitution violations block PR merges until resolved
+- Complexity additions must be justified per constitution principles
+- Security violations trigger immediate review and remediation
+- Documentation gaps must be addressed before feature completion
+
+**Version**: 1.0.0 | **Ratified**: 2025-01-27 | **Last Amended**: 2025-01-27

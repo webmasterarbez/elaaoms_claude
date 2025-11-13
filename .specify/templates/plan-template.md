@@ -31,7 +31,16 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify compliance with ELAAOMS Development Constitution (`.specify/memory/constitution.md`):
+
+- **Code Quality**: Type hints, docstrings, and error handling required
+- **Security**: HMAC validation, input validation, no secrets in code
+- **Documentation**: Documentation must be updated with code changes
+- **Testing**: >80% coverage, test success and failure cases
+- **File Organization**: Follow established app/ structure pattern
+- **Commit Format**: Use Conventional Commits format
+
+If any violations are necessary, document justification in Complexity Tracking section below.
 
 ## Project Structure
 
