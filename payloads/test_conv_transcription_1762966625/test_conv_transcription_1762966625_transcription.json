@@ -1,0 +1,33 @@
+{
+  "type": "post_call_transcription",
+  "data": {
+    "conversation_id": "test_conv_transcription_1762966625",
+    "conversation_initiation_client_data": {
+      "dynamic_variables": {
+        "system__caller_id": "+16129782029",
+        "system__agent_id": "agent_test_123"
+      }
+    },
+    "transcript": [
+      {
+        "role": "agent",
+        "agent_id": "agent_test_123",
+        "message": "Hello, how can I help you today?",
+        "source_medium": "phone"
+      },
+      {
+        "role": "user",
+        "message": "I need assistance with my account.",
+        "source_medium": "phone"
+      },
+      {
+        "role": "agent",
+        "agent_id": "agent_test_123",
+        "message": "I'd be happy to help. Let me look into that for you.",
+        "source_medium": "phone"
+      }
+    ],
+    "status": "completed",
+    "duration": 120
+  }
+}

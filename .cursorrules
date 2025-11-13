@@ -1,0 +1,373 @@
+# ELAAOMS (ElevenLabs Agents Universal Agentic Open Memory System) - Cursor Rules
+
+## Project Overview
+
+This is a FastAPI-based webhook service for ElevenLabs AI agents that provides:
+- Automatic memory extraction and storage from conversations
+- Personalized greetings for returning callers
+- Real-time memory search during calls
+- Multi-agent memory sharing
+- HMAC-authenticated webhook processing
+
+**Tech Stack:**
+- Python 3.10+
+- FastAPI 0.104.1
+- Pydantic 2.5.0 for data validation
+- OpenMemory for memory storage
+- OpenAI/Anthropic for LLM operations
+- httpx for async HTTP requests
+
+## Code Style & Conventions
+
+### Python Style Guide
+- **PEP 8 compliant** with these modifications:
+  - Maximum line length: **100 characters**
+  - Indentation: **4 spaces** (no tabs)
+  - String quotes: **Double quotes** (`"string"`)
+  - Import organization: Standard library → Third-party → Local (3 groups)
+
+### Type Hints
+- **Always use type hints** for function parameters and return values
+- Use `Optional[Type]` for nullable values
+- Use `List[Type]` and `Dict[str, Any]` for collections
+- Example:
+  ```python
+  async def process_webhook(
+      request: Request,
+      request_id: str,
+      settings: Settings
+  ) -> PayloadResponse:
+  ```
+
+### Docstrings
+- **All functions and classes must have docstrings**
+- Use triple double quotes (`"""`)
+- Include Args, Returns, and Raises sections for functions
+- Example:
+  ```python
+  def extract_caller_id(webhook_data: dict) -> Optional[str]:
+      """
+      Extract caller_id from webhook data.
+      
+      Checks both nested conversation_initiation_client_data and
+      top-level dynamic_variables.
+      
+      Returns:
+          Caller ID string if found, None otherwise
+      """
+  ```
+
+### Logging
+- Use structured logging with **request IDs** in all log messages
+- Pattern: `logger.info(f"[{request_id}] Processing webhook for conversation {conversation_id}")`
+- Use appropriate log levels:
+  - `DEBUG`: Detailed diagnostic information
+  - `INFO`: General informational messages
+  - `WARNING`: Warning messages (e.g., missing optional data)
+  - `ERROR`: Error messages with `exc_info=True` for exceptions
+- Always include request_id in log messages for traceability
+
+## FastAPI Patterns
+
+### Route Handlers
+- **All route handlers must be async** (`async def`)
+- Use `Request` object when you need raw body access (for HMAC validation)
+- Use Pydantic models for request/response validation
+- Always generate a `request_id` at the start: `request_id = str(uuid.uuid4())`
+- Example:
+  ```python
+  @router.post("/webhook/post-call", response_model=PayloadResponse)
+  async def receive_elevenlabs_webhook(request: Request):
+      request_id = str(uuid.uuid4())
+      settings = get_settings()
+      
+      try:
+          # Get raw body for HMAC validation
+          body = await request.body()
+          # ... processing
+      except HTTPException:
+          raise
+      except Exception as e:
+          logger.error(f"[{request_id}] Error: {str(e)}", exc_info=True)
+          raise HTTPException(status_code=400, detail=str(e))
+  ```
+
+### Error Handling
+- Use `HTTPException` from FastAPI for HTTP errors
+- Re-raise `HTTPException` explicitly: `except HTTPException: raise`
+- Catch general exceptions and log with `exc_info=True`
+- Return appropriate HTTP status codes:
+  - `400`: Bad request (invalid payload)
+  - `401`: Unauthorized (HMAC validation failed)
+  - `500`: Internal server error
+
+### Request Validation
+- Use Pydantic models for all request/response validation
+- Define models in `app/models.py`
+- Use `Field(...)` for required fields with descriptions
+- Include `json_schema_extra` examples in model Config
+
+## Architecture Patterns
+
+### Request ID Tracking
+- **Every webhook endpoint must generate a request_id** at the start
+- Include request_id in all log messages
+- Include request_id in response payloads when applicable
+- Pattern:
+  ```python
+  request_id = str(uuid.uuid4())
+  logger.info(f"[{request_id}] Processing webhook")
+  ```
+
+### HMAC Signature Validation
+- **All ElevenLabs webhooks require HMAC validation**
+- Use `verify_elevenlabs_webhook()` from `app.auth`
+- Get raw body: `body = await request.body()`
+- Get signature header: `signature_header = request.headers.get("elevenlabs-signature")`
+- Pattern:
+  ```python
+  verify_elevenlabs_webhook(
+      request_body=body,
+      signature_header=signature_header,
+      secret=settings.elevenlabs_post_call_hmac_key
+  )
+  ```
+
+### Background Job Processing
+- Use `BackgroundJobProcessor` for async memory extraction
+- Enqueue jobs instead of processing synchronously
+- Pattern:
+  ```python
+  from .background_jobs import get_job_processor, MemoryExtractionJob
+  
+  job = MemoryExtractionJob(
+      conversation_id=conversation_id,
+      agent_id=agent_id,
+      caller_id=caller_id,
+      transcript=transcript,
+      duration=duration,
+      status=status
+  )
+  job_processor = get_job_processor()
+  job_processor.enqueue_job(job)
+  ```
+
+### Settings Management
+- Use `pydantic-settings` for configuration
+- Access settings via `get_settings()` from `config.settings`
+- Settings are cached with `@lru_cache()`
+- Pattern:
+  ```python
+  from config.settings import get_settings
+  
+  settings = get_settings()
+  # Use settings.elevenlabs_api_key, etc.
+  ```
+
+### Client Patterns
+- Create client classes for external APIs (OpenMemory, ElevenLabs)
+- Use async methods with `httpx.AsyncClient`
+- Include proper error handling and logging
+- Pattern:
+  ```python
+  class OpenMemoryClient:
+      def __init__(self):
+          self.api_url = settings.openmemory_api_url
+          self.headers = {"Content-Type": "application/json"}
+      
+      async def store_memory(self, user_id: str, content: str, metadata: dict):
+          async with httpx.AsyncClient() as client:
+              response = await client.post(...)
+  ```
+
+## Code Organization
+
+### Module Structure
+- `app/` - Main application code
+  - `routes.py` - API endpoint definitions
+  - `models.py` - Pydantic request/response models
+  - `auth.py` - HMAC signature validation
+  - `storage.py` - File storage handlers
+  - `background_jobs.py` - Background job processing
+  - `llm_service.py` - LLM integration
+  - `openmemory_client.py` - OpenMemory API client
+  - `elevenlabs_client.py` - ElevenLabs API client
+- `config/` - Configuration
+  - `settings.py` - Environment settings
+- `utility/` - Utility scripts
+- `scripts/` - Deployment scripts
+- `tests/` - Test files
+
+### Imports
+- Organize imports in three groups:
+  1. Standard library imports
+  2. Third-party imports
+  3. Local application imports
+- Use absolute imports for local modules: `from app.models import ...`
+- Example:
+  ```python
+  import uuid
+  import logging
+  from typing import Optional
+  
+  from fastapi import APIRouter, HTTPException, Request
+  from pydantic import BaseModel
+  
+  from app.models import PayloadRequest, PayloadResponse
+  from config.settings import get_settings
+  ```
+
+### Private Functions
+- Use leading underscore for private helper functions: `_handle_transcription_webhook()`
+- Keep route handlers public (no underscore)
+- Extract complex logic into private helper functions
+
+## Pydantic Models
+
+### Model Definition Pattern
+- Inherit from `BaseModel`
+- Use `Field(...)` for required fields with descriptions
+- Use `Optional[Type]` for nullable fields
+- Include `json_schema_extra` examples in Config
+- Example:
+  ```python
+  class ClientDataRequest(BaseModel):
+      """Request model for /webhook/client-data"""
+      agent_id: str = Field(..., description="Agent identifier")
+      conversation_id: str = Field(..., description="Conversation identifier")
+      dynamic_variables: Optional[DynamicVariables] = Field(
+          None, 
+          description="Dynamic variables including caller_id"
+      )
+      
+      class Config:
+          json_schema_extra = {
+              "example": {
+                  "agent_id": "agent_abc123",
+                  "conversation_id": "conv_xyz789",
+                  "dynamic_variables": {
+                      "system__caller_id": "+15551234567"
+                  }
+              }
+          }
+  ```
+
+## Async/Await Patterns
+
+### I/O Operations
+- **All I/O operations must be async** (HTTP requests, database calls, file operations)
+- Use `async with httpx.AsyncClient() as client:` for HTTP requests
+- Use `await` for all async calls
+- Don't mix sync and async I/O
+
+### Error Handling in Async
+- Use try/except blocks around async operations
+- Log errors with `exc_info=True`
+- Re-raise HTTPException, convert other exceptions to HTTPException
+
+## Testing Guidelines
+
+### Test Structure
+- Tests in `tests/` directory
+- Use pytest
+- Test file naming: `test_*.py`
+- Test function naming: `test_*`
+
+### Test Patterns
+- Test both success and failure cases
+- Test HMAC validation
+- Test request validation
+- Use fixtures for common setup
+- Mock external API calls
+
+## Common Patterns
+
+### Caller ID Extraction
+- Extract from `dynamic_variables.system__caller_id`
+- Check both nested and top-level structures
+- Return `None` if not found (don't raise exception)
+- Pattern:
+  ```python
+  def extract_caller_id(webhook_data: dict) -> Optional[str]:
+      conversation_init = webhook_data.get("conversation_initiation_client_data", {})
+      dynamic_variables = conversation_init.get("dynamic_variables", {})
+      caller_id = dynamic_variables.get("system__caller_id")
+      
+      if caller_id:
+          return caller_id
+      
+      # Fallback to top-level
+      dynamic_variables = webhook_data.get("dynamic_variables", {})
+      return dynamic_variables.get("system__caller_id")
+  ```
+
+### Response Formatting
+- Use consistent response models (`PayloadResponse`, `ClientDataResponse`, etc.)
+- Include `request_id` in responses
+- Include relevant data in `data` field
+- Example:
+  ```python
+  return PayloadResponse(
+      status="success",
+      message="Webhook processed successfully",
+      request_id=request_id,
+      data={
+          "file_path": file_path,
+          "webhook_type": "post_call_transcription",
+          "conversation_id": conversation_id
+      }
+  )
+  ```
+
+### File Storage
+- Use functions from `app.storage` for saving payloads
+- Save to `settings.elevenlabs_post_call_payload_path`
+- Organize by conversation_id: `payloads/{conversation_id}/{filename}`
+- Pattern:
+  ```python
+  from .storage import save_transcription_payload
+  
+  file_path = save_transcription_payload(
+      settings.elevenlabs_post_call_payload_path,
+      conversation_id,
+      webhook_data
+  )
+  ```
+
+## Best Practices
+
+1. **Always validate webhook signatures** before processing
+2. **Always generate request_id** for traceability
+3. **Always use type hints** for better code clarity
+4. **Always include docstrings** for functions and classes
+5. **Always log with request_id** for debugging
+6. **Always handle errors gracefully** with appropriate HTTP status codes
+7. **Always use async/await** for I/O operations
+8. **Always validate input** with Pydantic models
+9. **Always use settings** from `config.settings`, never hardcode values
+10. **Always test edge cases** (missing data, invalid formats, etc.)
+
+## When Adding New Features
+
+1. **Add Pydantic models** in `app/models.py` first
+2. **Add route handler** in `app/routes.py` with proper error handling
+3. **Add HMAC validation** if it's an ElevenLabs webhook
+4. **Add request_id tracking** and logging
+5. **Add tests** in `tests/` directory
+6. **Update documentation** in README.md if needed
+7. **Follow existing patterns** - look at similar endpoints for reference
+
+## Code Review Checklist
+
+- [ ] Type hints on all functions
+- [ ] Docstrings on all functions/classes
+- [ ] Request ID generated and used in logs
+- [ ] HMAC validation for webhooks
+- [ ] Proper error handling with HTTPException
+- [ ] Async/await for I/O operations
+- [ ] Pydantic models for validation
+- [ ] Logging with appropriate levels
+- [ ] Settings accessed via get_settings()
+- [ ] Code follows PEP 8 (100 char lines, 4 spaces, double quotes)
+
+

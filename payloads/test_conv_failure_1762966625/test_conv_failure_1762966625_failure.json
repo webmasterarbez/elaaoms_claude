@@ -1,0 +1,15 @@
+{
+  "type": "call_initiation_failure",
+  "data": {
+    "agent_id": "agent_test_123",
+    "conversation_id": "test_conv_failure_1762966625",
+    "failure_reason": "Connection timeout - test error",
+    "metadata": {
+      "type": "sip",
+      "body": {
+        "sip_status_code": 408,
+        "error_reason": "Request Timeout"
+      }
+    }
+  }
+}
