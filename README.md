@@ -8,11 +8,11 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 
 ## 🎯 Quick Links
 
-- 📖 [Complete Memory System Guide](MEMORY_SYSTEM_GUIDE.md) - Full implementation details
-- 🚀 [Deployment Guide](DEPLOYMENT.md) - Production deployment instructions
+- 📖 [Complete Memory System Guide](docs/MEMORY_SYSTEM_GUIDE.md) - Full implementation details
+- 🚀 [Deployment Guide](docs/DEPLOYMENT.md) - Production deployment instructions
 - 🛠️ [Utility Scripts](utility/README.md) - Helper tools and scripts
 - 📝 [API Documentation](#api-endpoints) - Endpoint reference
-- 🔍 [Code-Documentation Alignment](CODE_DOCUMENTATION_ALIGNMENT.md) - Technical deep-dive
+- 🔍 [Code-Documentation Alignment](docs/CODE_DOCUMENTATION_ALIGNMENT.md) - Technical deep-dive
 
 ## ✨ Key Features
 
@@ -45,31 +45,54 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 
 ```
 .
-├── app/
-│   ├── __init__.py               # FastAPI app initialization
-│   ├── auth.py                   # HMAC signature verification
-│   ├── models.py                 # Pydantic request/response models
-│   ├── routes.py                 # API endpoint definitions
-│   ├── storage.py                # File storage handlers
-│   ├── background_jobs.py        # Memory extraction job processor
-│   ├── llm_service.py            # LLM integration (OpenAI/Anthropic)
-│   ├── openmemory_client.py      # OpenMemory API client
-│   └── elevenlabs_client.py      # ElevenLabs API client
-├── config/
-│   ├── __init__.py
-│   └── settings.py               # Environment settings
-├── utility/
-│   └── get_conversation.py       # Fetch conversations from ElevenLabs
-├── scripts/
-│   └── ngrok_config.py           # Ngrok tunnel configuration
-├── main.py                       # Application entry point
-├── requirements.txt              # Python dependencies
-├── Dockerfile                    # Docker container definition
-├── docker-compose.yml            # Production stack configuration
-├── .env.example                  # Environment variables template
-├── README.md                     # This file
-├── MEMORY_SYSTEM_GUIDE.md        # Complete memory system documentation
-└── DEPLOYMENT.md                 # Deployment instructions
+├── backend/                      # Python FastAPI backend
+│   ├── app/
+│   │   ├── __init__.py          # FastAPI app initialization
+│   │   ├── auth.py              # HMAC signature verification
+│   │   ├── models.py            # Pydantic request/response models
+│   │   ├── routes.py            # API endpoint definitions
+│   │   ├── storage.py           # File storage handlers
+│   │   ├── background_jobs.py   # Memory extraction job processor
+│   │   ├── llm_service.py       # LLM integration (OpenAI/Anthropic)
+│   │   ├── openmemory_client.py # OpenMemory API client
+│   │   └── elevenlabs_client.py # ElevenLabs API client
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py          # Environment settings
+│   ├── main.py                  # Application entry point
+│   └── requirements.txt         # Python dependencies
+├── frontend/                    # Frontend applications
+│   ├── react-portfolio/        # React-based portfolio site
+│   │   ├── src/
+│   │   ├── public/
+│   │   └── package.json
+│   └── landing-page/           # Static HTML landing page
+│       ├── css/
+│       ├── js/
+│       └── index.html
+├── docs/                       # All project documentation
+│   ├── MEMORY_SYSTEM_GUIDE.md  # Memory system implementation
+│   ├── DEPLOYMENT.md           # Deployment instructions
+│   ├── CONTRIBUTING.md         # Contribution guidelines
+│   ├── SECURITY.md             # Security documentation
+│   ├── MARKETING_STRATEGY.md   # Marketing documentation
+│   └── [other docs...]
+├── docker/                     # Docker configuration
+│   └── Dockerfile             # Backend container definition
+├── scripts/                    # Utility scripts
+│   ├── ngrok_config.py        # Ngrok tunnel configuration
+│   └── services.sh            # Service management script
+├── utility/                    # Helper utilities
+│   ├── get_conversation.py    # Fetch conversations from ElevenLabs
+│   └── generate_hmac.py       # HMAC signature generation
+├── tests/                      # Test files
+│   └── test_webhook.py
+├── data/                       # Runtime data (gitignored)
+│   ├── payloads/              # Webhook payloads
+│   └── logs/                  # Application logs
+├── docker-compose.yml         # Full stack orchestration
+├── .env.example              # Environment variables template
+└── README.md                 # This file
 ```
 
 ## 📦 Installation
@@ -144,6 +167,7 @@ This starts:
 
 2. **Start the FastAPI service**:
    ```bash
+   cd backend
    python main.py
    ```
 
@@ -439,18 +463,21 @@ All webhooks require valid HMAC-SHA256 signatures. The service automatically val
 
 ### Storage Structure
 
-Payloads are automatically saved to disk:
+Payloads are automatically saved to disk in the `data/` directory:
 
 ```
-payloads/
-├── conversation_id_1/
-│   ├── conversation_id_1_transcription.json
-│   ├── conversation_id_1_audio.mp3
-│   └── conversation_id_1_failure.json
-├── conversation_id_2/
-│   ├── conversation_id_2_transcription.json
-│   └── conversation_id_2_audio.mp3
-└── ...
+data/
+├── payloads/
+│   ├── conversation_id_1/
+│   │   ├── conversation_id_1_transcription.json
+│   │   ├── conversation_id_1_audio.mp3
+│   │   └── conversation_id_1_failure.json
+│   ├── conversation_id_2/
+│   │   ├── conversation_id_2_transcription.json
+│   │   └── conversation_id_2_audio.mp3
+│   └── ...
+└── logs/
+    └── app.log
 ```
 
 ---
@@ -573,13 +600,13 @@ Error response model:
 - `error_code` (string, optional): Error code for debugging
 - `request_id` (string, optional): Request identifier
 
-For complete data model documentation, see the [Swagger docs](http://localhost:8000/docs) or [models.py](app/models.py).
+For complete data model documentation, see the [Swagger docs](http://localhost:8000/docs) or [models.py](backend/app/models.py).
 
 ## 🛠️ Development
 
 ### Adding New Endpoints
 
-Edit `app/routes.py` and add new routes to the `router`:
+Edit `backend/app/routes.py` and add new routes to the `router`:
 
 ```python
 @router.post("/custom-endpoint")
@@ -595,7 +622,7 @@ async def custom_handler(payload: PayloadRequest):
 
 ### Custom Payload Models
 
-Add new Pydantic models to `app/models.py` for specialized payloads:
+Add new Pydantic models to `backend/app/models.py` for specialized payloads:
 
 ```python
 class CustomPayload(BaseModel):
@@ -631,7 +658,7 @@ logger.error("Error message")
 - **openai:** 1.6.1 (OpenAI Python SDK)
 - **anthropic:** 0.25.1 (Anthropic Python SDK)
 
-See `requirements.txt` for the complete list with exact versions.
+See `backend/requirements.txt` for the complete list with exact versions.
 
 ## 🚨 Troubleshooting
 
@@ -680,14 +707,16 @@ docker-compose logs -f openmemory
 2. Ensure you have API credits available
 3. Check that you're using OpenAI SDK 1.x (already updated in this version)
 
-For more troubleshooting, see [DEPLOYMENT.md](DEPLOYMENT.md#troubleshooting).
+For more troubleshooting, see [DEPLOYMENT.md](docs/DEPLOYMENT.md#troubleshooting).
 
 ## 📖 Additional Documentation
 
-- **[MEMORY_SYSTEM_GUIDE.md](MEMORY_SYSTEM_GUIDE.md)** - Complete memory system implementation guide with architecture, configuration, and examples
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide with Docker, cloud providers, monitoring, and scaling
+- **[MEMORY_SYSTEM_GUIDE.md](docs/MEMORY_SYSTEM_GUIDE.md)** - Complete memory system implementation guide with architecture, configuration, and examples
+- **[DEPLOYMENT.md](docs/DEPLOYMENT.md)** - Production deployment guide with Docker, cloud providers, monitoring, and scaling
+- **[CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Guidelines for contributing to the project
+- **[SECURITY.md](docs/SECURITY.md)** - Security policies and best practices
 - **[utility/README.md](utility/README.md)** - Documentation for utility scripts and tools
-- **[CODE_DOCUMENTATION_ALIGNMENT.md](CODE_DOCUMENTATION_ALIGNMENT.md)** - Technical analysis of code-documentation alignment
+- **[CODE_DOCUMENTATION_ALIGNMENT.md](docs/CODE_DOCUMENTATION_ALIGNMENT.md)** - Technical analysis of code-documentation alignment
 
 ## 📄 License
 
@@ -695,28 +724,30 @@ MIT
 
 ## 🤝 Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this project.
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines on contributing to this project.
 
 ## 💬 Support
 
 For issues, questions, or feature requests:
 1. Check the [Troubleshooting](#troubleshooting) section
-2. Review logs: `tail -f logs/app.log` or `docker-compose logs -f app`
+2. Review logs: `tail -f data/logs/app.log` or `docker-compose logs -f backend`
 3. Consult the documentation guides linked above
 4. Open an issue on GitHub
 
 ## 🎯 Next Steps
 
 1. ✅ Complete installation and configuration
-2. ✅ Configure ElevenLabs webhooks (see [MEMORY_SYSTEM_GUIDE.md](MEMORY_SYSTEM_GUIDE.md#elevenlabs-setup))
+2. ✅ Configure ElevenLabs webhooks (see [MEMORY_SYSTEM_GUIDE.md](docs/MEMORY_SYSTEM_GUIDE.md#elevenlabs-setup))
 3. ✅ Test with a sample call
 4. ✅ Monitor logs and adjust settings
-5. ✅ Deploy to production (see [DEPLOYMENT.md](DEPLOYMENT.md))
+5. ✅ Deploy to production (see [DEPLOYMENT.md](docs/DEPLOYMENT.md))
 
 **Your universal agent memory system is ready!** 🚀
 
 ---
 
 For detailed memory system implementation, webhook configuration, and production deployment, see the complete guides:
-- 📖 [Memory System Guide](MEMORY_SYSTEM_GUIDE.md)
-- 🚀 [Deployment Guide](DEPLOYMENT.md)
+- 📖 [Memory System Guide](docs/MEMORY_SYSTEM_GUIDE.md)
+- 🚀 [Deployment Guide](docs/DEPLOYMENT.md)
+- 🎨 [React Portfolio](frontend/react-portfolio/README.md)
+- 🌐 [Landing Page](frontend/landing-page/README.md)

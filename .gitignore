@@ -37,4 +37,9 @@ ENV/
 htmlcov/
 .coverage
 .services.pids
-payloads/
+
+# Data directories (runtime generated)
+data/payloads/*
+data/logs/*
+!data/payloads/.gitkeep
+!data/logs/.gitkeep
