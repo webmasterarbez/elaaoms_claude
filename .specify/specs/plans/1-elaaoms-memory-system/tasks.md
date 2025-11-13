@@ -103,7 +103,7 @@ This document provides an actionable, dependency-ordered task list for implement
 - [ ] T012 [P] Create backend/app/storage.py with file system operations for payload storage
 - [ ] T013 [P] Create backend/main.py with FastAPI app initialization and CORS configuration
 - [ ] T014 [P] Implement GET /health endpoint in backend/app/routes.py with dependency checks
-- [ ] T015 Create logging configuration in backend/config/logging.py with structured logging and request ID tracking
+- [ ] T015 Create logging configuration in backend/config/logging.py with structured logging, request ID tracking, and API key masking (max 8 characters) per constitution
 
 ---
 
