@@ -6,13 +6,13 @@ A complete, professional React portfolio website has been created to showcase an
 
 ## 📍 Location
 
-All portfolio files are located in: `/home/user/elaaoms_claude/portfolio/`
+All portfolio files are located in: `frontend/react-portfolio/`
 
 ## 🚀 Getting Started
 
 ### 1. Navigate to Portfolio Directory
 ```bash
-cd portfolio
+cd frontend/react-portfolio
 ```
 
 ### 2. Install Dependencies
@@ -157,7 +157,7 @@ Replace placeholder links with your actual URLs:
 ## 📊 Project Structure
 
 ```
-portfolio/
+frontend/react-portfolio/
 ├── public/
 │   └── index.html              # HTML template with meta tags
 ├── src/
@@ -201,7 +201,7 @@ portfolio/
 
 1. **Install and Test Locally**:
    ```bash
-   cd portfolio
+   cd frontend/react-portfolio
    npm install
    npm start
    ```
@@ -227,7 +227,7 @@ portfolio/
 ## 🤝 Support
 
 For questions or issues with the portfolio website:
-1. Check the `portfolio/README.md` file
+1. Check the `frontend/react-portfolio/README.md` file
 2. Review the component files for specific section questions
 3. Refer to React documentation for React-specific questions
 
@@ -239,4 +239,4 @@ This portfolio website is part of the ELAAOMS project and is released under the 
 
 **Your professional portfolio website is ready to showcase ELAAOMS to the world!** 🚀
 
-Visit the portfolio directory, run `npm install && npm start`, and see your beautiful website in action!
+Visit the `frontend/react-portfolio` directory, run `npm install && npm start`, and see your beautiful website in action!
