@@ -1,0 +1,200 @@
+.how-it-works {
+  background: var(--darker-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.steps-container {
+  max-width: 900px;
+  margin: 0 auto 80px;
+  position: relative;
+}
+
+.step-card {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 40px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.step-card:hover {
+  transform: translateX(10px);
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+}
+
+.step-number {
+  font-size: 5rem;
+  font-weight: 900;
+  opacity: 0.15;
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  line-height: 1;
+}
+
+.step-content {
+  position: relative;
+  z-index: 1;
+}
+
+.step-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+}
+
+.step-description {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 25px;
+  font-style: italic;
+}
+
+.step-details {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.step-details li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.check-icon {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.step-connector {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(180deg, var(--primary-color), transparent);
+}
+
+.architecture-diagram {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.diagram-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.diagram-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.diagram-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.diagram-box {
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  padding: 20px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 120px;
+  transition: all 0.3s ease;
+}
+
+.diagram-box:hover {
+  transform: scale(1.05);
+  background: rgba(99, 102, 241, 0.2);
+  box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+}
+
+.box-icon {
+  font-size: 2rem;
+}
+
+.diagram-box span:last-child {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.arrow {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.diagram-labels {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.diagram-labels span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .step-card {
+    padding: 30px 25px;
+  }
+
+  .step-number {
+    font-size: 3rem;
+    top: 15px;
+    right: 25px;
+  }
+
+  .step-title {
+    font-size: 1.4rem;
+  }
+
+  .step-details {
+    grid-template-columns: 1fr;
+  }
+
+  .diagram-row {
+    flex-direction: column;
+  }
+
+  .arrow {
+    transform: rotate(90deg);
+  }
+
+  .diagram-labels {
+    flex-direction: column;
+    align-items: center;
+  }
+}
