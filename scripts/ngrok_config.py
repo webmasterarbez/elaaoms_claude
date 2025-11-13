@@ -11,8 +11,9 @@ import shutil
 import time
 from pathlib import Path
 
-# Add parent directory to path so we can import config module
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add backend directory to path so we can import config module
+backend_path = Path(__file__).parent.parent / "backend"
+sys.path.insert(0, str(backend_path))
 
 from config.settings import get_settings
 

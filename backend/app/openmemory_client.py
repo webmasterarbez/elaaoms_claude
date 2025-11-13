@@ -95,9 +95,9 @@ class OpenMemoryClient:
             response.raise_for_status()
             result = response.json()
 
-                memory_id = result.get("memory_id") or result.get("id")
-                logger.info(f"Stored memory {memory_id} for user {user_id}")
-                return memory_id
+            memory_id = result.get("memory_id") or result.get("id")
+            logger.info(f"Stored memory {memory_id} for user {user_id}")
+            return memory_id
 
         except Exception as e:
             logger.error(f"Failed to store memory: {e}", exc_info=True)
@@ -142,9 +142,9 @@ class OpenMemoryClient:
             response.raise_for_status()
             result = response.json()
 
-                memories = result.get("memories", result.get("results", []))
-                logger.debug(f"Found {len(memories)} memories for user {user_id}")
-                return memories
+            memories = result.get("memories", result.get("results", []))
+            logger.debug(f"Found {len(memories)} memories for user {user_id}")
+            return memories
 
         except Exception as e:
             logger.error(f"Failed to search memories: {e}", exc_info=True)
