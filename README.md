@@ -100,8 +100,8 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 ### Prerequisites
 - Python 3.10 or higher
 - pip (Python package manager)
-- Docker (optional, for backend containerization)
 - OpenMemory instance (must be configured and running independently)
+- Docker (optional, only for backend containerization - not required for local development)
 
 ### Steps
 
@@ -148,20 +148,7 @@ A universal memory system for ElevenLabs AI agents that automatically extracts, 
 
 ## 🚀 Quick Start
 
-### Option 1: Docker Compose (Recommended)
-
-Start the FastAPI backend service:
-
-```bash
-docker-compose up -d
-```
-
-This starts:
-- FastAPI app on port 8000
-
-**Note:** OpenMemory must be configured and running independently. Ensure your `.env` file has the correct `OPENMEMORY_API_URL` pointing to your OpenMemory instance.
-
-### Option 2: Local Development
+### Option 1: Local Development (Recommended)
 
 1. **Install dependencies** (if not already done):
    ```bash
@@ -187,6 +174,21 @@ This starts:
    ```
 
 Visit `http://localhost:8000/docs` for interactive API documentation.
+
+### Option 2: Docker Compose (Optional)
+
+**Note:** Docker Compose only runs the backend service. OpenMemory must be configured and running independently.
+
+Start the FastAPI backend service:
+
+```bash
+docker-compose up -d
+```
+
+This starts:
+- FastAPI app on port 8000
+
+**Important:** Ensure your `.env` file has the correct `OPENMEMORY_API_URL` pointing to your OpenMemory instance (which must be running separately).
 
 ## 🔧 Configuration
 
