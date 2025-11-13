@@ -453,10 +453,10 @@ tar -czf payloads-backup.tar.gz payloads/
    LLM_MODEL=gpt-3.5-turbo  # Instead of gpt-4-turbo
    ```
 
-2. **Use Groq (faster & cheaper):**
+2. **Use Anthropic Claude (alternative):**
    ```bash
-   LLM_PROVIDER=groq
-   LLM_MODEL=mixtral-8x7b-32768
+   LLM_PROVIDER=anthropic
+   LLM_MODEL=claude-3-sonnet-20240229  # or claude-3-opus-20240229
    ```
 
 3. **Adjust memory extraction:**

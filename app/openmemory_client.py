@@ -6,7 +6,7 @@ import logging
 import json
 import httpx
 from typing import Optional, List, Dict, Any
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from config.settings import get_settings
 
 logger = logging.getLogger(__name__)
@@ -172,7 +172,7 @@ class AgentProfileManager:
 
             if expires_at_str:
                 expires_at = datetime.fromisoformat(expires_at_str.replace('Z', '+00:00'))
-                if expires_at < datetime.utcnow():
+                if expires_at < datetime.now(timezone.utc):
                     logger.info(f"Agent profile for {agent_id} has expired")
                     return None
 
@@ -199,7 +199,7 @@ class AgentProfileManager:
             True if successful, False otherwise
         """
         try:
-            now = datetime.utcnow()
+            now = datetime.now(timezone.utc)
             expires_at = now + timedelta(hours=self.ttl_hours)
 
             content = json.dumps(profile_data)
@@ -267,7 +267,7 @@ class CallerMemoryManager:
                 "category": category,
                 "importance": importance,
                 "entities": entities,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
 
             memory_id = await self.client.store_memory(

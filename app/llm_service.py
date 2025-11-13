@@ -5,7 +5,7 @@ LLM service for memory extraction and personalization.
 import logging
 import json
 from typing import List, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 from config.settings import get_settings
 
 logger = logging.getLogger(__name__)
@@ -77,7 +77,7 @@ class LLMService:
             for msg in transcript
         ])
 
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.now(timezone.utc).isoformat()
 
         return f"""Extract memories from this AI agent conversation for future reference.
 

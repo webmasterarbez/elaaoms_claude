@@ -7,7 +7,7 @@ import asyncio
 from queue import Queue
 from threading import Thread
 from typing import Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timezone
 
 from app.openmemory_client import (
     OpenMemoryClient,
@@ -38,7 +38,7 @@ class MemoryExtractionJob:
         self.transcript = transcript
         self.duration = duration
         self.status = status
-        self.created_at = datetime.utcnow()
+        self.created_at = datetime.now(timezone.utc)
 
 
 class BackgroundJobProcessor:
