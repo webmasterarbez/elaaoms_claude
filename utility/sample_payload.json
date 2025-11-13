@@ -1,0 +1,39 @@
+{
+  "type": "post_call_transcription",
+  "data": {
+    "conversation_id": "conv_test_12345",
+    "transcript": [
+      {
+        "role": "agent",
+        "message": "Hello! Thank you for calling. How can I help you today?",
+        "agent_id": "agent_test_123"
+      },
+      {
+        "role": "user",
+        "message": "Hi, I'd like to check on my order XYZ-789"
+      },
+      {
+        "role": "agent",
+        "message": "Of course! Let me look that up for you. I see your order XYZ-789 was shipped yesterday and should arrive by Friday."
+      },
+      {
+        "role": "user",
+        "message": "Great, thank you! Can you send it via express shipping instead?"
+      },
+      {
+        "role": "agent",
+        "message": "Absolutely! I've upgraded your shipping to express. You should receive it by tomorrow."
+      },
+      {
+        "role": "user",
+        "message": "Perfect, thanks for your help!"
+      }
+    ],
+    "status": "completed",
+    "duration": 180,
+    "agent_id": "agent_test_123",
+    "dynamic_variables": {
+      "system__caller_id": "+15551234567"
+    }
+  }
+}
