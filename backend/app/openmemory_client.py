@@ -67,35 +67,46 @@ class OpenMemoryClient:
                 logger.error("Cannot store memory: user_id is required")
                 return None
             
+            if not content:
+                logger.error("Cannot store memory: content is required")
+                return None
+            
             # Validate required metadata fields
             required_fields = ["agent_id", "conversation_id"]
             for field in required_fields:
                 if field not in metadata:
                     logger.warning(f"Missing required metadata field: {field}")
             
-            # OpenMemory automatically indexes on:
-            # - user_id (caller_id)
-            # - metadata.agent_id
-            # - metadata.conversation_id
-            # - metadata.category (type)
-            # - metadata.importance (importance_rating)
-            # These indexes enable fast queries for pre-call (<2s) and search (<3s)
-            
+            # Build payload according to OpenMemory API spec
+            # See: https://openmemory.cavira.app/docs/api/add-memory
             payload = {
-                "user_id": user_id,
                 "content": content,
+                "user_id": user_id,
                 "metadata": metadata
             }
+            
+            # Extract tags from metadata if present, or create from category/entities
+            tags = []
+            if "tags" in metadata:
+                tags = metadata.get("tags", [])
+            elif "category" in metadata:
+                tags.append(metadata["category"])
+            if "entities" in metadata:
+                tags.extend(metadata.get("entities", []))
+            
+            if tags:
+                payload["tags"] = tags
 
             client = await self._get_client()
             response = await client.post(
-                f"{self.api_url}/memory/store",
+                f"{self.api_url}/memory/add",
                 json=payload
             )
             response.raise_for_status()
             result = response.json()
 
-            memory_id = result.get("memory_id") or result.get("id")
+            # OpenMemory returns "id", not "memory_id"
+            memory_id = result.get("id")
             logger.info(f"Stored memory {memory_id} for user {user_id}")
             return memory_id
 
@@ -123,26 +134,44 @@ class OpenMemoryClient:
             List of memory objects
         """
         try:
+            # Build payload according to OpenMemory API spec
+            # Query endpoint: POST /memory/query
             payload = {
                 "user_id": user_id,
                 "limit": limit
             }
-
+            
             if query:
                 payload["query"] = query
-
+            
+            # Add metadata filters if provided
+            # OpenMemory query API accepts metadata filters in metadata object
             if filter_dict:
-                payload["filter"] = filter_dict
+                # Handle nested metadata filters (e.g., "metadata.agent_id" -> "agent_id")
+                metadata_filters = {}
+                for key, value in filter_dict.items():
+                    if key.startswith("metadata."):
+                        # Extract the actual metadata key (remove "metadata." prefix)
+                        meta_key = key.replace("metadata.", "")
+                        metadata_filters[meta_key] = value
+                    elif key not in ["query", "limit", "user_id"]:
+                        # Include other filter keys that aren't top-level fields
+                        metadata_filters[key] = value
+                
+                if metadata_filters:
+                    payload["metadata"] = metadata_filters
 
             client = await self._get_client()
             response = await client.post(
-                f"{self.api_url}/memory/search",
+                f"{self.api_url}/memory/query",
                 json=payload
             )
             response.raise_for_status()
             result = response.json()
 
-            memories = result.get("memories", result.get("results", []))
+            # OpenMemory returns memories in different format
+            # Check for common response formats
+            memories = result.get("memories", result.get("results", result.get("data", [])))
             logger.debug(f"Found {len(memories)} memories for user {user_id}")
             return memories
 
@@ -192,9 +221,9 @@ class OpenMemoryClient:
             client = await self._get_client()
             
             # Use DELETE endpoint as per OpenMemory API documentation
-            # DELETE /api/v1/memories/{memory_id}
+            # DELETE /memory/{memory_id}
             response = await client.delete(
-                f"{self.api_url}/api/v1/memories/{memory_id}"
+                f"{self.api_url}/memory/{memory_id}"
             )
             response.raise_for_status()
             
