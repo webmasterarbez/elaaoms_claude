@@ -6,7 +6,7 @@ import logging
 import asyncio
 from queue import Queue, Empty
 from threading import Thread
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime, timezone
 import time
 import json
@@ -149,22 +149,38 @@ class BackgroundJobProcessor:
                     # This is not a failure - just no memories found
                     return
 
-                # Step 3: Store memories with deduplication
+                # Step 3: Store memories with deduplication and retry
                 logger.info(
                     f"Storing {len(extracted_memories)} memories "
                     f"for conversation {job.conversation_id}"
                 )
-                stored_count, reinforced_count = await self._store_memories_with_deduplication(
+                storage_result = await self._store_memories_with_deduplication(
                     caller_id=job.caller_id,
                     agent_id=job.agent_id,
                     conversation_id=job.conversation_id,
                     memories=extracted_memories
                 )
 
+                stored_count = storage_result["stats"]["stored_count"]
+                reinforced_count = storage_result["stats"]["reinforced_count"]
+                failed_count = storage_result["stats"]["failed_count"]
+                
                 logger.info(
-                    f"Memory extraction complete for conversation {job.conversation_id}: "
-                    f"{stored_count} new memories stored, {reinforced_count} existing reinforced"
+                    f"Memory storage complete for conversation {job.conversation_id}: "
+                    f"{stored_count} new memories stored, {reinforced_count} existing reinforced, "
+                    f"{failed_count} failed"
                 )
+                
+                # Step 4: Validate stored memories if enabled
+                if settings.memory_validation_enabled:
+                    await self._validate_stored_memories(
+                        caller_id=job.caller_id,
+                        agent_id=job.agent_id,
+                        conversation_id=job.conversation_id,
+                        expected_count=len(extracted_memories),
+                        storage_result=storage_result
+                    )
+                
                 return  # Success - exit retry loop
 
             except Exception as e:
@@ -273,16 +289,30 @@ class BackgroundJobProcessor:
         agent_id: str,
         conversation_id: str,
         memories: List[Dict[str, Any]]
-    ) -> tuple[int, int]:
+    ) -> Dict[str, Any]:
         """
-        Store memories with deduplication logic.
+        Store memories with deduplication logic and retry mechanism.
 
         Returns:
-            Tuple of (stored_count, reinforced_count)
+            Dictionary with detailed results: {
+                "stored": [memory_ids],
+                "reinforced": [memory_ids],
+                "failed": [{"memory": {...}, "error": str}],
+                "stats": {
+                    "stored_count": int,
+                    "reinforced_count": int,
+                    "failed_count": int,
+                    "total_count": int
+                }
+            }
         """
-        stored_count = 0
-        reinforced_count = 0
-
+        from config.settings import get_settings
+        settings = get_settings()
+        
+        stored_memory_ids = []
+        reinforced_memory_ids = []
+        failed_memories = []
+        
         for memory in memories:
             try:
                 content = memory.get("content", "")
@@ -295,8 +325,7 @@ class BackgroundJobProcessor:
                     continue
 
                 # Check for similar existing memory
-                from config.settings import get_settings
-                similarity_threshold = get_settings().memory_similarity_threshold
+                similarity_threshold = settings.memory_similarity_threshold
                 
                 similar_memory = await self.caller_memory_manager.find_similar_memory(
                     caller_id=caller_id,
@@ -317,13 +346,13 @@ class BackgroundJobProcessor:
                     )
                     
                     if is_conflict:
-                        # Store conflicting memory with conflict marker
+                        # Store conflicting memory with conflict marker (with retry)
                         logger.warning(
                             f"Conflict detected for caller {caller_id}: "
                             f"existing={similar_category}/{similar_importance}, "
                             f"new={category}/{importance}"
                         )
-                        memory_id = await self.caller_memory_manager.store_caller_memory(
+                        memory_id = await self._store_memory_with_retry(
                             caller_id=caller_id,
                             agent_id=agent_id,
                             conversation_id=conversation_id,
@@ -332,20 +361,30 @@ class BackgroundJobProcessor:
                             importance=importance,
                             entities=entities
                         )
-                        # Mark as conflict in metadata
                         if memory_id:
-                            stored_count += 1
+                            stored_memory_ids.append(memory_id)
                             logger.debug(f"Stored conflicting memory: {memory_id}")
+                        else:
+                            failed_memories.append({
+                                "memory": memory,
+                                "error": "Failed to store conflicting memory after retries"
+                            })
                     else:
-                        # Reinforce existing memory instead of creating duplicate
+                        # Reinforce existing memory instead of creating duplicate (with retry)
                         memory_id = similar_memory.get("id") or similar_memory.get("memory_id")
                         if memory_id:
-                            await self.openmemory_client.reinforce_memory(memory_id)
-                            reinforced_count += 1
-                            logger.debug(f"Reinforced existing memory: {memory_id}")
+                            success = await self._reinforce_memory_with_retry(memory_id)
+                            if success:
+                                reinforced_memory_ids.append(memory_id)
+                                logger.debug(f"Reinforced existing memory: {memory_id}")
+                            else:
+                                failed_memories.append({
+                                    "memory": memory,
+                                    "error": "Failed to reinforce memory after retries"
+                                })
                 else:
-                    # Store new memory
-                    memory_id = await self.caller_memory_manager.store_caller_memory(
+                    # Store new memory (with retry)
+                    memory_id = await self._store_memory_with_retry(
                         caller_id=caller_id,
                         agent_id=agent_id,
                         conversation_id=conversation_id,
@@ -356,14 +395,247 @@ class BackgroundJobProcessor:
                     )
 
                     if memory_id:
-                        stored_count += 1
+                        stored_memory_ids.append(memory_id)
                         logger.debug(f"Stored new memory: {memory_id}")
+                    else:
+                        failed_memories.append({
+                            "memory": memory,
+                            "error": "Failed to store memory after retries"
+                        })
 
             except Exception as e:
-                logger.error(f"Error storing memory: {e}", exc_info=True)
+                logger.error(f"Error processing memory for storage: {e}", exc_info=True)
+                failed_memories.append({
+                    "memory": memory,
+                    "error": str(e)
+                })
                 continue
 
-        return stored_count, reinforced_count
+        result = {
+            "stored": stored_memory_ids,
+            "reinforced": reinforced_memory_ids,
+            "failed": failed_memories,
+            "stats": {
+                "stored_count": len(stored_memory_ids),
+                "reinforced_count": len(reinforced_memory_ids),
+                "failed_count": len(failed_memories),
+                "total_count": len(memories)
+            }
+        }
+        
+        logger.info(
+            f"Memory storage complete for conversation {conversation_id}: "
+            f"{result['stats']['stored_count']} stored, "
+            f"{result['stats']['reinforced_count']} reinforced, "
+            f"{result['stats']['failed_count']} failed"
+        )
+        
+        return result
+    
+    async def _store_memory_with_retry(
+        self,
+        caller_id: str,
+        agent_id: str,
+        conversation_id: str,
+        content: str,
+        category: str,
+        importance: int,
+        entities: List[str]
+    ) -> Optional[str]:
+        """
+        Store a memory with retry logic and exponential backoff.
+        
+        Args:
+            caller_id: Caller identifier
+            agent_id: Agent identifier
+            conversation_id: Conversation identifier
+            content: Memory content
+            category: Memory category
+            importance: Importance score
+            entities: List of entities
+        
+        Returns:
+            Memory ID if successful, None otherwise
+        """
+        from config.settings import get_settings
+        settings = get_settings()
+        
+        max_attempts = settings.memory_storage_retry_attempts
+        initial_delay = settings.memory_storage_retry_delay_seconds
+        
+        for attempt in range(max_attempts):
+            try:
+                memory_id = await self.caller_memory_manager.store_caller_memory(
+                    caller_id=caller_id,
+                    agent_id=agent_id,
+                    conversation_id=conversation_id,
+                    content=content,
+                    category=category,
+                    importance=importance,
+                    entities=entities
+                )
+                
+                if memory_id:
+                    if attempt > 0:
+                        logger.info(
+                            f"Successfully stored memory after {attempt + 1} attempts: {memory_id}"
+                        )
+                    return memory_id
+                else:
+                    # Store returned None, retry
+                    if attempt < max_attempts - 1:
+                        delay = initial_delay * (2 ** attempt)  # Exponential backoff
+                        logger.warning(
+                            f"Memory storage returned None (attempt {attempt + 1}/{max_attempts}), "
+                            f"retrying in {delay}s"
+                        )
+                        await asyncio.sleep(delay)
+                    
+            except Exception as e:
+                if attempt < max_attempts - 1:
+                    delay = initial_delay * (2 ** attempt)  # Exponential backoff
+                    logger.warning(
+                        f"Error storing memory (attempt {attempt + 1}/{max_attempts}): {e}, "
+                        f"retrying in {delay}s"
+                    )
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(
+                        f"Failed to store memory after {max_attempts} attempts: {e}",
+                        exc_info=True
+                    )
+        
+        return None
+    
+    async def _reinforce_memory_with_retry(self, memory_id: str) -> bool:
+        """
+        Reinforce a memory with retry logic and exponential backoff.
+        
+        Args:
+            memory_id: Memory identifier to reinforce
+        
+        Returns:
+            True if successful, False otherwise
+        """
+        from config.settings import get_settings
+        settings = get_settings()
+        
+        max_attempts = settings.memory_storage_retry_attempts
+        initial_delay = settings.memory_storage_retry_delay_seconds
+        
+        for attempt in range(max_attempts):
+            try:
+                success = await self.openmemory_client.reinforce_memory(memory_id)
+                
+                if success:
+                    if attempt > 0:
+                        logger.info(
+                            f"Successfully reinforced memory after {attempt + 1} attempts: {memory_id}"
+                        )
+                    return True
+                else:
+                    # Reinforce returned False, retry
+                    if attempt < max_attempts - 1:
+                        delay = initial_delay * (2 ** attempt)  # Exponential backoff
+                        logger.warning(
+                            f"Memory reinforcement returned False (attempt {attempt + 1}/{max_attempts}), "
+                            f"retrying in {delay}s"
+                        )
+                        await asyncio.sleep(delay)
+                    
+            except Exception as e:
+                if attempt < max_attempts - 1:
+                    delay = initial_delay * (2 ** attempt)  # Exponential backoff
+                    logger.warning(
+                        f"Error reinforcing memory (attempt {attempt + 1}/{max_attempts}): {e}, "
+                        f"retrying in {delay}s"
+                    )
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(
+                        f"Failed to reinforce memory after {max_attempts} attempts: {e}",
+                        exc_info=True
+                    )
+        
+        return False
+    
+    async def _validate_stored_memories(
+        self,
+        caller_id: str,
+        agent_id: str,
+        conversation_id: str,
+        expected_count: int,
+        storage_result: Dict[str, Any]
+    ) -> None:
+        """
+        Validate that stored memories exist in OpenMemory.
+        
+        Args:
+            caller_id: Caller identifier
+            agent_id: Agent identifier
+            conversation_id: Conversation identifier
+            expected_count: Expected number of memories extracted
+            storage_result: Result from _store_memories_with_deduplication
+        """
+        try:
+            from config.settings import get_settings
+            settings = get_settings()
+            
+            logger.info(
+                f"Validating stored memories for conversation {conversation_id}"
+            )
+            
+            # Query OpenMemory for all memories from this conversation
+            stored_memories = await self.openmemory_client.search_memories(
+                user_id=caller_id,
+                filter_dict={"metadata.conversation_id": conversation_id},
+                limit=1000  # Large limit to get all memories
+            )
+            
+            stored_count = len(stored_memories)
+            expected_stored = storage_result["stats"]["stored_count"]
+            expected_reinforced = storage_result["stats"]["reinforced_count"]
+            
+            # Count memories that match this conversation
+            conversation_memories = [
+                m for m in stored_memories
+                if m.get("metadata", {}).get("conversation_id") == conversation_id
+            ]
+            conversation_count = len(conversation_memories)
+            
+            logger.info(
+                f"Validation results for conversation {conversation_id}: "
+                f"Found {conversation_count} memories in OpenMemory, "
+                f"Expected {expected_stored} new + {expected_reinforced} reinforced"
+            )
+            
+            # Check for discrepancies
+            if conversation_count < expected_stored:
+                discrepancy = expected_stored - conversation_count
+                logger.warning(
+                    f"Memory validation discrepancy for conversation {conversation_id}: "
+                    f"{discrepancy} memories expected but not found in OpenMemory. "
+                    f"This may indicate storage failures."
+                )
+            elif conversation_count >= expected_stored:
+                logger.info(
+                    f"Memory validation passed for conversation {conversation_id}: "
+                    f"All expected memories found in OpenMemory"
+                )
+            
+            # Log failed memories if any
+            if storage_result["stats"]["failed_count"] > 0:
+                logger.warning(
+                    f"Memory storage had {storage_result['stats']['failed_count']} failures "
+                    f"for conversation {conversation_id}. "
+                    f"Failed memories: {[f.get('error', 'Unknown error') for f in storage_result['failed']]}"
+                )
+                
+        except Exception as e:
+            logger.error(
+                f"Error validating stored memories for conversation {conversation_id}: {e}",
+                exc_info=True
+            )
 
 
 # Global job processor instance

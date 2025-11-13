@@ -49,54 +49,104 @@ class LLMService:
             List of extracted memory objects
         """
         try:
-            # Chunk long conversations (>10K tokens)
-            chunks = self._chunk_transcript(transcript, max_tokens=10000)
+            # Chunk long conversations with overlap and metadata
+            chunk_data_list = self._chunk_transcript(
+                transcript,
+                max_tokens=settings.llm_max_tokens_per_chunk,
+                overlap_tokens=settings.llm_chunk_overlap_tokens,
+                conversation_id=conversation_id
+            )
             
             all_memories = []
+            failed_chunks = []
+            chunk_stats = {
+                "total_chunks": len(chunk_data_list),
+                "successful_chunks": 0,
+                "failed_chunks": 0,
+                "total_memories_extracted": 0
+            }
             
-            # Process each chunk
-            for i, chunk in enumerate(chunks):
-                logger.info(
-                    f"Processing chunk {i+1}/{len(chunks)} for conversation {conversation_id}"
-                )
+            # Process each chunk independently with error isolation
+            for chunk_data in chunk_data_list:
+                chunk = chunk_data["chunk"]
+                chunk_metadata = chunk_data["metadata"]
+                chunk_index = chunk_metadata["chunk_index"]
+                total_chunks = chunk_metadata["total_chunks"]
                 
-                # Check if we need json_object format (for GPT-4 models)
-                use_json_object = "gpt-4" in self.model.lower()
-                
-                prompt = self._create_memory_extraction_prompt(
-                    chunk, agent_id, caller_id, conversation_id, use_json_object=use_json_object
-                )
+                try:
+                    logger.info(
+                        f"Processing chunk {chunk_index + 1}/{total_chunks} "
+                        f"for conversation {conversation_id} "
+                        f"({chunk_metadata['token_count']} tokens, "
+                        f"{chunk_metadata['message_count']} messages)"
+                    )
+                    
+                    # Check if we need json_object format (for GPT-4 models)
+                    use_json_object = "gpt-4" in self.model.lower()
+                    
+                    prompt = self._create_memory_extraction_prompt(
+                        chunk, agent_id, caller_id, conversation_id, use_json_object=use_json_object
+                    )
 
-                # Select provider (with fallback support)
-                selected_provider = self._select_provider()
-                
-                # Try primary provider with fallback
-                chunk_memories = await self._extract_with_fallback(prompt, selected_provider)
-                
-                # Validate response
-                validated_chunk_memories = self._validate_memory_response(chunk_memories)
-                
-                # Apply privacy filters
-                from .privacy import get_privacy_filter
-                privacy_filter = get_privacy_filter()
-                
-                filtered_memories = []
-                for memory in validated_chunk_memories:
-                    if privacy_filter.should_redact_memory(memory):
-                        # Redact sensitive information
-                        content = memory.get("content", "")
-                        memory["content"] = privacy_filter.filter_sensitive_info(content)
-                        memory["metadata"] = memory.get("metadata", {})
-                        memory["metadata"]["privacy_filtered"] = True
-                        logger.info("Applied privacy filter to memory")
-                    filtered_memories.append(memory)
-                
-                all_memories.extend(filtered_memories)
+                    # Select provider (with fallback support)
+                    selected_provider = self._select_provider()
+                    
+                    # Try primary provider with fallback
+                    chunk_memories = await self._extract_with_fallback(prompt, selected_provider)
+                    
+                    # Validate response
+                    validated_chunk_memories = self._validate_memory_response(chunk_memories)
+                    
+                    # Apply privacy filters
+                    from .privacy import get_privacy_filter
+                    privacy_filter = get_privacy_filter()
+                    
+                    filtered_memories = []
+                    for memory in validated_chunk_memories:
+                        if privacy_filter.should_redact_memory(memory):
+                            # Redact sensitive information
+                            content = memory.get("content", "")
+                            memory["content"] = privacy_filter.filter_sensitive_info(content)
+                            memory["metadata"] = memory.get("metadata", {})
+                            memory["metadata"]["privacy_filtered"] = True
+                            logger.info("Applied privacy filter to memory")
+                        filtered_memories.append(memory)
+                    
+                    all_memories.extend(filtered_memories)
+                    chunk_stats["successful_chunks"] += 1
+                    chunk_stats["total_memories_extracted"] += len(filtered_memories)
+                    
+                    logger.info(
+                        f"Successfully processed chunk {chunk_index + 1}/{total_chunks}: "
+                        f"extracted {len(filtered_memories)} memories"
+                    )
+                    
+                except Exception as e:
+                    # Error isolation: log failure but continue processing other chunks
+                    logger.error(
+                        f"Error processing chunk {chunk_index + 1}/{total_chunks} "
+                        f"for conversation {conversation_id}: {e}",
+                        exc_info=True
+                    )
+                    failed_chunks.append({
+                        "chunk_index": chunk_index,
+                        "error": str(e),
+                        "metadata": chunk_metadata
+                    })
+                    chunk_stats["failed_chunks"] += 1
             
             logger.info(
-                f"Extracted {len(all_memories)} validated memories from conversation {conversation_id} "
-                f"({len(chunks)} chunks)"
+                f"Memory extraction complete for conversation {conversation_id}: "
+                f"{chunk_stats['successful_chunks']}/{chunk_stats['total_chunks']} chunks successful, "
+                f"{chunk_stats['total_memories_extracted']} memories extracted"
             )
+            
+            if failed_chunks:
+                logger.warning(
+                    f"Failed to process {len(failed_chunks)} chunks for conversation {conversation_id}. "
+                    f"Chunks: {[c['chunk_index'] for c in failed_chunks]}"
+                )
+            
             return all_memories
 
         except Exception as e:
@@ -247,20 +297,30 @@ class LLMService:
     def _chunk_transcript(
         self,
         transcript: List[Dict[str, str]],
-        max_tokens: int = 10000
-    ) -> List[List[Dict[str, str]]]:
+        max_tokens: Optional[int] = None,
+        overlap_tokens: Optional[int] = None,
+        conversation_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         """
-        Chunk long conversations for memory extraction.
+        Chunk long conversations for memory extraction with overlap and boundary respect.
         
         Args:
             transcript: Full transcript
-            max_tokens: Maximum tokens per chunk
+            max_tokens: Maximum tokens per chunk (defaults to settings.llm_max_tokens_per_chunk)
+            overlap_tokens: Overlap tokens between chunks (defaults to settings.llm_chunk_overlap_tokens)
+            conversation_id: Conversation ID for chunk metadata
         
         Returns:
-            List of transcript chunks
+            List of chunk dictionaries with metadata: [{"chunk": [...], "metadata": {...}}, ...]
         """
         if not transcript:
             return []
+        
+        # Use settings defaults if not provided
+        if max_tokens is None:
+            max_tokens = settings.llm_max_tokens_per_chunk
+        if overlap_tokens is None:
+            overlap_tokens = settings.llm_chunk_overlap_tokens
         
         # Estimate total tokens
         full_text = "\n".join([
@@ -269,31 +329,114 @@ class LLMService:
         ])
         total_tokens = self._estimate_tokens(full_text)
         
-        # If under limit, return as single chunk
+        # If under limit, return as single chunk with metadata
         if total_tokens <= max_tokens:
-            return [transcript]
+            return [{
+                "chunk": transcript,
+                "metadata": {
+                    "chunk_index": 0,
+                    "total_chunks": 1,
+                    "conversation_id": conversation_id,
+                    "token_count": total_tokens,
+                    "message_count": len(transcript)
+                }
+            }]
         
-        # Split into chunks
+        # Split into chunks with overlap and boundary respect
         chunks = []
         current_chunk = []
         current_tokens = 0
+        chunk_index = 0
+        overlap_messages = []
+        overlap_tokens_count = 0
         
-        for msg in transcript:
+        i = 0
+        while i < len(transcript):
+            msg = transcript[i]
             msg_text = f"{msg.get('role', 'unknown')}: {msg.get('message', '')}"
             msg_tokens = self._estimate_tokens(msg_text)
             
+            # Check if adding this message would exceed limit
             if current_tokens + msg_tokens > max_tokens and current_chunk:
-                chunks.append(current_chunk)
-                current_chunk = [msg]
-                current_tokens = msg_tokens
+                # Try to find a good boundary (prefer user/agent transitions)
+                # Look ahead for a better split point
+                split_at = i
+                if i < len(transcript) - 1:
+                    # Prefer splitting after agent messages or before user messages
+                    current_role = msg.get('role', '')
+                    # If current message is agent, include it and split after
+                    # If current message is user, try to split before it
+                    if current_role == 'user' and len(current_chunk) > 0:
+                        # Split before this user message
+                        split_at = i
+                    else:
+                        # Include current message and split after
+                        split_at = i + 1
+                
+                # Save current chunk
+                chunks.append({
+                    "chunk": current_chunk.copy(),
+                    "metadata": {
+                        "chunk_index": chunk_index,
+                        "total_chunks": 0,  # Will update later
+                        "conversation_id": conversation_id,
+                        "token_count": current_tokens,
+                        "message_count": len(current_chunk)
+                    }
+                })
+                
+                # Prepare overlap for next chunk
+                # Take last N messages that fit within overlap_tokens
+                overlap_messages = []
+                overlap_tokens_count = 0
+                for j in range(len(current_chunk) - 1, -1, -1):
+                    overlap_msg = current_chunk[j]
+                    overlap_msg_text = f"{overlap_msg.get('role', 'unknown')}: {overlap_msg.get('message', '')}"
+                    overlap_msg_tokens = self._estimate_tokens(overlap_msg_text)
+                    if overlap_tokens_count + overlap_msg_tokens <= overlap_tokens:
+                        overlap_messages.insert(0, overlap_msg)
+                        overlap_tokens_count += overlap_msg_tokens
+                    else:
+                        break
+                
+                # Start new chunk with overlap
+                current_chunk = overlap_messages.copy()
+                current_tokens = overlap_tokens_count
+                chunk_index += 1
+                
+                # Add current message if we didn't split before it
+                if split_at > i:
+                    current_chunk.append(msg)
+                    current_tokens += msg_tokens
+                    i += 1
             else:
                 current_chunk.append(msg)
                 current_tokens += msg_tokens
+                i += 1
         
+        # Add final chunk
         if current_chunk:
-            chunks.append(current_chunk)
+            chunks.append({
+                "chunk": current_chunk,
+                "metadata": {
+                    "chunk_index": chunk_index,
+                    "total_chunks": len(chunks) + 1,
+                    "conversation_id": conversation_id,
+                    "token_count": current_tokens,
+                    "message_count": len(current_chunk)
+                }
+            })
         
-        logger.info(f"Split transcript into {len(chunks)} chunks (total tokens: {total_tokens})")
+        # Update total_chunks in all metadata
+        total_chunks = len(chunks)
+        for chunk_data in chunks:
+            chunk_data["metadata"]["total_chunks"] = total_chunks
+        
+        logger.info(
+            f"Split transcript into {total_chunks} chunks "
+            f"(total tokens: {total_tokens}, overlap: {overlap_tokens} tokens per chunk)"
+        )
+        
         return chunks
 
     def _create_memory_extraction_prompt(

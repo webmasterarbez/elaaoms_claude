@@ -57,6 +57,15 @@ class Settings(BaseSettings):
     memory_relevance_threshold: float = 0.7
     high_importance_threshold: int = 8
     memory_similarity_threshold: float = 0.85  # For deduplication (cosine similarity)
+    
+    # Chunking Configuration
+    llm_max_tokens_per_chunk: int = 10000  # Max tokens per chunk for LLM processing
+    llm_chunk_overlap_tokens: int = 200  # Overlap between chunks to prevent context loss
+    
+    # Storage Retry Configuration
+    memory_storage_retry_attempts: int = 3  # Retry attempts for storage operations
+    memory_storage_retry_delay_seconds: int = 1  # Initial retry delay (exponential backoff)
+    memory_validation_enabled: bool = True  # Enable post-storage validation
 
     class Config:
         # Look for .env file in project root (two levels up from backend/config/)
