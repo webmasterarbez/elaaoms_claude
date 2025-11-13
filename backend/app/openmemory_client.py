@@ -5,6 +5,7 @@ OpenMemory client for storing and retrieving agent profiles and caller memories.
 import logging
 import json
 import httpx
+from httpx import HTTPStatusError
 from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta, timezone
 from config.settings import get_settings
@@ -170,6 +171,47 @@ class OpenMemoryClient:
 
         except Exception as e:
             logger.error(f"Failed to reinforce memory: {e}", exc_info=True)
+            return False
+
+    async def delete_memory(self, memory_id: str, caller_id: Optional[str] = None) -> bool:
+        """
+        Delete a memory from OpenMemory.
+
+        Args:
+            memory_id: Memory identifier
+            caller_id: Optional caller identifier for verification
+
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            if not memory_id:
+                logger.error("Cannot delete memory: memory_id is required")
+                return False
+
+            client = await self._get_client()
+            
+            # Use DELETE endpoint as per OpenMemory API documentation
+            # DELETE /api/v1/memories/{memory_id}
+            response = await client.delete(
+                f"{self.api_url}/api/v1/memories/{memory_id}"
+            )
+            response.raise_for_status()
+            
+            logger.info(
+                f"Deleted memory {memory_id}"
+                + (f" for caller {caller_id}" if caller_id else "")
+            )
+            return True
+
+        except HTTPStatusError as e:
+            if e.response.status_code == 404:
+                logger.warning(f"Memory {memory_id} not found (may already be deleted)")
+                return False
+            logger.error(f"HTTP error deleting memory {memory_id}: {e}", exc_info=True)
+            return False
+        except Exception as e:
+            logger.error(f"Failed to delete memory {memory_id}: {e}", exc_info=True)
             return False
 
 

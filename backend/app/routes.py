@@ -666,22 +666,32 @@ async def delete_memory_webhook(request: Request):
                 detail="caller_id is required for memory deletion"
             )
         
+        if not memory_id:
+            raise HTTPException(
+                status_code=400,
+                detail="memory_id is required for memory deletion"
+            )
+        
         # Initialize OpenMemory client
         openmemory_client = OpenMemoryClient()
         
-        # Delete memory (implementation depends on OpenMemory API)
-        # For now, log the deletion request
+        # Delete memory via OpenMemory API
         logger.info(
             f"[{request_id}] Memory deletion requested: "
             f"caller_id={caller_id}, memory_id={memory_id}"
         )
         
-        # TODO: Implement actual deletion via OpenMemory API when available
-        # await openmemory_client.delete_memory(memory_id, caller_id)
+        deleted = await openmemory_client.delete_memory(memory_id, caller_id)
+        
+        if not deleted:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Memory {memory_id} not found or could not be deleted"
+            )
         
         return PayloadResponse(
             status="success",
-            message="Memory deletion request processed",
+            message="Memory deleted successfully",
             request_id=request_id,
             data={
                 "caller_id": caller_id,
