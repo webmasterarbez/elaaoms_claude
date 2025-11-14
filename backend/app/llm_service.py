@@ -249,6 +249,7 @@ class LLMService:
         
         validated = []
         valid_categories = ["factual", "preference", "issue", "emotional", "relational"]
+        valid_sectors = ["episodic", "semantic", "procedural", "emotional", "reflective"]
         
         for memory in memories:
             try:
@@ -259,6 +260,7 @@ class LLMService:
                 
                 content = memory.get("content", "")
                 category = memory.get("category", "factual")
+                sector = memory.get("sector", "semantic")  # Default to semantic
                 importance = memory.get("importance", 5)
                 entities = memory.get("entities", [])
                 
@@ -272,6 +274,11 @@ class LLMService:
                     logger.warning(f"Invalid category {category}, defaulting to factual")
                     category = "factual"
                 
+                # Validate sector
+                if sector not in valid_sectors:
+                    logger.warning(f"Invalid sector {sector}, defaulting to semantic")
+                    sector = "semantic"
+                
                 # Validate importance (1-10)
                 if not isinstance(importance, int) or importance < 1 or importance > 10:
                     logger.warning(f"Invalid importance {importance}, defaulting to 5")
@@ -284,6 +291,7 @@ class LLMService:
                 validated.append({
                     "content": content,
                     "category": category,
+                    "sector": sector,
                     "importance": importance,
                     "entities": entities
                 })
@@ -549,6 +557,7 @@ class LLMService:
     {{
       "content": "Clear, concise, atomic memory statement",
       "category": "factual|preference|issue|emotional|relational",
+      "sector": "episodic|semantic|procedural|emotional|reflective",
       "importance": 1-10,
       "entities": ["entity1", "entity2"]
     }}
@@ -576,12 +585,12 @@ Conversation Details:
 Full Transcript:
 {transcript_text}
 
-Extract memories in these categories:
-1. FACTUAL: Names (FIRST AND LAST names separately), IDs, numbers, dates, locations, transactions, objective facts
-2. PREFERENCES: User preferences, likes/dislikes, communication style, scheduling preferences
-3. ISSUES: Problems mentioned, complaints, unresolved issues, follow-up needed
-4. EMOTIONAL: Customer sentiment (satisfied, frustrated, neutral), tone of interaction
-5. RELATIONAL: People or entities mentioned, relationships between concepts
+Extract memories in these categories with OpenMemory HSG (Hierarchical Semantic Graph) sectors:
+1. EPISODIC: Specific events, experiences, stories, "what happened" - temporal and contextual
+2. SEMANTIC: Facts, knowledge, concepts, "what is" - general knowledge and facts
+3. PROCEDURAL: How-to information, processes, methods, "how to do" - skills and procedures
+4. EMOTIONAL: Feelings, sentiments, emotional states, "how it feels" - affective information
+5. REFLECTIVE: Insights, reflections, lessons learned, "what it means" - higher-order thinking
 
 {response_format}
 
@@ -592,7 +601,9 @@ Rules:
 - Names are high importance (8-9): Extract "Caller's first name is [name]" and "Caller's last name is [name]" separately
 - If a name is spelled out (e.g., "3-B-R-E-E-T"), extract it as the actual name (e.g., "Breet")
 - Importance: 10=critical (account numbers, VIP status), 8-9=names, 1=minor detail
-- Extract 5-20 memories per conversation
+- TARGET: Extract 20-50+ memories per conversation (be comprehensive, not conservative)
+- Extract both obvious facts AND implicit information (emotions, relationships, patterns)
+- For each memory, assign the most appropriate HSG sector (episodic, semantic, procedural, emotional, reflective)
 - If nothing memorable, return empty array [] or {{"memories": []}}
 
 CRITICAL CONTENT FILTERING RULES:

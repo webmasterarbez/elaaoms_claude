@@ -111,13 +111,27 @@ async def _handle_transcription_webhook(webhook: ElevenLabsWebhook, request_id: 
         )
 
         # Save transcription payload to disk
-        file_path = save_transcription_payload(
-            settings.elevenlabs_post_call_payload_path,
-            conversation_id,
-            webhook.model_dump()
-        )
-
-        logger.info(f"[{request_id}] Transcription saved to {file_path}")
+        try:
+            # Use model_dump() for Pydantic v2, fallback to dict() for v1
+            try:
+                webhook_dict = webhook.model_dump()
+            except AttributeError:
+                # Pydantic v1 compatibility
+                webhook_dict = webhook.dict()
+            
+            file_path = save_transcription_payload(
+                settings.elevenlabs_post_call_payload_path,
+                conversation_id,
+                webhook_dict
+            )
+            logger.info(f"[{request_id}] Transcription saved to {file_path}")
+        except Exception as save_error:
+            logger.error(
+                f"[{request_id}] Failed to save transcription payload: {str(save_error)}",
+                exc_info=True
+            )
+            # Continue processing even if save fails (non-critical)
+            file_path = None
 
         # Extract caller_id and agent_id from webhook data
         caller_id = extract_caller_id(webhook.data)
@@ -146,18 +160,23 @@ async def _handle_transcription_webhook(webhook: ElevenLabsWebhook, request_id: 
             )
 
         # Legacy: Send to OpenMemory logging (deprecated but keeping for now)
-        send_to_openmemory(webhook.model_dump(), request_id)
+        try:
+            webhook_dict = webhook.model_dump()
+        except AttributeError:
+            webhook_dict = webhook.dict()
+        send_to_openmemory(webhook_dict, request_id)
 
         return PayloadResponse(
             status="success",
             message="Transcription webhook processed, memory extraction started",
             request_id=request_id,
             data={
-                "file_path": file_path,
+                "file_path": file_path or "not_saved",
                 "webhook_type": "post_call_transcription",
                 "conversation_id": conversation_id,
                 "transcript_items": len(transcription.transcript),
-                "memory_extraction_queued": bool(caller_id and agent_id)
+                "memory_extraction_queued": bool(caller_id and agent_id),
+                "payload_saved": file_path is not None
             }
         )
 
@@ -254,20 +273,35 @@ async def _handle_failure_webhook(webhook: ElevenLabsWebhook, request_id: str, s
         )
 
         # Save failure payload
-        file_path = save_failure_payload(
-            settings.elevenlabs_post_call_payload_path,
-            conversation_id,
-            webhook.model_dump()
-        )
+        try:
+            try:
+                webhook_dict = webhook.model_dump()
+            except AttributeError:
+                webhook_dict = webhook.dict()
+            
+            file_path = save_failure_payload(
+                settings.elevenlabs_post_call_payload_path,
+                conversation_id,
+                webhook_dict
+            )
+        except Exception as save_error:
+            logger.error(
+                f"[{request_id}] Failed to save failure payload: {str(save_error)}",
+                exc_info=True
+            )
+            file_path = None
 
-        logger.info(f"[{request_id}] Failure recorded to {file_path}")
+        if file_path:
+            logger.info(f"[{request_id}] Failure recorded to {file_path}")
+        else:
+            logger.warning(f"[{request_id}] Failure payload not saved (save failed)")
 
         return PayloadResponse(
             status="success",
             message="Failure webhook processed and saved",
             request_id=request_id,
             data={
-                "file_path": file_path,
+                "file_path": file_path or "not_saved",
                 "webhook_type": "call_initiation_failure",
                 "conversation_id": conversation_id,
                 "failure_reason": failure.failure_reason,

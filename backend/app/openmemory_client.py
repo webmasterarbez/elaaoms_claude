@@ -464,7 +464,8 @@ class CallerMemoryManager:
         content: str,
         category: str,
         importance: int,
-        entities: List[str]
+        entities: List[str],
+        sector: str = "semantic"
     ) -> Optional[str]:
         """
         Store a caller memory in OpenMemory.
@@ -483,22 +484,29 @@ class CallerMemoryManager:
         """
         try:
             from config.settings import get_settings
+            from app.memory_utils import get_content_hash, prepare_memory_for_storage
             settings = get_settings()
             
             # Mark as shareable if importance >= threshold
             is_shareable = importance >= settings.high_importance_threshold
             
-            metadata = {
-                "type": "conversation_memory",  # Distinguish from agent_profile
-                "agent_id": agent_id,
-                "conversation_id": conversation_id,
-                "category": category,
-                "importance": importance,
-                "entities": entities,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "shareable": is_shareable  # Mark high-importance memories as shareable
-            }
+            # Prepare memory with content hash
+            memory_data = prepare_memory_for_storage(
+                content=content,
+                category=category,
+                sector=sector,
+                importance=importance,
+                entities=entities,
+                caller_id=caller_id,
+                agent_id=agent_id,
+                conversation_id=conversation_id
+            )
+            
+            metadata = memory_data["metadata"]
+            metadata["shareable"] = is_shareable
+            metadata["timestamp"] = datetime.now(timezone.utc).isoformat()
 
+            # Store memory with tags
             memory_id = await self.client.store_memory(
                 user_id=caller_id,
                 content=content,
@@ -530,21 +538,50 @@ class CallerMemoryManager:
         caller_id: str,
         agent_id: str,
         content: str,
-        similarity_threshold: float = 0.85
+        similarity_threshold: float = 0.85,
+        content_hash: Optional[str] = None
     ) -> Optional[Dict[str, Any]]:
         """
         Find similar existing memory for deduplication.
+        
+        Uses content hash for exact duplicate detection (fast) and
+        semantic search for similar memories.
 
         Args:
             caller_id: Caller identifier
             agent_id: Agent identifier
             content: Memory content to check
             similarity_threshold: Minimum similarity score
+            content_hash: Optional pre-computed content hash
 
         Returns:
             Similar memory if found, None otherwise
         """
         try:
+            from app.memory_utils import get_content_hash
+            
+            # Step 1: Check for exact duplicate using content hash (fast)
+            if content_hash is None:
+                content_hash = get_content_hash(content)
+            
+            # Query by content hash in metadata
+            hash_memories = await self.client.search_memories(
+                user_id=caller_id,
+                query="",  # Empty query, using filters only
+                filter_dict={
+                    "metadata.agent_id": agent_id,
+                    "metadata.content_hash": content_hash
+                },
+                limit=1
+            )
+            
+            if hash_memories:
+                logger.info(
+                    f"Found exact duplicate (hash match) for caller {caller_id}"
+                )
+                return hash_memories[0]
+            
+            # Step 2: Check for similar memory using semantic search
             memories = await self.client.search_memories(
                 user_id=caller_id,
                 query=content,
@@ -568,6 +605,88 @@ class CallerMemoryManager:
         except Exception as e:
             logger.error(f"Error finding similar memory: {e}", exc_info=True)
             return None
+    
+    async def batch_find_similar_memories(
+        self,
+        caller_id: str,
+        agent_id: str,
+        memories: List[Dict[str, Any]],
+        similarity_threshold: float = 0.85
+    ) -> Dict[str, Optional[Dict[str, Any]]]:
+        """
+        Batch find similar memories for multiple extracted memories.
+        
+        This is more efficient than calling find_similar_memory N times.
+        
+        Args:
+            caller_id: Caller identifier
+            agent_id: Agent identifier
+            memories: List of extracted memories with 'content' field
+            similarity_threshold: Minimum similarity score
+            
+        Returns:
+            Dictionary mapping memory content hash to similar memory (if found)
+        """
+        from app.memory_utils import get_content_hash
+        import asyncio
+        
+        try:
+            # Step 1: Get all content hashes
+            memory_hashes = {}
+            for memory in memories:
+                content = memory.get("content", "")
+                if content:
+                    content_hash = get_content_hash(content)
+                    memory_hashes[content_hash] = memory
+            
+            # Step 2: Query all existing memories for this caller/agent
+            # We'll get all memories and match by hash and semantic similarity
+            all_existing = await self.client.search_memories(
+                user_id=caller_id,
+                query="",  # Empty query to get all
+                filter_dict={"metadata.agent_id": agent_id},
+                limit=1000  # Get all memories for comparison
+            )
+            
+            # Step 3: Build hash index of existing memories
+            existing_by_hash = {}
+            for existing in all_existing:
+                metadata = existing.get("metadata", {})
+                if isinstance(metadata, dict):
+                    existing_hash = metadata.get("content_hash")
+                    if existing_hash:
+                        existing_by_hash[existing_hash] = existing
+            
+            # Step 4: Match by hash first (exact duplicates)
+            results = {}
+            for content_hash, memory in memory_hashes.items():
+                if content_hash in existing_by_hash:
+                    # Exact duplicate found
+                    results[content_hash] = existing_by_hash[content_hash]
+                else:
+                    # No exact match, will need semantic search
+                    results[content_hash] = None
+            
+            # Step 5: For memories without hash match, do semantic search
+            # (This could be optimized further with batch semantic search if API supports it)
+            for content_hash, memory in memory_hashes.items():
+                if results[content_hash] is None:
+                    # Do individual semantic search for this memory
+                    similar = await self.find_similar_memory(
+                        caller_id=caller_id,
+                        agent_id=agent_id,
+                        content=memory.get("content", ""),
+                        similarity_threshold=similarity_threshold,
+                        content_hash=content_hash
+                    )
+                    results[content_hash] = similar
+            
+            return results
+            
+        except Exception as e:
+            logger.error(f"Error in batch_find_similar_memories: {e}", exc_info=True)
+            # Fallback: return empty results
+            return {get_content_hash(m.get("content", "")): None for m in memories}
 
     async def get_last_conversation_memories(
         self,

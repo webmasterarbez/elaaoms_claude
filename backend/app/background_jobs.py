@@ -160,6 +160,12 @@ class BackgroundJobProcessor:
                     conversation_id=job.conversation_id,
                     memories=extracted_memories
                 )
+                
+                # Step 4: Invalidate cache for this caller/agent
+                from app.memory_cache import get_memory_cache
+                cache = get_memory_cache()
+                cache.invalidate(job.caller_id, job.agent_id)
+                logger.debug(f"Invalidated cache for {job.caller_id}:{job.agent_id}")
 
                 stored_count = storage_result["stats"]["stored_count"]
                 reinforced_count = storage_result["stats"]["reinforced_count"]
@@ -313,10 +319,30 @@ class BackgroundJobProcessor:
         reinforced_memory_ids = []
         failed_memories = []
         
+        # Step 1: Batch find similar memories (more efficient than one-by-one)
+        logger.info(f"Batch checking for duplicates among {len(memories)} memories")
+        similarity_threshold = settings.memory_similarity_threshold
+        
+        try:
+            similar_memories_map = await self.caller_memory_manager.batch_find_similar_memories(
+                caller_id=caller_id,
+                agent_id=agent_id,
+                memories=memories,
+                similarity_threshold=similarity_threshold
+            )
+            logger.info(f"Batch deduplication complete: {len(similar_memories_map)} memories checked")
+        except Exception as e:
+            logger.warning(f"Batch deduplication failed, falling back to individual checks: {e}")
+            similar_memories_map = {}
+        
+        # Step 2: Process each memory
+        from app.memory_utils import get_content_hash
+        
         for memory in memories:
             try:
                 content = memory.get("content", "")
                 category = memory.get("category", "factual")
+                sector = memory.get("sector", "semantic")  # Get sector from extracted memory
                 importance = memory.get("importance", 5)
                 entities = memory.get("entities", [])
 
@@ -336,15 +362,20 @@ class BackgroundJobProcessor:
                     })
                     continue
 
-                # Check for similar existing memory
-                similarity_threshold = settings.memory_similarity_threshold
+                # Check for similar existing memory using batch results
+                content_hash = get_content_hash(content)
+                similar_memory = similar_memories_map.get(content_hash)
                 
-                similar_memory = await self.caller_memory_manager.find_similar_memory(
-                    caller_id=caller_id,
-                    agent_id=agent_id,
-                    content=content,
-                    similarity_threshold=similarity_threshold
-                )
+                # Fallback to individual check if batch didn't find it
+                if similar_memory is None and content_hash not in similar_memories_map:
+                    logger.debug(f"Individual check for memory: {content[:50]}...")
+                    similar_memory = await self.caller_memory_manager.find_similar_memory(
+                        caller_id=caller_id,
+                        agent_id=agent_id,
+                        content=content,
+                        similarity_threshold=similarity_threshold,
+                        content_hash=content_hash
+                    )
 
                 if similar_memory:
                     # Check for conflicts (same content but different category/importance)
@@ -370,6 +401,7 @@ class BackgroundJobProcessor:
                             conversation_id=conversation_id,
                             content=content,
                             category=category,
+                            sector=sector,
                             importance=importance,
                             entities=entities
                         )
@@ -451,6 +483,7 @@ class BackgroundJobProcessor:
         conversation_id: str,
         content: str,
         category: str,
+        sector: str,
         importance: int,
         entities: List[str]
     ) -> Optional[str]:
@@ -483,6 +516,7 @@ class BackgroundJobProcessor:
                     conversation_id=conversation_id,
                     content=content,
                     category=category,
+                    sector=sector,
                     importance=importance,
                     entities=entities
                 )
