@@ -153,6 +153,12 @@ class ConversationGetter:
         The webhook expects a specific format with type and data fields.
         This converts the API response to match that structure.
 
+        Note: The backend will apply the new filtering strategy:
+        - Transcript pre-filtering removes system prompts/config before LLM extraction
+        - LLM extraction focuses on conversation content only
+        - Post-extraction validation rejects bad content before storage
+        - Memories are isolated by phone number (caller_id) and filtered by type
+
         Args:
             conversation_data: Raw conversation data from API
 
@@ -164,17 +170,28 @@ class ConversationGetter:
         agent_id = conversation_data.get("agent_id")
 
         # Build transcript array from transcript field if it exists
+        # The backend's _filter_transcript() will clean this before LLM processing
         transcript = []
         if "transcript" in conversation_data:
             transcript = conversation_data["transcript"]
 
+        # Calculate duration from start/end times if not provided
+        duration = conversation_data.get("duration")
+        if duration is None:
+            start_time = conversation_data.get("start_time_unix_secs")
+            end_time = conversation_data.get("end_time_unix_secs")
+            if start_time and end_time:
+                duration = int(end_time - start_time)
+
         # Format as post_call_transcription webhook
+        # All fields are passed through - backend handles filtering and validation
         webhook_payload = {
             "type": "post_call_transcription",
             "data": {
                 "conversation_id": conversation_id,
                 "agent_id": agent_id,
                 "transcript": transcript,
+                "duration": duration,  # Include duration for backend processing
                 "conversation_initiation_client_data": conversation_data.get(
                     "conversation_initiation_client_data", {}
                 ),

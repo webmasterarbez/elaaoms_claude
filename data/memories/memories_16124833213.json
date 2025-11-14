@@ -1,0 +1,2107 @@
+{
+  "user_id": "+16124833213",
+  "total_memories": 60,
+  "total_conversations": 2,
+  "statistics": {
+    "by_category": {
+      "unknown": 60
+    },
+    "by_agent": {
+      "agent_01jyftqvn4fm5rh0x7vyth1mx4": 34,
+      "unknown": 26
+    },
+    "by_importance": {}
+  },
+  "memories": [
+    {
+      "id": "e54c54aa-ce45-4256-af47-5bce269b4575",
+      "content": "USER: ...\n\nAGENT: ...",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 50,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130239474,
+      "updated_at": 1763130239474,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657091047426,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 2.4001352335701758
+    },
+    {
+      "id": "b6e8b87a-16b7-4876-b05d-2be95a54157f",
+      "content": "USER: It was\n\nAGENT: ...",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 51,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130240019,
+      "updated_at": 1763130240019,
+      "last_seen_at": 1763131543390,
+      "salience": 0.8999657090572909,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.7096530400907517
+    },
+    {
+      "id": "528d19f4-2e42-4fe4-a4b2-9db1fde9265d",
+      "content": "USER: Ford, Chevrolet, Oldsmobiles.\n\nAGENT: Those are classic American cars. Did your family take any memorable road trips in those cars?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 72,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130246039,
+      "updated_at": 1763130246039,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657089623875,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.4770520852623992
+    },
+    {
+      "id": "d2790689-c8db-48c8-b512-78b6179bb349",
+      "content": "USER: Yes\n\nAGENT: ocean?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 85,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130249449,
+      "updated_at": 1763130249449,
+      "last_seen_at": 1763131543390,
+      "salience": 0.8999657089623875,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.4396690862101704
+    },
+    {
+      "id": "7762136c-acec-47cb-9246-414a3102016e",
+      "content": "USER: Childhood friends, going down to the lake,\n\nAGENT: ...Tell me more about going to the lake with your friends.",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 5,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130223225,
+      "updated_at": 1763130223225,
+      "last_seen_at": 1763131543390,
+      "salience": 0.8999657089149358,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.365283535047787
+    },
+    {
+      "id": "4baf5692-f4a0-46b8-8e3c-5d1b185b556f",
+      "content": "USER: Oh\n\nAGENT: ...\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 62,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130242815,
+      "updated_at": 1763130242815,
+      "last_seen_at": 1763131543390,
+      "salience": 0.8999657088674841,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.2988735484103513
+    },
+    {
+      "id": "6665a3fb-0d30-4cd3-ae50-df67e4325803",
+      "content": "USER: High school.\n\nAGENT: Alright. Where did you go to high school?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 99,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130254266,
+      "updated_at": 1763130254266,
+      "last_seen_at": 1763131543392,
+      "salience": 0.8999657089149358,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.2802433315963426
+    },
+    {
+      "id": "da6b5c8d-db66-448d-b4fe-cb67a14981f8",
+      "content": "USER: ...\n\nAGENT: Are you still there?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 77,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130247536,
+      "updated_at": 1763130247536,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657088200324,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.1304938121551298
+    },
+    {
+      "id": "57872e0c-8007-4cc3-a713-e80d631bfd11",
+      "content": "USER: Saw relatives. Went to the beach.\n\nAGENT: Which beach did you visit?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 81,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130248398,
+      "updated_at": 1763130248398,
+      "last_seen_at": 1763131543393,
+      "salience": 0.8999657087725805,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 1.0271913941696658
+    },
+    {
+      "id": "4a092505-8bc5-47dd-9b20-423300b7c8c5",
+      "content": "USER: Yes\n\nAGENT: Tell me about fishing with your family.\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 36,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130234493,
+      "updated_at": 1763130234493,
+      "last_seen_at": 1763131543393,
+      "salience": 0.8999657087251288,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.9840156889522165
+    },
+    {
+      "id": "a22967c8-44b1-4ffc-9b7a-44c34f264506",
+      "content": "USER: ... I am.\n\nAGENT: Okay. You were saying the size of Los Angeles was...?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 78,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130247860,
+      "updated_at": 1763130247860,
+      "last_seen_at": 1763131543390,
+      "salience": 0.8999657087725805,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.9371088758102133
+    },
+    {
+      "id": "019ee1e8-af1d-4f0b-be6c-d72b7ae7e268",
+      "content": "USER: Popsicles. Ice cream cones.\n\nAGENT: Those sound delicious. Do you have a particular memory of enjoying those treats with your friends?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 18,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130228001,
+      "updated_at": 1763130228001,
+      "last_seen_at": 1763131543392,
+      "salience": 0.9999615268091012,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.879051284429543
+    },
+    {
+      "id": "34dc06e2-b711-4249-a445-55deeedc75d6",
+      "content": "USER: Very long trip.\n\nAGENT: I can imagine. What sights or experiences stand out in your memory?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 75,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130246893,
+      "updated_at": 1763130246893,
+      "last_seen_at": 1763131543390,
+      "salience": 0.9999615268091012,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.8399597615951219
+    },
+    {
+      "id": "765eb2ed-29f5-41e9-9700-61b49282641c",
+      "content": "USER: We were still friends.\n\nAGENT: That's good...",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 13,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130227105,
+      "updated_at": 1763130227105,
+      "last_seen_at": 1763131543390,
+      "salience": 0.8999657086302255,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.813309186380885
+    },
+    {
+      "id": "0d103c8d-c61b-4919-bc5c-bb6ef9181c83",
+      "content": "USER: The lake\n\nAGENT: What made the lake so memorable?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 30,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130232036,
+      "updated_at": 1763130232036,
+      "last_seen_at": 1763131543391,
+      "salience": 0.9999615266493856,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.6816596177043481
+    },
+    {
+      "id": "2c5b1e70-f7ce-42aa-98c0-b3e6cc327142",
+      "content": "USER: Just seeing all the different tools and seeing the different types of cars that he would work on and all the people that would stop by. I remember it was a very, let's see, how do I say it?\n\nAGENT: Take your time...\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 57,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130241633,
+      "updated_at": 1763130241633,
+      "last_seen_at": 1763131543390,
+      "salience": 0.8999657085827737,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.6502561677443277
+    },
+    {
+      "id": "9d8b17c9-0936-4420-a48c-1a7b6bc62749",
+      "content": "USER: No\n\nAGENT: Okay. Were there any interesting or memorable landmarks in Richfield that stood out to you as a child?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 29,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130231754,
+      "updated_at": 1763130231754,
+      "last_seen_at": 1763131543391,
+      "salience": 0.899965708535322,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.5424141386778509
+    },
+    {
+      "id": "c7277196-b7fe-43cb-9525-d05a6171be30",
+      "content": "USER: The open fields.\n\nAGENT: What did you...",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 25,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130230690,
+      "updated_at": 1763130230690,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657084878704,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.5402339383705208
+    },
+    {
+      "id": "9ed67bf3-e8b2-4b43-b740-9921484b24a5",
+      "content": "USER: A Schwinn.\n\nAGENT: A Schwinn... What color was it?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 20,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130228662,
+      "updated_at": 1763130228662,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657084878704,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.5344232529781636
+    },
+    {
+      "id": "9df76eed-3e88-4873-818d-ec5c748fcafe",
+      "content": "USER: No.\n\nAGENT: Okay. Looking back on that road trip to California, what's the biggest takeaway or lasting impression it left on you?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 94,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130251738,
+      "updated_at": 1763130251738,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657084404186,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.4731526041738308
+    },
+    {
+      "id": "f8891cc8-8189-4e4a-b1c3-5ab1fca03723",
+      "content": "USER: Just the water and being able to fish.\n\nAGENT: What kind of fish did you catch?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 31,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130232303,
+      "updated_at": 1763130232303,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657084404186,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.4193791331228616
+    },
+    {
+      "id": "4aa34eb4-7593-49f4-876d-e92f32ac363b",
+      "content": "USER: Color was green.\n\nAGENT: A green wooden boat... That sounds very classic. Do you remember the name of the lake?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 40,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130236564,
+      "updated_at": 1763130236564,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657084404186,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.4096426900137642
+    },
+    {
+      "id": "ecb70b9a-55a5-4c2e-adcc-275fcad1a253",
+      "content": "USER: Uh...\n\nAGENT: Are you still...",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 12,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130226806,
+      "updated_at": 1763130226806,
+      "last_seen_at": 1763131543391,
+      "salience": 0.899965708345515,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.40632295656183287
+    },
+    {
+      "id": "a5bfb9ae-fcd9-495e-a5be-fc63d87da24d",
+      "content": "USER: It was very good fishing, it was very clean and it was connected to 10 other bodies of water all numbered 1 through 11\n\nAGENT: That's fascinating. Did you explore all the other numbered lakes?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 43,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130237386,
+      "updated_at": 1763130237386,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657083929669,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.3971268054902034
+    },
+    {
+      "id": "a86642bd-3412-4cb4-9ba5-24f33e335862",
+      "content": "USER: No\n\nAGENT: Okay. Did you have any favorite places to explore in Richfield besides the lake and the baseball field?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 24,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130230385,
+      "updated_at": 1763130230385,
+      "last_seen_at": 1763131543393,
+      "salience": 0.8999657084404186,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.3616064847428654
+    },
+    {
+      "id": "98f5dd28-e3fe-4f8a-923d-5bf927db667d",
+      "content": "USER: No\n\nAGENT: Okay. Did your grandparents have a cabin or a house on the lake?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 46,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130238187,
+      "updated_at": 1763130238187,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657082980634,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.3290180144593632
+    },
+    {
+      "id": "ca934fd3-1d9e-4263-a78d-f9fff478917f",
+      "content": "USER: Just regular passenger cars.\n\nAGENT: Do you remember any specific makes or models?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 71,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130245826,
+      "updated_at": 1763130245826,
+      "last_seen_at": 1763131543392,
+      "salience": 0.8999657082980634,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.2634800366837042
+    },
+    {
+      "id": "22308974-084b-4b96-ad90-5d3051e92489",
+      "content": "USER: Probably blue and or red.\n\nAGENT: Those are classic colors. Did you customize it in any way?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 21,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130228946,
+      "updated_at": 1763130228946,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657082980634,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.24063646762777746
+    },
+    {
+      "id": "1534b351-ba39-414d-ab69-4ca83d3117a9",
+      "content": "USER: Road trips consisted of going up to Akeley, Minnesota,\n\nAGENT: What do you...",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 73,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130246303,
+      "updated_at": 1763130246303,
+      "last_seen_at": 1763131543391,
+      "salience": 0.8999657082506117,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.19569566653062112
+    },
+    {
+      "id": "4a701e71-9e64-46a7-96d6-364211a1b736",
+      "content": "USER: Probably just sunnies\n\nAGENT: Sunnies... Did you ever eat them?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 32,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130232740,
+      "updated_at": 1763130232740,
+      "last_seen_at": 1763131543392,
+      "salience": 0.89996570820316,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.1701459203500605
+    },
+    {
+      "id": "ce3923e4-05bd-4945-a4f8-cff6b241ea00",
+      "content": "USER: No\n\nAGENT: Okay. Did you ever go fishing with your family?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 35,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130233629,
+      "updated_at": 1763130233629,
+      "last_seen_at": 1763131543392,
+      "salience": 0.8999657082506117,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.1320408619162637
+    },
+    {
+      "id": "c7d19177-c01b-4fa0-b966-96ccb337fd88",
+      "content": "USER: , it was decorated appropriately for the 50s and 60s. And you shared bedrooms with other kids or your parents and it was heavily wooded property.\n\nAGENT: That sounds cozy. What do you remember most about your grandparents?\n",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 52,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130240359,
+      "updated_at": 1763130240359,
+      "last_seen_at": 1763131543391,
+      "salience": 0.9999615262767161,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.0357033796041037
+    },
+    {
+      "id": "a282a96c-329c-4b36-bcd8-cfa5177fc398",
+      "content": "AGENT: Hello Ken, my name is Walter. I\u2019m here to help you share your life stories by talking together. I\u2019ll ask questions and listen so your memories can be saved for you and your family. Where do you want to begin?",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 0,
+        "message_count": 1,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130220698,
+      "updated_at": 1763130220698,
+      "last_seen_at": 1763131543391,
+      "salience": 0.9999615261170005,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.01587201926238182
+    },
+    {
+      "id": "ce443997-917a-44cc-b273-aafe9c65a3be",
+      "content": "USER: Nut goodies.\n\nAGENT: Nut...",
+      "primary_sector": "semantic",
+      "sectors": [
+        "semantic"
+      ],
+      "tags": [
+        "test_chunked_add",
+        "transcription",
+        "conv_01k04qved0ej19h9h0ddcgqnbz"
+      ],
+      "metadata": {
+        "test_approach": "chunked_add",
+        "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+        "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+        "caller_id": "+16124833213",
+        "chunk_index": 17,
+        "message_count": 2,
+        "source": "elevenlabs_transcription",
+        "extraction_method": "openmemory_auto_chunked"
+      },
+      "created_at": 1763130227595,
+      "updated_at": 1763130227595,
+      "last_seen_at": 1763131543392,
+      "salience": 0.8999657080608048,
+      "decay_lambda": 0.005,
+      "version": 1,
+      "user_id": "+16124833213",
+      "score": 0.009847164780165485
+    },
+    {
+      "id": "2cad37c0-36e0-4cc3-a598-b4bd68395ec4",
+      "content": "USER: How can I say this? It just it was it was a very large city, the largest city I'd ever been to.\n\nAGENT: I see. What did you do while you were in Los Angeles?\n",
+      "score": -0.216573832716283,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "2cad37c0-36e0-4cc3-a598-b4bd68395ec4"
+      ],
+      "salience": 0.8999657080133531,
+      "last_seen_at": 1763130820654
+    },
+    {
+      "id": "66b23c6d-f9b8-437e-ba97-8a56302130e0",
+      "content": "USER: Hunt the gophers.\n\nAGENT: I see. Were there any other animals or creatures you encountered in those fields?\n",
+      "score": -0.23391391735716688,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "66b23c6d-f9b8-437e-ba97-8a56302130e0"
+      ],
+      "salience": 0.8999657079659014,
+      "last_seen_at": 1763130820654
+    },
+    {
+      "id": "03a6405a-c421-492d-bffe-b116a3fb7147",
+      "content": "USER: Nothing but sand,\n\nAGENT: ...",
+      "score": -0.26577315632332466,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "03a6405a-c421-492d-bffe-b116a3fb7147"
+      ],
+      "salience": 0.8999657079659014,
+      "last_seen_at": 1763130820654
+    },
+    {
+      "id": "eab73ae2-8cea-4690-8e58-ef97dfd0247c",
+      "content": "USER: Where?\n\nAGENT: At your grandfather's gas station.\n",
+      "score": -0.3110021778122448,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "eab73ae2-8cea-4690-8e58-ef97dfd0247c"
+      ],
+      "salience": 0.8999657079659014,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "4498bc15-b7b0-48b6-9709-bf63de510e43",
+      "content": "USER: No other than sometimes putting playing cards on the spokes to make the noise.\n\nAGENT: Oh, that's a great memory. Did you have a favorite route or place to ride your bike?\n",
+      "score": -0.32215956215901154,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "4498bc15-b7b0-48b6-9709-bf63de510e43"
+      ],
+      "salience": 0.999961525957285,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "36282fc9-e9fc-4257-b430-62ba0736da92",
+      "content": "USER: Just an old wooden boat. This was before aluminum boats.\n\nAGENT: I see. Do you remember the color or any other details about the boat?\n",
+      "score": -0.5176652408606972,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "36282fc9-e9fc-4257-b430-62ba0736da92"
+      ],
+      "salience": 0.8999657079659014,
+      "last_seen_at": 1763130820656
+    },
+    {
+      "id": "1b9432d7-5229-4f9f-ad9d-2d0c9fcd3e3a",
+      "content": "USER: Sometimes rabbits.\n\nAGENT: Did you ever try to catch them?\n",
+      "score": -0.5688326373788982,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "1b9432d7-5229-4f9f-ad9d-2d0c9fcd3e3a"
+      ],
+      "salience": 0.8999657079659014,
+      "last_seen_at": 1763130820657
+    },
+    {
+      "id": "7f30f955-adf4-4d67-b058-152514db283c",
+      "content": "USER: They had a house on the lake they'd live there the vast majority of their lives\n\nAGENT: What do you remember most about their...",
+      "score": -0.6160768497996959,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "7f30f955-adf4-4d67-b058-152514db283c"
+      ],
+      "salience": 0.9999615259040464,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "3e9ce373-2613-4a59-9171-7502dbea3f02",
+      "content": "USER: It was messy. It was cluttered.\n\nAGENT: I see. What kind of cars did he work on most often?\n",
+      "score": -0.6215941215409523,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "3e9ce373-2613-4a59-9171-7502dbea3f02"
+      ],
+      "salience": 0.8999657078235461,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "15ea040a-b9c7-492b-a97a-d7cd352c4c01",
+      "content": "USER: It was in walking distance or biking distance. We'd go down there and fish.\n\nAGENT: ...",
+      "score": -0.6411700195417218,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "15ea040a-b9c7-492b-a97a-d7cd352c4c01"
+      ],
+      "salience": 0.8999657077760944,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "89075766-a8ab-4e31-9738-a9fd48d8344d",
+      "content": "USER: Again, the water and the ocean\n\nAGENT: Did you swim in the...",
+      "score": -0.6579804741914873,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "89075766-a8ab-4e31-9738-a9fd48d8344d"
+      ],
+      "salience": 0.8999657077286428,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "107b21d8-6d8e-4a18-8d9f-426929ad2115",
+      "content": "USER: No\n\nAGENT: What did you do with them after you caught them?\n",
+      "score": -0.7363205339371324,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "107b21d8-6d8e-4a18-8d9f-426929ad2115"
+      ],
+      "salience": 0.8999657077286428,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "32551a80-e5c2-4710-99b1-9f562568c7b4",
+      "content": "USER: And it was very small.\n\nAGENT: What do you remember most about their house?\n",
+      "score": -0.8103292518959887,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "32551a80-e5c2-4710-99b1-9f562568c7b4"
+      ],
+      "salience": 0.8999657077286428,
+      "last_seen_at": 1763130820656
+    },
+    {
+      "id": "60003673-9184-4c20-ab3b-c5b71fb786c0",
+      "content": "USER: Row Wing 11.\n\nAGENT: Row Wing eleven... Is that spelled R. O. W. W. I. N. G.?\n",
+      "score": -0.8776307174373407,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "60003673-9184-4c20-ab3b-c5b71fb786c0"
+      ],
+      "salience": 0.8999657076337394,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "34a4b458-348e-42aa-9767-d679024b2dc2",
+      "content": "USER: The fact that we could drive that far in those older cars.\n\nAGENT: That's a good...",
+      "score": -0.913006227911414,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "34a4b458-348e-42aa-9767-d679024b2dc2"
+      ],
+      "salience": 0.8999657075862876,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "b669a179-04a9-4410-84ba-bf7c72612521",
+      "content": "Ken enjoyed the freedom of biking anywhere in his childhood",
+      "score": -0.9712486437883613,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "b669a179-04a9-4410-84ba-bf7c72612521"
+      ],
+      "salience": 0.9999615255846154,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "a97118ad-364d-497d-903c-d56fe0512d41",
+      "content": "Ken grew up in Richfield, Minnesota",
+      "score": -1.1122197754466607,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "a97118ad-364d-497d-903c-d56fe0512d41"
+      ],
+      "salience": 0.9999615255313768,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "2e7460ec-d88c-44c1-9fff-add9dc6d61c7",
+      "content": "USER: I wouldn't know because I usually slept in the car.\n\nAGENT: I see. What about the mountains? What do you remember most about driving through the mountains?\n",
+      "score": -1.1411060612843904,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "2e7460ec-d88c-44c1-9fff-add9dc6d61c7"
+      ],
+      "salience": 0.8999657074913842,
+      "last_seen_at": 1763130820655
+    },
+    {
+      "id": "95e19e69-0132-45ce-a5a6-bd3052ee106d",
+      "content": "USER: The size of it\n\nAGENT: Did you swim in the...",
+      "score": -1.1455808306957174,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "95e19e69-0132-45ce-a5a6-bd3052ee106d"
+      ],
+      "salience": 0.8999657075388359,
+      "last_seen_at": 1763130820656
+    },
+    {
+      "id": "8175b750-26c2-46d1-8b45-bc2ea003aa77",
+      "content": "USER: I remember having the thrill of being able to wear a t-shirt or a full baseball uniform in Little League.\n\nAGENT: I see. What position did you play?",
+      "score": -1.168302076160394,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "8175b750-26c2-46d1-8b45-bc2ea003aa77"
+      ],
+      "salience": 0.8999657074913842,
+      "last_seen_at": 1763130820656
+    },
+    {
+      "id": "d6dc064e-dc29-4a30-aaba-221e3c4885cb",
+      "content": "USER: Not really.\n\nAGENT: Okay. Did he ever share any other stories or advice with you?\n",
+      "score": -1.2915226134372937,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "d6dc064e-dc29-4a30-aaba-221e3c4885cb"
+      ],
+      "salience": 0.8999657074439325,
+      "last_seen_at": 1763130820656
+    },
+    {
+      "id": "4d8374f7-1ac0-4bfe-b1b5-eefbe38a528d",
+      "content": "USER: No, Crow C-R-O-W. Crow Wing 11.\n\nAGENT: Thank you for clarifying. Crow Wing eleven. What made that lake so special?\n",
+      "score": -1.3606568243595887,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "4d8374f7-1ac0-4bfe-b1b5-eefbe38a528d"
+      ],
+      "salience": 0.8999657073964807,
+      "last_seen_at": 1763130820656
+    },
+    {
+      "id": "003d7029-1368-4561-9643-4d777c394b8c",
+      "content": "USER: Just being around friends of mine and just enjoying the game. I was never real good at it,\n\nAGENT: ...",
+      "score": -1.4439024634461208,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "003d7029-1368-4561-9643-4d777c394b8c"
+      ],
+      "salience": 0.8999657074439325,
+      "last_seen_at": 1763130820657
+    },
+    {
+      "id": "d4b5b1c1-4f5f-4100-a66c-306650acf56c",
+      "content": "USER: Not that I remember.\n\nAGENT: Okay. What about the desert? What do you remember most about driving through the desert?",
+      "score": -1.5410979753522138,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "d4b5b1c1-4f5f-4100-a66c-306650acf56c"
+      ],
+      "salience": 0.8999657074439325,
+      "last_seen_at": 1763130820658
+    },
+    {
+      "id": "518e4576-46a0-4d69-a7b2-bf458bb5f90a",
+      "content": "USER: It was a pitcher, I played the outfield, I was an okay hitter\n\nAGENT: How interesting. What do you remember most about being a pitcher?\n",
+      "score": -1.7799143228280203,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "518e4576-46a0-4d69-a7b2-bf458bb5f90a"
+      ],
+      "salience": 0.8999657073015773,
+      "last_seen_at": 1763130820656
+    },
+    {
+      "id": "0ecd8257-ae57-4f40-b634-1554f9e461d9",
+      "content": "USER: I have no idea.\n\nAGENT: Okay. Did he ever let you help him out in the gas station?\n",
+      "score": -3.1251168768138404,
+      "sectors": [
+        "semantic"
+      ],
+      "primary_sector": "semantic",
+      "path": [
+        "0ecd8257-ae57-4f40-b634-1554f9e461d9"
+      ],
+      "salience": 0.8999657072541255,
+      "last_seen_at": 1763130820656
+    }
+  ],
+  "grouped_by_conversation": {
+    "conv_01k04qved0ej19h9h0ddcgqnbz": [
+      {
+        "id": "e54c54aa-ce45-4256-af47-5bce269b4575",
+        "content": "USER: ...\n\nAGENT: ...",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 50,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 2.4001352335701758
+      },
+      {
+        "id": "b6e8b87a-16b7-4876-b05d-2be95a54157f",
+        "content": "USER: It was\n\nAGENT: ...",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 51,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.7096530400907517
+      },
+      {
+        "id": "528d19f4-2e42-4fe4-a4b2-9db1fde9265d",
+        "content": "USER: Ford, Chevrolet, Oldsmobiles.\n\nAGENT: Those are classic American cars. Did your family take any memorable road trips in those cars?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 72,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.4770520852623992
+      },
+      {
+        "id": "d2790689-c8db-48c8-b512-78b6179bb349",
+        "content": "USER: Yes\n\nAGENT: ocean?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 85,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.4396690862101704
+      },
+      {
+        "id": "7762136c-acec-47cb-9246-414a3102016e",
+        "content": "USER: Childhood friends, going down to the lake,\n\nAGENT: ...Tell me more about going to the lake with your friends.",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 5,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.365283535047787
+      },
+      {
+        "id": "4baf5692-f4a0-46b8-8e3c-5d1b185b556f",
+        "content": "USER: Oh\n\nAGENT: ...\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 62,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.2988735484103513
+      },
+      {
+        "id": "6665a3fb-0d30-4cd3-ae50-df67e4325803",
+        "content": "USER: High school.\n\nAGENT: Alright. Where did you go to high school?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 99,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.2802433315963426
+      },
+      {
+        "id": "da6b5c8d-db66-448d-b4fe-cb67a14981f8",
+        "content": "USER: ...\n\nAGENT: Are you still there?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 77,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.1304938121551298
+      },
+      {
+        "id": "57872e0c-8007-4cc3-a713-e80d631bfd11",
+        "content": "USER: Saw relatives. Went to the beach.\n\nAGENT: Which beach did you visit?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 81,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 1.0271913941696658
+      },
+      {
+        "id": "4a092505-8bc5-47dd-9b20-423300b7c8c5",
+        "content": "USER: Yes\n\nAGENT: Tell me about fishing with your family.\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 36,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.9840156889522165
+      },
+      {
+        "id": "a22967c8-44b1-4ffc-9b7a-44c34f264506",
+        "content": "USER: ... I am.\n\nAGENT: Okay. You were saying the size of Los Angeles was...?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 78,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.9371088758102133
+      },
+      {
+        "id": "019ee1e8-af1d-4f0b-be6c-d72b7ae7e268",
+        "content": "USER: Popsicles. Ice cream cones.\n\nAGENT: Those sound delicious. Do you have a particular memory of enjoying those treats with your friends?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 18,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.879051284429543
+      },
+      {
+        "id": "34dc06e2-b711-4249-a445-55deeedc75d6",
+        "content": "USER: Very long trip.\n\nAGENT: I can imagine. What sights or experiences stand out in your memory?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 75,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.8399597615951219
+      },
+      {
+        "id": "765eb2ed-29f5-41e9-9700-61b49282641c",
+        "content": "USER: We were still friends.\n\nAGENT: That's good...",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 13,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.813309186380885
+      },
+      {
+        "id": "0d103c8d-c61b-4919-bc5c-bb6ef9181c83",
+        "content": "USER: The lake\n\nAGENT: What made the lake so memorable?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 30,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.6816596177043481
+      },
+      {
+        "id": "2c5b1e70-f7ce-42aa-98c0-b3e6cc327142",
+        "content": "USER: Just seeing all the different tools and seeing the different types of cars that he would work on and all the people that would stop by. I remember it was a very, let's see, how do I say it?\n\nAGENT: Take your time...\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 57,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.6502561677443277
+      },
+      {
+        "id": "9d8b17c9-0936-4420-a48c-1a7b6bc62749",
+        "content": "USER: No\n\nAGENT: Okay. Were there any interesting or memorable landmarks in Richfield that stood out to you as a child?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 29,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.5424141386778509
+      },
+      {
+        "id": "c7277196-b7fe-43cb-9525-d05a6171be30",
+        "content": "USER: The open fields.\n\nAGENT: What did you...",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 25,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.5402339383705208
+      },
+      {
+        "id": "9ed67bf3-e8b2-4b43-b740-9921484b24a5",
+        "content": "USER: A Schwinn.\n\nAGENT: A Schwinn... What color was it?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 20,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.5344232529781636
+      },
+      {
+        "id": "9df76eed-3e88-4873-818d-ec5c748fcafe",
+        "content": "USER: No.\n\nAGENT: Okay. Looking back on that road trip to California, what's the biggest takeaway or lasting impression it left on you?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 94,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.4731526041738308
+      },
+      {
+        "id": "f8891cc8-8189-4e4a-b1c3-5ab1fca03723",
+        "content": "USER: Just the water and being able to fish.\n\nAGENT: What kind of fish did you catch?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 31,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.4193791331228616
+      },
+      {
+        "id": "4aa34eb4-7593-49f4-876d-e92f32ac363b",
+        "content": "USER: Color was green.\n\nAGENT: A green wooden boat... That sounds very classic. Do you remember the name of the lake?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 40,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.4096426900137642
+      },
+      {
+        "id": "ecb70b9a-55a5-4c2e-adcc-275fcad1a253",
+        "content": "USER: Uh...\n\nAGENT: Are you still...",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 12,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.40632295656183287
+      },
+      {
+        "id": "a5bfb9ae-fcd9-495e-a5be-fc63d87da24d",
+        "content": "USER: It was very good fishing, it was very clean and it was connected to 10 other bodies of water all numbered 1 through 11\n\nAGENT: That's fascinating. Did you explore all the other numbered lakes?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 43,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.3971268054902034
+      },
+      {
+        "id": "a86642bd-3412-4cb4-9ba5-24f33e335862",
+        "content": "USER: No\n\nAGENT: Okay. Did you have any favorite places to explore in Richfield besides the lake and the baseball field?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 24,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.3616064847428654
+      },
+      {
+        "id": "98f5dd28-e3fe-4f8a-923d-5bf927db667d",
+        "content": "USER: No\n\nAGENT: Okay. Did your grandparents have a cabin or a house on the lake?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 46,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.3290180144593632
+      },
+      {
+        "id": "ca934fd3-1d9e-4263-a78d-f9fff478917f",
+        "content": "USER: Just regular passenger cars.\n\nAGENT: Do you remember any specific makes or models?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 71,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.2634800366837042
+      },
+      {
+        "id": "22308974-084b-4b96-ad90-5d3051e92489",
+        "content": "USER: Probably blue and or red.\n\nAGENT: Those are classic colors. Did you customize it in any way?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 21,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.24063646762777746
+      },
+      {
+        "id": "1534b351-ba39-414d-ab69-4ca83d3117a9",
+        "content": "USER: Road trips consisted of going up to Akeley, Minnesota,\n\nAGENT: What do you...",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 73,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.19569566653062112
+      },
+      {
+        "id": "4a701e71-9e64-46a7-96d6-364211a1b736",
+        "content": "USER: Probably just sunnies\n\nAGENT: Sunnies... Did you ever eat them?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 32,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.1701459203500605
+      },
+      {
+        "id": "ce3923e4-05bd-4945-a4f8-cff6b241ea00",
+        "content": "USER: No\n\nAGENT: Okay. Did you ever go fishing with your family?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 35,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.1320408619162637
+      },
+      {
+        "id": "c7d19177-c01b-4fa0-b966-96ccb337fd88",
+        "content": "USER: , it was decorated appropriately for the 50s and 60s. And you shared bedrooms with other kids or your parents and it was heavily wooded property.\n\nAGENT: That sounds cozy. What do you remember most about your grandparents?\n",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 52,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.0357033796041037
+      },
+      {
+        "id": "a282a96c-329c-4b36-bcd8-cfa5177fc398",
+        "content": "AGENT: Hello Ken, my name is Walter. I\u2019m here to help you share your life stories by talking together. I\u2019ll ask questions and listen so your memories can be saved for you and your family. Where do you want to begin?",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 0,
+          "message_count": 1,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.01587201926238182
+      },
+      {
+        "id": "ce443997-917a-44cc-b273-aafe9c65a3be",
+        "content": "USER: Nut goodies.\n\nAGENT: Nut...",
+        "metadata": {
+          "test_approach": "chunked_add",
+          "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+          "agent_id": "agent_01jyftqvn4fm5rh0x7vyth1mx4",
+          "caller_id": "+16124833213",
+          "chunk_index": 17,
+          "message_count": 2,
+          "source": "elevenlabs_transcription",
+          "extraction_method": "openmemory_auto_chunked"
+        },
+        "score": 0.009847164780165485
+      }
+    ],
+    "unknown": [
+      {
+        "id": "2cad37c0-36e0-4cc3-a598-b4bd68395ec4",
+        "content": "USER: How can I say this? It just it was it was a very large city, the largest city I'd ever been to.\n\nAGENT: I see. What did you do while you were in Los Angeles?\n",
+        "metadata": null,
+        "score": -0.216573832716283
+      },
+      {
+        "id": "66b23c6d-f9b8-437e-ba97-8a56302130e0",
+        "content": "USER: Hunt the gophers.\n\nAGENT: I see. Were there any other animals or creatures you encountered in those fields?\n",
+        "metadata": null,
+        "score": -0.23391391735716688
+      },
+      {
+        "id": "03a6405a-c421-492d-bffe-b116a3fb7147",
+        "content": "USER: Nothing but sand,\n\nAGENT: ...",
+        "metadata": null,
+        "score": -0.26577315632332466
+      },
+      {
+        "id": "eab73ae2-8cea-4690-8e58-ef97dfd0247c",
+        "content": "USER: Where?\n\nAGENT: At your grandfather's gas station.\n",
+        "metadata": null,
+        "score": -0.3110021778122448
+      },
+      {
+        "id": "4498bc15-b7b0-48b6-9709-bf63de510e43",
+        "content": "USER: No other than sometimes putting playing cards on the spokes to make the noise.\n\nAGENT: Oh, that's a great memory. Did you have a favorite route or place to ride your bike?\n",
+        "metadata": null,
+        "score": -0.32215956215901154
+      },
+      {
+        "id": "36282fc9-e9fc-4257-b430-62ba0736da92",
+        "content": "USER: Just an old wooden boat. This was before aluminum boats.\n\nAGENT: I see. Do you remember the color or any other details about the boat?\n",
+        "metadata": null,
+        "score": -0.5176652408606972
+      },
+      {
+        "id": "1b9432d7-5229-4f9f-ad9d-2d0c9fcd3e3a",
+        "content": "USER: Sometimes rabbits.\n\nAGENT: Did you ever try to catch them?\n",
+        "metadata": null,
+        "score": -0.5688326373788982
+      },
+      {
+        "id": "7f30f955-adf4-4d67-b058-152514db283c",
+        "content": "USER: They had a house on the lake they'd live there the vast majority of their lives\n\nAGENT: What do you remember most about their...",
+        "metadata": null,
+        "score": -0.6160768497996959
+      },
+      {
+        "id": "3e9ce373-2613-4a59-9171-7502dbea3f02",
+        "content": "USER: It was messy. It was cluttered.\n\nAGENT: I see. What kind of cars did he work on most often?\n",
+        "metadata": null,
+        "score": -0.6215941215409523
+      },
+      {
+        "id": "15ea040a-b9c7-492b-a97a-d7cd352c4c01",
+        "content": "USER: It was in walking distance or biking distance. We'd go down there and fish.\n\nAGENT: ...",
+        "metadata": null,
+        "score": -0.6411700195417218
+      },
+      {
+        "id": "89075766-a8ab-4e31-9738-a9fd48d8344d",
+        "content": "USER: Again, the water and the ocean\n\nAGENT: Did you swim in the...",
+        "metadata": null,
+        "score": -0.6579804741914873
+      },
+      {
+        "id": "107b21d8-6d8e-4a18-8d9f-426929ad2115",
+        "content": "USER: No\n\nAGENT: What did you do with them after you caught them?\n",
+        "metadata": null,
+        "score": -0.7363205339371324
+      },
+      {
+        "id": "32551a80-e5c2-4710-99b1-9f562568c7b4",
+        "content": "USER: And it was very small.\n\nAGENT: What do you remember most about their house?\n",
+        "metadata": null,
+        "score": -0.8103292518959887
+      },
+      {
+        "id": "60003673-9184-4c20-ab3b-c5b71fb786c0",
+        "content": "USER: Row Wing 11.\n\nAGENT: Row Wing eleven... Is that spelled R. O. W. W. I. N. G.?\n",
+        "metadata": null,
+        "score": -0.8776307174373407
+      },
+      {
+        "id": "34a4b458-348e-42aa-9767-d679024b2dc2",
+        "content": "USER: The fact that we could drive that far in those older cars.\n\nAGENT: That's a good...",
+        "metadata": null,
+        "score": -0.913006227911414
+      },
+      {
+        "id": "b669a179-04a9-4410-84ba-bf7c72612521",
+        "content": "Ken enjoyed the freedom of biking anywhere in his childhood",
+        "metadata": null,
+        "score": -0.9712486437883613
+      },
+      {
+        "id": "a97118ad-364d-497d-903c-d56fe0512d41",
+        "content": "Ken grew up in Richfield, Minnesota",
+        "metadata": null,
+        "score": -1.1122197754466607
+      },
+      {
+        "id": "2e7460ec-d88c-44c1-9fff-add9dc6d61c7",
+        "content": "USER: I wouldn't know because I usually slept in the car.\n\nAGENT: I see. What about the mountains? What do you remember most about driving through the mountains?\n",
+        "metadata": null,
+        "score": -1.1411060612843904
+      },
+      {
+        "id": "95e19e69-0132-45ce-a5a6-bd3052ee106d",
+        "content": "USER: The size of it\n\nAGENT: Did you swim in the...",
+        "metadata": null,
+        "score": -1.1455808306957174
+      },
+      {
+        "id": "8175b750-26c2-46d1-8b45-bc2ea003aa77",
+        "content": "USER: I remember having the thrill of being able to wear a t-shirt or a full baseball uniform in Little League.\n\nAGENT: I see. What position did you play?",
+        "metadata": null,
+        "score": -1.168302076160394
+      },
+      {
+        "id": "d6dc064e-dc29-4a30-aaba-221e3c4885cb",
+        "content": "USER: Not really.\n\nAGENT: Okay. Did he ever share any other stories or advice with you?\n",
+        "metadata": null,
+        "score": -1.2915226134372937
+      },
+      {
+        "id": "4d8374f7-1ac0-4bfe-b1b5-eefbe38a528d",
+        "content": "USER: No, Crow C-R-O-W. Crow Wing 11.\n\nAGENT: Thank you for clarifying. Crow Wing eleven. What made that lake so special?\n",
+        "metadata": null,
+        "score": -1.3606568243595887
+      },
+      {
+        "id": "003d7029-1368-4561-9643-4d777c394b8c",
+        "content": "USER: Just being around friends of mine and just enjoying the game. I was never real good at it,\n\nAGENT: ...",
+        "metadata": null,
+        "score": -1.4439024634461208
+      },
+      {
+        "id": "d4b5b1c1-4f5f-4100-a66c-306650acf56c",
+        "content": "USER: Not that I remember.\n\nAGENT: Okay. What about the desert? What do you remember most about driving through the desert?",
+        "metadata": null,
+        "score": -1.5410979753522138
+      },
+      {
+        "id": "518e4576-46a0-4d69-a7b2-bf458bb5f90a",
+        "content": "USER: It was a pitcher, I played the outfield, I was an okay hitter\n\nAGENT: How interesting. What do you remember most about being a pitcher?\n",
+        "metadata": null,
+        "score": -1.7799143228280203
+      },
+      {
+        "id": "0ecd8257-ae57-4f40-b634-1554f9e461d9",
+        "content": "USER: I have no idea.\n\nAGENT: Okay. Did he ever let you help him out in the gas station?\n",
+        "metadata": null,
+        "score": -3.1251168768138404
+      }
+    ]
+  }
+}

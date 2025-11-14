@@ -80,12 +80,14 @@ def get_all_memories_for_user(caller_id: str, json_output: bool = False):
         
         # Query to get all memories using correct OpenMemory API format
         # See: https://openmemory.cavira.app/docs/api/query
+        # Aligned with new strategy: proper user isolation by phone number
+        # Note: We filter by type in post-processing since OpenMemory API
+        # may not support metadata.type filtering directly in filters
         payload = {
             "query": "",  # Required field (empty string for all memories)
             "k": 1000,  # Use 'k' not 'limit' per API spec
             "filters": {
-                "user_id": caller_id,  # Proper user isolation
-                "tags": []  # We'll filter by type in post-processing
+                "user_id": caller_id  # Proper user isolation by phone number
             }
         }
         
@@ -309,8 +311,10 @@ def get_all_memories_for_user(caller_id: str, json_output: bool = False):
                                    key=lambda x: -x[1]):
                 print(f"  {imp}/10: {count} memories")
         
-        # Save to JSON file
-        output_file = f"memories_{caller_id.replace('+', '')}.json"
+        # Save to JSON file in data/memories directory
+        output_dir = Path("data/memories")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_file = output_dir / f"memories_{caller_id.replace('+', '')}.json"
         with open(output_file, 'w') as f:
             json.dump({
                 "user_id": caller_id,

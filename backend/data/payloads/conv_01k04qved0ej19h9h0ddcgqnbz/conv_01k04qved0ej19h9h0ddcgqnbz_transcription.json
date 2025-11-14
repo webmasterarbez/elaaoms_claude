@@ -8265,6 +8265,7 @@
         "source_medium": null
       }
     ],
+    "duration": null,
     "conversation_initiation_client_data": {
       "conversation_config_override": {
         "turn": null,

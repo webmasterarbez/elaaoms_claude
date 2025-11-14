@@ -1,0 +1,134 @@
+{
+  "conversation_id": "conv_01k04qved0ej19h9h0ddcgqnbz",
+  "caller_id": "+16124833213",
+  "timestamp": "1763131537.1646883",
+  "approaches": {
+    "chunked_add": {
+      "count": 58,
+      "analysis": {
+        "count": 58,
+        "sector_distribution": {
+          "semantic": 58
+        },
+        "primary_sectors": {
+          "semantic": 58
+        },
+        "content_stats": {
+          "avg_length": 96.9,
+          "min_length": 21,
+          "max_length": 229,
+          "total_chars": 5620
+        },
+        "sample_contents": [
+          "USER: ...\n\nAGENT: ...",
+          "USER: It was\n\nAGENT: ...",
+          "USER: Ford, Chevrolet, Oldsmobiles.\n\nAGENT: Those are classic American cars. Did your family take any memorable road trips in those cars?\n",
+          "USER: Yes\n\nAGENT: ocean?\n",
+          "USER: Childhood friends, going down to the lake,\n\nAGENT: ...Tell me more about going to the lake with your friends."
+        ],
+        "memory_ids": [
+          "e54c54aa-ce45-4256-af47-5bce269b4575",
+          "b6e8b87a-16b7-4876-b05d-2be95a54157f",
+          "528d19f4-2e42-4fe4-a4b2-9db1fde9265d",
+          "d2790689-c8db-48c8-b512-78b6179bb349",
+          "7762136c-acec-47cb-9246-414a3102016e",
+          "4baf5692-f4a0-46b8-8e3c-5d1b185b556f",
+          "6665a3fb-0d30-4cd3-ae50-df67e4325803",
+          "da6b5c8d-db66-448d-b4fe-cb67a14981f8",
+          "57872e0c-8007-4cc3-a713-e80d631bfd11",
+          "4a092505-8bc5-47dd-9b20-423300b7c8c5"
+        ]
+      },
+      "memory_ids": [
+        "e54c54aa-ce45-4256-af47-5bce269b4575",
+        "b6e8b87a-16b7-4876-b05d-2be95a54157f",
+        "528d19f4-2e42-4fe4-a4b2-9db1fde9265d",
+        "d2790689-c8db-48c8-b512-78b6179bb349",
+        "7762136c-acec-47cb-9246-414a3102016e",
+        "4baf5692-f4a0-46b8-8e3c-5d1b185b556f",
+        "6665a3fb-0d30-4cd3-ae50-df67e4325803",
+        "da6b5c8d-db66-448d-b4fe-cb67a14981f8",
+        "57872e0c-8007-4cc3-a713-e80d631bfd11",
+        "4a092505-8bc5-47dd-9b20-423300b7c8c5",
+        "a22967c8-44b1-4ffc-9b7a-44c34f264506",
+        "019ee1e8-af1d-4f0b-be6c-d72b7ae7e268",
+        "34dc06e2-b711-4249-a445-55deeedc75d6",
+        "765eb2ed-29f5-41e9-9700-61b49282641c",
+        "0d103c8d-c61b-4919-bc5c-bb6ef9181c83",
+        "2c5b1e70-f7ce-42aa-98c0-b3e6cc327142",
+        "9d8b17c9-0936-4420-a48c-1a7b6bc62749",
+        "c7277196-b7fe-43cb-9525-d05a6171be30",
+        "9ed67bf3-e8b2-4b43-b740-9921484b24a5",
+        "9df76eed-3e88-4873-818d-ec5c748fcafe",
+        "f8891cc8-8189-4e4a-b1c3-5ab1fca03723",
+        "4aa34eb4-7593-49f4-876d-e92f32ac363b",
+        "ecb70b9a-55a5-4c2e-adcc-275fcad1a253",
+        "a5bfb9ae-fcd9-495e-a5be-fc63d87da24d",
+        "a86642bd-3412-4cb4-9ba5-24f33e335862",
+        "98f5dd28-e3fe-4f8a-923d-5bf927db667d",
+        "ca934fd3-1d9e-4263-a78d-f9fff478917f",
+        "22308974-084b-4b96-ad90-5d3051e92489",
+        "1534b351-ba39-414d-ab69-4ca83d3117a9",
+        "4a701e71-9e64-46a7-96d6-364211a1b736",
+        "ce3923e4-05bd-4945-a4f8-cff6b241ea00",
+        "c7d19177-c01b-4fa0-b966-96ccb337fd88",
+        "a282a96c-329c-4b36-bcd8-cfa5177fc398",
+        "ce443997-917a-44cc-b273-aafe9c65a3be",
+        "2cad37c0-36e0-4cc3-a598-b4bd68395ec4",
+        "66b23c6d-f9b8-437e-ba97-8a56302130e0",
+        "03a6405a-c421-492d-bffe-b116a3fb7147",
+        "eab73ae2-8cea-4690-8e58-ef97dfd0247c",
+        "4498bc15-b7b0-48b6-9709-bf63de510e43",
+        "36282fc9-e9fc-4257-b430-62ba0736da92",
+        "1b9432d7-5229-4f9f-ad9d-2d0c9fcd3e3a",
+        "7f30f955-adf4-4d67-b058-152514db283c",
+        "3e9ce373-2613-4a59-9171-7502dbea3f02",
+        "15ea040a-b9c7-492b-a97a-d7cd352c4c01",
+        "89075766-a8ab-4e31-9738-a9fd48d8344d",
+        "107b21d8-6d8e-4a18-8d9f-426929ad2115",
+        "32551a80-e5c2-4710-99b1-9f562568c7b4",
+        "60003673-9184-4c20-ab3b-c5b71fb786c0",
+        "34a4b458-348e-42aa-9767-d679024b2dc2",
+        "2e7460ec-d88c-44c1-9fff-add9dc6d61c7",
+        "95e19e69-0132-45ce-a5a6-bd3052ee106d",
+        "8175b750-26c2-46d1-8b45-bc2ea003aa77",
+        "d6dc064e-dc29-4a30-aaba-221e3c4885cb",
+        "4d8374f7-1ac0-4bfe-b1b5-eefbe38a528d",
+        "003d7029-1368-4561-9643-4d777c394b8c",
+        "d4b5b1c1-4f5f-4100-a66c-306650acf56c",
+        "518e4576-46a0-4d69-a7b2-bf458bb5f90a",
+        "0ecd8257-ae57-4f40-b634-1554f9e461d9"
+      ]
+    },
+    "other": {
+      "count": 2,
+      "analysis": {
+        "count": 2,
+        "sector_distribution": {
+          "semantic": 2
+        },
+        "primary_sectors": {
+          "semantic": 2
+        },
+        "content_stats": {
+          "avg_length": 47.0,
+          "min_length": 35,
+          "max_length": 59,
+          "total_chars": 94
+        },
+        "sample_contents": [
+          "Ken enjoyed the freedom of biking anywhere in his childhood",
+          "Ken grew up in Richfield, Minnesota"
+        ],
+        "memory_ids": [
+          "b669a179-04a9-4410-84ba-bf7c72612521",
+          "a97118ad-364d-497d-903c-d56fe0512d41"
+        ]
+      },
+      "memory_ids": [
+        "b669a179-04a9-4410-84ba-bf7c72612521",
+        "a97118ad-364d-497d-903c-d56fe0512d41"
+      ]
+    }
+  }
+}
