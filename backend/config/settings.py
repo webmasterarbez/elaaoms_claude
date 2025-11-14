@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
+from pydantic import field_validator, computed_field
 from functools import lru_cache
 from pathlib import Path
 
@@ -13,6 +13,24 @@ class Settings(BaseSettings):
     elevenlabs_post_call_hmac_key: str = ""
     elevenlabs_post_call_payload_path: str = "./data/payloads"
     webhook_url: str = "http://localhost:8000/webhook/post-call"
+    
+    @computed_field
+    @property
+    def resolved_payload_path(self) -> str:
+        """
+        Resolve payload path relative to project root (where .env file is located).
+        
+        This ensures paths work correctly regardless of where the server is started from.
+        """
+        # Project root is where .env file is (two levels up from backend/config/)
+        project_root = Path(__file__).parent.parent.parent
+        
+        # If path is relative, resolve it relative to project root
+        payload_path = Path(self.elevenlabs_post_call_payload_path)
+        if payload_path.is_absolute():
+            return str(payload_path)
+        else:
+            return str((project_root / payload_path).resolve())
 
     @field_validator("elevenlabs_post_call_hmac_key")
     @classmethod

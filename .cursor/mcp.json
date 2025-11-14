@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "openmemory": {
+      "url": "http://localhost:8080/mcp",
+      "env": {
+        "x-api-key": "a767549b65732239640c9ae9668aa6e8f"
+      }
+    }
+  }
+}

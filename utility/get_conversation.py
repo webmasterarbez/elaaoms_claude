@@ -270,6 +270,15 @@ class ConversationGetter:
             result = response.json()
             logger.info(f"Successfully sent conversation {conversation_id} to webhook")
             logger.debug(f"Webhook response: {json.dumps(result, indent=2)}")
+            
+            # Log important response details
+            data = result.get("data", {})
+            logger.info(
+                f"Webhook response details: "
+                f"payload_saved={data.get('payload_saved')}, "
+                f"memory_extraction_queued={data.get('memory_extraction_queued')}, "
+                f"transcript_items={data.get('transcript_items')}"
+            )
 
             return True
 

@@ -120,7 +120,7 @@ async def _handle_transcription_webhook(webhook: ElevenLabsWebhook, request_id: 
                 webhook_dict = webhook.dict()
             
             file_path = save_transcription_payload(
-                settings.elevenlabs_post_call_payload_path,
+                settings.resolved_payload_path,
                 conversation_id,
                 webhook_dict
             )
@@ -230,7 +230,7 @@ async def _handle_audio_webhook(data: dict, request_id: str, settings) -> Payloa
 
         # Save audio file
         file_path = save_audio_payload(
-            settings.elevenlabs_post_call_payload_path,
+            settings.resolved_payload_path,
             conversation_id,
             audio_bytes
         )
@@ -280,7 +280,7 @@ async def _handle_failure_webhook(webhook: ElevenLabsWebhook, request_id: str, s
                 webhook_dict = webhook.dict()
             
             file_path = save_failure_payload(
-                settings.elevenlabs_post_call_payload_path,
+                settings.resolved_payload_path,
                 conversation_id,
                 webhook_dict
             )
@@ -649,8 +649,9 @@ async def health_check(request: Request):
     # Check background worker
     try:
         job_processor = get_job_processor()
-        if job_processor:
+        if job_processor and job_processor.running:
             health_status["checks"]["background_worker"] = "ok"
+            health_status["checks"]["background_worker_queue_size"] = job_processor.queue.qsize()
         else:
             health_status["checks"]["background_worker"] = "degraded"
             health_status["status"] = "degraded"

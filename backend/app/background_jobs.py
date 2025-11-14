@@ -103,7 +103,15 @@ class BackgroundJobProcessor:
                 self.queue.task_done()
 
             except Exception as e:
-                logger.error(f"Error in background worker: {e}", exc_info=True)
+                logger.error(
+                    f"Error in background worker processing job: {e}",
+                    exc_info=True
+                )
+                # Mark task as done even on error to prevent queue blocking
+                try:
+                    self.queue.task_done()
+                except ValueError:
+                    pass  # task_done() called more times than tasks added
 
         logger.info("Background worker thread stopped")
 
@@ -242,7 +250,7 @@ class BackgroundJobProcessor:
             
             # Save to payloads directory
             file_path = save_transcription_payload(
-                settings.elevenlabs_post_call_payload_path,
+                settings.resolved_payload_path,
                 job.conversation_id,
                 failed_payload
             )
